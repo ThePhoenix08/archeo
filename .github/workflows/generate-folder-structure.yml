@@ -1,0 +1,31 @@
+name: Generate Folder Structure
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate-structure:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Generate folder structure
+        run: |
+          mkdir -p docs
+          tree -I 'node_modules|.git|docs' -F -a > docs/folder_structure.txt
+
+      - name: Commit and push folder structure
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/folder_structure.txt
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update folder structure"
+            git push
+          fi

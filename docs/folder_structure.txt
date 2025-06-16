@@ -1,0 +1,58 @@
+./
+├── .github/
+│   ├── pull_request_template.md
+│   └── workflows/
+│       ├── .gitkeep
+│       └── generate-folder-structure.yml
+├── .gitignore
+├── README.md
+├── apps/
+│   ├── client/
+│   │   ├── .gitignore
+│   │   ├── .prettierignore
+│   │   ├── .prettierrc
+│   │   ├── README.md
+│   │   ├── components.json
+│   │   ├── eslint.config.js
+│   │   ├── index.html
+│   │   ├── jsconfig.json
+│   │   ├── lib/
+│   │   │   └── utils.js
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── public/
+│   │   │   └── assets/
+│   │   │       └── .gitkeep
+│   │   ├── src/
+│   │   │   ├── App.css
+│   │   │   ├── App.jsx
+│   │   │   ├── features/
+│   │   │   │   ├── app/
+│   │   │   │   │   └── pages/
+│   │   │   │   │       └── .gitkeep
+│   │   │   │   ├── auth/
+│   │   │   │   │   └── pages/
+│   │   │   │   │       └── .gitkeep
+│   │   │   │   └── shared/
+│   │   │   │       └── .gitkeep
+│   │   │   ├── index.css
+│   │   │   └── main.jsx
+│   │   ├── tailwind.config.js
+│   │   └── vite.config.js
+│   ├── python-server/
+│   │   └── requirements.txt
+│   └── server/
+│       └── .gitkeep
+├── docker-compose.yml
+├── infra/
+│   └── docker/
+│       └── .gitkeep
+├── lib/
+│   └── utils/
+│       └── .gitkeep
+├── scripts/
+│   └── deploy.sh
+└── tests/
+    └── .gitkeep
+
+23 directories, 33 files

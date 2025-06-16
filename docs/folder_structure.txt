@@ -56,8 +56,35 @@
 │           │   │   └── com/
 │           │   │       └── archeo/
 │           │   │           └── server/
-│           │   │               └── ServerApplication.java
+│           │   │               ├── ServerApplication.java
+│           │   │               ├── common/
+│           │   │               │   ├── config/
+│           │   │               │   │   └── .gitkeep
+│           │   │               │   ├── dto/
+│           │   │               │   │   └── .gitkeep
+│           │   │               │   ├── enums/
+│           │   │               │   │   └── .gitkeep
+│           │   │               │   └── utils/
+│           │   │               │       └── .gitkeep
+│           │   │               └── modules/
+│           │   │                   ├── auth/
+│           │   │                   │   └── .gitkeep
+│           │   │                   ├── blockchain/
+│           │   │                   │   └── .gitkeep
+│           │   │                   ├── document/
+│           │   │                   │   └── .gitkeep
+│           │   │                   ├── encryption/
+│           │   │                   │   └── .gitkeep
+│           │   │                   ├── processing/
+│           │   │                   │   └── .gitkeep
+│           │   │                   ├── template/
+│           │   │                   │   └── .gitkeep
+│           │   │                   ├── user/
+│           │   │                   │   └── .gitkeep
+│           │   │                   └── verification/
+│           │   │                       └── .gitkeep
 │           │   └── resources/
+│           │       ├── .gitkeep
 │           │       └── application.properties
 │           └── test/
 │               └── java/
@@ -77,4 +104,4 @@
 └── tests/
     └── .gitkeep
 
-37 directories, 41 files
+51 directories, 54 files

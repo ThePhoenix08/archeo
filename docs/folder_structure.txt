@@ -42,7 +42,29 @@
 │   ├── python-server/
 │   │   └── requirements.txt
 │   └── server/
-│       └── .gitkeep
+│       ├── .gitattributes
+│       ├── .gitignore
+│       ├── .mvn/
+│       │   └── wrapper/
+│       │       └── maven-wrapper.properties
+│       ├── mvnw
+│       ├── mvnw.cmd
+│       ├── pom.xml
+│       └── src/
+│           ├── main/
+│           │   ├── java/
+│           │   │   └── com/
+│           │   │       └── archeo/
+│           │   │           └── server/
+│           │   │               └── ServerApplication.java
+│           │   └── resources/
+│           │       └── application.properties
+│           └── test/
+│               └── java/
+│                   └── com/
+│                       └── archeo/
+│                           └── server/
+│                               └── ServerApplicationTests.java
 ├── docker-compose.yml
 ├── infra/
 │   └── docker/
@@ -55,4 +77,4 @@
 └── tests/
     └── .gitkeep
 
-23 directories, 33 files
+37 directories, 41 files

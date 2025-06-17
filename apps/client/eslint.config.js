@@ -28,7 +28,10 @@ export default [
         {
           mode: 'full',
           type: 'shared',
-          pattern: ['src/feature/shared/**/*'],
+          pattern: [
+            'src/feature/shared/**/*',
+            'src/*'
+          ],
         },
         {
           "mode": "full",

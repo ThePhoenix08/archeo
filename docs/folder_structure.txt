@@ -26,17 +26,39 @@
 │   │   ├── src/
 │   │   │   ├── App.css
 │   │   │   ├── App.jsx
+│   │   │   ├── components/
+│   │   │   │   └── ui/
+│   │   │   │       └── .gitkeep
 │   │   │   ├── features/
-│   │   │   │   ├── app/
-│   │   │   │   │   └── pages/
-│   │   │   │   │       └── .gitkeep
+│   │   │   │   ├── account/
+│   │   │   │   │   └── .gitkeep
+│   │   │   │   ├── api/
+│   │   │   │   │   └── .gitkeep
 │   │   │   │   ├── auth/
 │   │   │   │   │   └── pages/
 │   │   │   │   │       └── .gitkeep
-│   │   │   │   └── shared/
+│   │   │   │   ├── document/
+│   │   │   │   │   └── .gitkeep
+│   │   │   │   ├── library/
+│   │   │   │   │   ├── dashboard/
+│   │   │   │   │   │   └── .gitkeep
+│   │   │   │   │   ├── documents/
+│   │   │   │   │   │   └── .gitkeep
+│   │   │   │   │   ├── tables/
+│   │   │   │   │   │   └── .gitkeep
+│   │   │   │   │   └── templates/
+│   │   │   │   │       └── .gitkeep
+│   │   │   │   ├── template/
+│   │   │   │   │   └── .gitkeep
+│   │   │   │   └── verify/
 │   │   │   │       └── .gitkeep
 │   │   │   ├── index.css
-│   │   │   └── main.jsx
+│   │   │   ├── main.jsx
+│   │   │   └── shared/
+│   │   │       ├── layout/
+│   │   │       │   └── .gitkeep
+│   │   │       └── store/
+│   │   │           └── .gitkeep
 │   │   ├── tailwind.config.js
 │   │   └── vite.config.js
 │   ├── python-server/
@@ -104,4 +126,4 @@
 └── tests/
     └── .gitkeep
 
-51 directories, 54 files
+63 directories, 64 files

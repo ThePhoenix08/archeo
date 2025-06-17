@@ -29,8 +29,10 @@ export default [
           mode: 'full',
           type: 'shared',
           pattern: [
+            'src/*',
+            'src/hooks/**/*',
+            'src/components/**/*',
             'src/feature/shared/**/*',
-            'src/*'
           ],
         },
         {

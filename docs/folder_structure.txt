@@ -26,6 +26,15 @@
 │   │   ├── src/
 │   │   │   ├── App.css
 │   │   │   ├── App.jsx
+│   │   │   ├── Redux_features/
+│   │   │   │   ├── api/
+│   │   │   │   │   ├── apiSlice.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── auth/
+│   │   │   │   │   ├── authApi.js
+│   │   │   │   │   └── authSlice.js
+│   │   │   │   └── document/
+│   │   │   │       └── documentApi.js
 │   │   │   ├── components/
 │   │   │   │   └── ui/
 │   │   │   │       └── .gitkeep
@@ -81,12 +90,16 @@
 │   │   │   │   └── .gitkeep
 │   │   │   ├── index.css
 │   │   │   ├── main.jsx
-│   │   │   └── shared/
-│   │   │       ├── layout/
-│   │   │       │   ├── .gitkeep
-│   │   │       │   └── AppLayout.jsx
-│   │   │       └── store/
-│   │   │           └── .gitkeep
+│   │   │   ├── shared/
+│   │   │   │   ├── layout/
+│   │   │   │   │   ├── .gitkeep
+│   │   │   │   │   └── AppLayout.jsx
+│   │   │   │   └── store/
+│   │   │   │       └── .gitkeep
+│   │   │   └── store/
+│   │   │       ├── hooks.js
+│   │   │       ├── index.js
+│   │   │       └── store.js
 │   │   ├── tailwind.config.js
 │   │   └── vite.config.js
 │   ├── python-server/
@@ -154,4 +167,4 @@
 └── tests/
     └── .gitkeep
 
-68 directories, 87 files
+73 directories, 95 files

@@ -1,4 +1,11 @@
+import { Navigate, Outlet } from "react-router";
+
+/** AppLayout: app wrapper, protected routes logic */
 function AppLayout() {
-  return <div>AppLayout</div>;
+  let auth = {'token':true}
+
+  return (
+    auth.token ? <Outlet/> : <Navigate to="/login"/>
+  );
 }
 export default AppLayout;

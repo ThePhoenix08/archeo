@@ -28,7 +28,7 @@ export default [
 				{
 					mode: "full",
 					type: "shared",
-					pattern: ["src/*", "src/hooks/**/*", "src/components/**/*", "src/shared/**/*"],
+					pattern: ["src/hooks/**/*", "src/components/**/*", "src/shared/**/*"],
 				},
 				{
 					mode: "full",
@@ -39,8 +39,8 @@ export default [
 				{
 					mode: "full",
 					type: "app",
-					pattern: ["app/**/*"],
-				},
+					"pattern": ["src/*"],
+				}
 			],
 		},
 		rules: {
@@ -60,15 +60,11 @@ export default [
 						},
 						{
 							from: ["app"],
-							allow: ["shared", "app"],
+							allow: ["shared", "app", { fileName: "*.css" }, "feature"],
 						},
 						{
 							from: ["feature"],
 							allow: ["shared", ["feature", { featureName: "${from.featureName}" }]],
-						},
-						{
-							from: ["app"],
-							allow: [["app", { fileName: "*.css" }]],
 						},
 					],
 				},

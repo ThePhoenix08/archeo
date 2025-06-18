@@ -26,15 +26,6 @@
 │   │   ├── src/
 │   │   │   ├── App.css
 │   │   │   ├── App.jsx
-│   │   │   ├── Redux_features/
-│   │   │   │   ├── api/
-│   │   │   │   │   ├── apiSlice.js
-│   │   │   │   │   └── index.js
-│   │   │   │   ├── auth/
-│   │   │   │   │   ├── authApi.js
-│   │   │   │   │   └── authSlice.js
-│   │   │   │   └── document/
-│   │   │   │       └── documentApi.js
 │   │   │   ├── components/
 │   │   │   │   └── ui/
 │   │   │   │       └── .gitkeep
@@ -55,6 +46,8 @@
 │   │   │   │   │       └── Usage.page.jsx
 │   │   │   │   ├── auth/
 │   │   │   │   │   ├── AuthLayout.jsx
+│   │   │   │   │   ├── actions/
+│   │   │   │   │   │   └── authApi.action.js
 │   │   │   │   │   ├── components/
 │   │   │   │   │   │   ├── .gitkeep
 │   │   │   │   │   │   └── ProtectedRoutes.provider.jsx
@@ -62,15 +55,19 @@
 │   │   │   │   │   │   ├── accountRecovery.flow.js
 │   │   │   │   │   │   ├── orgAuth.flow.js
 │   │   │   │   │   │   └── userAuth.flow.js
-│   │   │   │   │   └── pages/
-│   │   │   │   │       ├── AccountRecovery.page.jsx
-│   │   │   │   │       ├── Login.page.jsx
-│   │   │   │   │       └── Register.page.jsx
+│   │   │   │   │   ├── pages/
+│   │   │   │   │   │   ├── AccountRecovery.page.jsx
+│   │   │   │   │   │   ├── Login.page.jsx
+│   │   │   │   │   │   └── Register.page.jsx
+│   │   │   │   │   └── reducer/
+│   │   │   │   │       └── authSlice.reducer.js
 │   │   │   │   ├── dashboard/
 │   │   │   │   │   └── Dashboard.page.jsx
 │   │   │   │   ├── document/
 │   │   │   │   │   ├── Document.page.jsx
-│   │   │   │   │   └── DocumentLayout.jsx
+│   │   │   │   │   ├── DocumentLayout.jsx
+│   │   │   │   │   └── actions/
+│   │   │   │   │       └── documentApi.action.js
 │   │   │   │   ├── landing/
 │   │   │   │   │   ├── About.page.jsx
 │   │   │   │   │   └── Landing.page.jsx
@@ -90,16 +87,16 @@
 │   │   │   │   └── .gitkeep
 │   │   │   ├── index.css
 │   │   │   ├── main.jsx
-│   │   │   ├── shared/
-│   │   │   │   ├── layout/
-│   │   │   │   │   ├── .gitkeep
-│   │   │   │   │   └── AppLayout.jsx
-│   │   │   │   └── store/
-│   │   │   │       └── .gitkeep
-│   │   │   └── store/
-│   │   │       ├── hooks.js
-│   │   │       ├── index.js
-│   │   │       └── store.js
+│   │   │   └── shared/
+│   │   │       ├── layout/
+│   │   │       │   └── AppLayout.jsx
+│   │   │       ├── reducer/
+│   │   │       │   ├── apiSlice.reducer.js
+│   │   │       │   └── slice.barrel.js
+│   │   │       └── store/
+│   │   │           ├── hooks.js
+│   │   │           ├── store.barrel.js
+│   │   │           └── store.js
 │   │   ├── tailwind.config.js
 │   │   └── vite.config.js
 │   ├── python-server/
@@ -167,4 +164,4 @@
 └── tests/
     └── .gitkeep
 
-73 directories, 95 files
+72 directories, 93 files

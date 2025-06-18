@@ -25,6 +25,8 @@ import AnalyticsPage from "./features/api/pages/Analytics.page";
 import UsagePage from "./features/api/pages/Usage.page";
 import ConfigPage from "./features/api/pages/Config.page";
 import RequestsPage from "./features/api/pages/Requests.page";
+import DocumentLayout from "./features/document/DocumentLayout";
+import DocumentPage from "./features/document/Document.page";
 
 function App() {
 	return (
@@ -66,11 +68,11 @@ function App() {
 						</Route>
 
 						{/* complete api section only for verifiers */}
-						<Route path="api" element={<APILayout/>}>
-							<Route index element={<AnalyticsPage/>}/>
-							<Route path="usage" element={<UsagePage/>}/>
-							<Route path="config" element={<ConfigPage/>}/>
-							<Route path="requests" element={<RequestsPage/>}/>
+						<Route path="api" element={<APILayout />}>
+							<Route index element={<AnalyticsPage />} />
+							<Route path="usage" element={<UsagePage />} />
+							<Route path="config" element={<ConfigPage />} />
+							<Route path="requests" element={<RequestsPage />} />
 						</Route>
 					</Route>
 				</ProtectedRoutesProvider>

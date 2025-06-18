@@ -35,10 +35,23 @@
 │   │   │   │   ├── api/
 │   │   │   │   │   └── .gitkeep
 │   │   │   │   ├── auth/
+│   │   │   │   │   ├── AuthLayout.jsx
+│   │   │   │   │   ├── components/
+│   │   │   │   │   │   ├── .gitkeep
+│   │   │   │   │   │   └── ProtectedRoutes.provider.jsx
+│   │   │   │   │   ├── flows/
+│   │   │   │   │   │   ├── accountRecovery.flow.js
+│   │   │   │   │   │   ├── orgAuth.flow.js
+│   │   │   │   │   │   └── userAuth.flow.js
 │   │   │   │   │   └── pages/
-│   │   │   │   │       └── .gitkeep
+│   │   │   │   │       ├── AccountRecovery.page.jsx
+│   │   │   │   │       ├── Login.page.jsx
+│   │   │   │   │       └── Register.page.jsx
 │   │   │   │   ├── document/
 │   │   │   │   │   └── .gitkeep
+│   │   │   │   ├── landing/
+│   │   │   │   │   ├── About.page.jsx
+│   │   │   │   │   └── Landing.page.jsx
 │   │   │   │   ├── library/
 │   │   │   │   │   ├── dashboard/
 │   │   │   │   │   │   └── .gitkeep
@@ -51,12 +64,14 @@
 │   │   │   │   ├── template/
 │   │   │   │   │   └── .gitkeep
 │   │   │   │   └── verify/
-│   │   │   │       └── .gitkeep
+│   │   │   │       ├── .gitkeep
+│   │   │   │       └── Verification.page.jsx
 │   │   │   ├── index.css
 │   │   │   ├── main.jsx
 │   │   │   └── shared/
 │   │   │       ├── layout/
-│   │   │       │   └── .gitkeep
+│   │   │       │   ├── .gitkeep
+│   │   │       │   └── AppLayout.jsx
 │   │   │       └── store/
 │   │   │           └── .gitkeep
 │   │   ├── tailwind.config.js
@@ -126,4 +141,4 @@
 └── tests/
     └── .gitkeep
 
-63 directories, 64 files
+66 directories, 76 files

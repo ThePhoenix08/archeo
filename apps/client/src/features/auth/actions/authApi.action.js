@@ -1,4 +1,4 @@
-import { apiSlice } from "../api";
+import { apiSlice } from "../../../shared/reducer/slice.barrel";
 
 export const authApi = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({

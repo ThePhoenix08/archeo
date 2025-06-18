@@ -26,8 +26,11 @@ import TemplatePage from "./features/template/Template.page";
 import TemplateLayout from "./features/template/TemplateLayout";
 import VerificationPage from "./features/verify/verification.page";
 import AppLayout from "./shared/layout/AppLayout";
+import { ROLES } from "./shared/constants/roles.constant";
 
 function App() {
+	const userRole = ROLES.ISSUER;
+
 	return (
 		<BrowserRouter>
 			<Routes>

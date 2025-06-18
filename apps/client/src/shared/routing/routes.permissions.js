@@ -1,0 +1,40 @@
+import { ROUTES } from "./routes.constant";
+import { ROLES } from "../constants/roles.constant";
+
+// Route permissions - maps routes to allowed roles
+export const ROUTE_PERMISSIONS = {
+  // Public routes - accessible to all
+  [ROUTES.HOME]: [ROLES.USER, ROLES.ISSUER, ROLES.VERIFIER],
+  [ROUTES.ABOUT]: [ROLES.USER, ROLES.ISSUER, ROLES.VERIFIER],
+  [ROUTES.LOGIN]: [ROLES.USER, ROLES.ISSUER, ROLES.VERIFIER],
+  [ROUTES.REGISTER]: [ROLES.USER, ROLES.ISSUER, ROLES.VERIFIER],
+  
+  // Dashboard - accessible to all authenticated users
+  [ROUTES.DASHBOARD]: [ROLES.USER, ROLES.ISSUER, ROLES.VERIFIER],
+  
+  // Library section
+  [ROUTES.DOCUMENTS]: [ROLES.USER, ROLES.ISSUER, ROLES.VERIFIER],
+  [ROUTES.TEMPLATES]: [ROLES.ISSUER],
+  
+  // Account section - accessible to all authenticated users
+  [ROUTES.PROFILE]: [ROLES.USER, ROLES.ISSUER, ROLES.VERIFIER],
+  [ROUTES.SETTINGS]: [ROLES.USER, ROLES.ISSUER, ROLES.VERIFIER],
+  [ROUTES.ACTIVITY]: [ROLES.USER, ROLES.ISSUER, ROLES.VERIFIER],
+  [ROUTES.CONTACTS]: [ROLES.USER, ROLES.ISSUER, ROLES.VERIFIER],
+  
+  // Document routes
+  [ROUTES.DOCUMENT_VIEW]: [ROLES.USER, ROLES.ISSUER, ROLES.VERIFIER],
+  
+  // Template routes - only issuers
+  [ROUTES.TEMPLATE_VIEW]: [ROLES.ISSUER],
+  [ROUTES.TEMPLATE_EDIT]: [ROLES.ISSUER],
+  
+  // API routes - only verifiers
+  [ROUTES.API_ANALYTICS]: [ROLES.VERIFIER],
+  [ROUTES.API_USAGE]: [ROLES.VERIFIER],
+  [ROUTES.API_CONFIG]: [ROLES.VERIFIER],
+  [ROUTES.API_REQUESTS]: [ROLES.VERIFIER],
+  
+  // Verification - public
+  [ROUTES.VERIFY_QR]: [ROLES.USER, ROLES.ISSUER, ROLES.VERIFIER],
+};

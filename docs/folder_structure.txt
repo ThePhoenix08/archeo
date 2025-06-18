@@ -85,11 +85,19 @@
 │   │   │   ├── index.css
 │   │   │   ├── main.jsx
 │   │   │   └── shared/
+│   │   │       ├── constants/
+│   │   │       │   └── roles.constant.js
 │   │   │       ├── layout/
 │   │   │       │   └── AppLayout.jsx
 │   │   │       ├── reducer/
 │   │   │       │   ├── apiSlice.reducer.js
 │   │   │       │   └── slice.barrel.js
+│   │   │       ├── routing/
+│   │   │       │   ├── AccessDenied.page.jsx
+│   │   │       │   ├── ProtectedRoute.wrapper.jsx
+│   │   │       │   ├── routes.constant.js
+│   │   │       │   ├── routes.permissions.js
+│   │   │       │   └── routes.util.js
 │   │   │       └── store/
 │   │   │           ├── hooks.js
 │   │   │           ├── store.barrel.js
@@ -161,4 +169,4 @@
 └── tests/
     └── .gitkeep
 
-71 directories, 91 files
+73 directories, 97 files

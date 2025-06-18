@@ -48,9 +48,6 @@
 │   │   │   │   │   ├── AuthLayout.jsx
 │   │   │   │   │   ├── actions/
 │   │   │   │   │   │   └── authApi.action.js
-│   │   │   │   │   ├── components/
-│   │   │   │   │   │   ├── .gitkeep
-│   │   │   │   │   │   └── ProtectedRoutes.provider.jsx
 │   │   │   │   │   ├── flows/
 │   │   │   │   │   │   ├── accountRecovery.flow.js
 │   │   │   │   │   │   ├── orgAuth.flow.js
@@ -164,4 +161,4 @@
 └── tests/
     └── .gitkeep
 
-72 directories, 93 files
+71 directories, 91 files

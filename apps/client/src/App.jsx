@@ -38,8 +38,8 @@ function App() {
 				<Route path="about" element={<AboutPage />} />
 
 				<Route element={<AuthLayout />}>
-					<Route path="login" element={<LoginPage />} />
-					<Route path="register" element={<RegisterPage />} />
+					<Route path="login/:role" element={<LoginPage />} />
+					<Route path="register/:role" element={<RegisterPage />} />
 				</Route>
 
 				<Route path="app" element={<AppLayout />}>

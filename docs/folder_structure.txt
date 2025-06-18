@@ -31,32 +31,60 @@
 │   │   │   │       └── .gitkeep
 │   │   │   ├── features/
 │   │   │   │   ├── account/
-│   │   │   │   │   └── .gitkeep
-│   │   │   │   ├── api/
-│   │   │   │   │   └── .gitkeep
-│   │   │   │   ├── auth/
+│   │   │   │   │   ├── AccountSection.jsx
 │   │   │   │   │   └── pages/
-│   │   │   │   │       └── .gitkeep
+│   │   │   │   │       ├── ActivityLog.page.jsx
+│   │   │   │   │       ├── Contacts.page.jsx
+│   │   │   │   │       ├── Profile.page.jsx
+│   │   │   │   │       └── Settings.page.jsx
+│   │   │   │   ├── api/
+│   │   │   │   │   ├── APILayout.jsx
+│   │   │   │   │   └── pages/
+│   │   │   │   │       ├── Analytics.page.jsx
+│   │   │   │   │       ├── Config.page.jsx
+│   │   │   │   │       ├── Requests.page.jsx
+│   │   │   │   │       └── Usage.page.jsx
+│   │   │   │   ├── auth/
+│   │   │   │   │   ├── AuthLayout.jsx
+│   │   │   │   │   ├── components/
+│   │   │   │   │   │   ├── .gitkeep
+│   │   │   │   │   │   └── ProtectedRoutes.provider.jsx
+│   │   │   │   │   ├── flows/
+│   │   │   │   │   │   ├── accountRecovery.flow.js
+│   │   │   │   │   │   ├── orgAuth.flow.js
+│   │   │   │   │   │   └── userAuth.flow.js
+│   │   │   │   │   └── pages/
+│   │   │   │   │       ├── AccountRecovery.page.jsx
+│   │   │   │   │       ├── Login.page.jsx
+│   │   │   │   │       └── Register.page.jsx
+│   │   │   │   ├── dashboard/
+│   │   │   │   │   └── Dashboard.page.jsx
 │   │   │   │   ├── document/
-│   │   │   │   │   └── .gitkeep
+│   │   │   │   │   ├── Document.page.jsx
+│   │   │   │   │   └── DocumentLayout.jsx
+│   │   │   │   ├── landing/
+│   │   │   │   │   ├── About.page.jsx
+│   │   │   │   │   └── Landing.page.jsx
 │   │   │   │   ├── library/
-│   │   │   │   │   ├── dashboard/
-│   │   │   │   │   │   └── .gitkeep
+│   │   │   │   │   ├── LibrarySection.jsx
 │   │   │   │   │   ├── documents/
-│   │   │   │   │   │   └── .gitkeep
-│   │   │   │   │   ├── tables/
-│   │   │   │   │   │   └── .gitkeep
+│   │   │   │   │   │   └── DocumentsList.page.jsx
 │   │   │   │   │   └── templates/
-│   │   │   │   │       └── .gitkeep
+│   │   │   │   │       └── TemplatesList.page.jsx
 │   │   │   │   ├── template/
-│   │   │   │   │   └── .gitkeep
+│   │   │   │   │   ├── EditTemplate.page.jsx
+│   │   │   │   │   ├── Template.page.jsx
+│   │   │   │   │   └── TemplateLayout.jsx
 │   │   │   │   └── verify/
-│   │   │   │       └── .gitkeep
+│   │   │   │       └── Verification.page.jsx
+│   │   │   ├── hooks/
+│   │   │   │   └── .gitkeep
 │   │   │   ├── index.css
 │   │   │   ├── main.jsx
 │   │   │   └── shared/
 │   │   │       ├── layout/
-│   │   │       │   └── .gitkeep
+│   │   │       │   ├── .gitkeep
+│   │   │       │   └── AppLayout.jsx
 │   │   │       └── store/
 │   │   │           └── .gitkeep
 │   │   ├── tailwind.config.js
@@ -126,4 +154,4 @@
 └── tests/
     └── .gitkeep
 
-63 directories, 64 files
+68 directories, 87 files

@@ -31,9 +31,19 @@
 │   │   │   │       └── .gitkeep
 │   │   │   ├── features/
 │   │   │   │   ├── account/
-│   │   │   │   │   └── .gitkeep
+│   │   │   │   │   ├── AccountSection.jsx
+│   │   │   │   │   └── pages/
+│   │   │   │   │       ├── ActivityLog.page.jsx
+│   │   │   │   │       ├── Contacts.page.jsx
+│   │   │   │   │       ├── Profile.page.jsx
+│   │   │   │   │       └── Settings.page.jsx
 │   │   │   │   ├── api/
-│   │   │   │   │   └── .gitkeep
+│   │   │   │   │   ├── APILayout.jsx
+│   │   │   │   │   └── pages/
+│   │   │   │   │       ├── Analytics.page.jsx
+│   │   │   │   │       ├── Config.page.jsx
+│   │   │   │   │       ├── Requests.page.jsx
+│   │   │   │   │       └── Usage.page.jsx
 │   │   │   │   ├── auth/
 │   │   │   │   │   ├── AuthLayout.jsx
 │   │   │   │   │   ├── components/
@@ -47,25 +57,28 @@
 │   │   │   │   │       ├── AccountRecovery.page.jsx
 │   │   │   │   │       ├── Login.page.jsx
 │   │   │   │   │       └── Register.page.jsx
+│   │   │   │   ├── dashboard/
+│   │   │   │   │   └── Dashboard.page.jsx
 │   │   │   │   ├── document/
-│   │   │   │   │   └── .gitkeep
+│   │   │   │   │   ├── Document.page.jsx
+│   │   │   │   │   └── DocumentLayout.jsx
 │   │   │   │   ├── landing/
 │   │   │   │   │   ├── About.page.jsx
 │   │   │   │   │   └── Landing.page.jsx
 │   │   │   │   ├── library/
-│   │   │   │   │   ├── dashboard/
-│   │   │   │   │   │   └── .gitkeep
+│   │   │   │   │   ├── LibrarySection.jsx
 │   │   │   │   │   ├── documents/
-│   │   │   │   │   │   └── .gitkeep
-│   │   │   │   │   ├── tables/
-│   │   │   │   │   │   └── .gitkeep
+│   │   │   │   │   │   └── DocumentsList.page.jsx
 │   │   │   │   │   └── templates/
-│   │   │   │   │       └── .gitkeep
+│   │   │   │   │       └── TemplatesList.page.jsx
 │   │   │   │   ├── template/
-│   │   │   │   │   └── .gitkeep
+│   │   │   │   │   ├── EditTemplate.page.jsx
+│   │   │   │   │   ├── Template.page.jsx
+│   │   │   │   │   └── TemplateLayout.jsx
 │   │   │   │   └── verify/
-│   │   │   │       ├── .gitkeep
 │   │   │   │       └── Verification.page.jsx
+│   │   │   ├── hooks/
+│   │   │   │   └── .gitkeep
 │   │   │   ├── index.css
 │   │   │   ├── main.jsx
 │   │   │   └── shared/
@@ -141,4 +154,4 @@
 └── tests/
     └── .gitkeep
 
-66 directories, 76 files
+68 directories, 87 files

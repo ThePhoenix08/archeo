@@ -1,43 +1,35 @@
 import { ROLES } from "@/shared/constants/roles.constant";
 import React, { useState } from "react";
+import { useUserAuthFlow } from "@/features/auth/flows/userAuth.flow.js";
 import { useParams } from "react-router";
+import { getLoginFieldsForRole } from "@/features/auth/constants/getFieldsForRole.constant.js";
+import ErrorPage from "@/shared/routing/Error.page.jsx";
 
 function LoginPage() {
-	const role = useParams();
-
+	let role = useParams();
 	if (!Object.values(ROLES).includes(role)) {
 		role = ROLES.USER; // if role invalid or missing, default to "user"
 	}
 
-	const getFieldsForRoles = () => {
-		switch (role) {
-			case "issuer":
-				return [
-					{ name: "username", type: "text", label: "Username", required: true },
-					{ name: "email", type: "email", label: "Email", required: true },
-					{ name: "password", type: "password", label: "Password", required: true },
-				];
+	const { flow } = useUserAuthFlow();
+	const fields = getLoginFieldsForRole[role];
 
-			case "user":
-				return [
-					{ name: "username", type: "text", label: "Username", required: true },
-					{ name: "email", type: "email", label: "Email", required: true },
-					{ name: "password", type: "password", label: "Password", required: true },
-				];
+	const [formData, setFormData] = useState(
+		// maps field[] => formData object with (name, initialValue) pairs
+		fields.reduce((accum, curr) => {
+			accum[curr.name] = curr.initialValue;
+			return accum;
+		}, {})
+	);
 
-			case "verifier":
-				return [
-					{ name: "username", type: "text", label: "Username", required: true },
-					{ name: "email", type: "email", label: "Email", required: true },
-					{ name: "password", type: "password", label: "Password", required: true },
-				];
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		const result = await flow("login", formData);
 
-			default:
-				return [];
+		if (result?.error) {
+			return <ErrorPage message="" />;
 		}
 	};
-
-	const fields = getFieldsForRoles();
 
 	return <div>LoginPage</div>;
 }

@@ -1,0 +1,271 @@
+{
+  "terminal.integrated.cwd": "apps/client",
+  "reactSnippets.settings.importReactOnTop": false,
+  "reactSnippets.settings.prettierEnabled": true,
+  "reactSnippets.settings.typescript": false,
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "javascript.preferences.importModuleSpecifierEnding": "js",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "material-icon-theme.folders.theme": "specific",
+  "material-icon-theme.activeIconPack": "react_redux",
+  "material-icon-theme.files.customClones": [
+    /* {
+      "name": "",
+      "base": "",
+      "color": "",
+    } */
+    {
+      "name": "react-c-jsx",
+      "base": "react",
+      "color": "cyan-500"
+    },
+    {
+      "name": "react-components-tsx",
+      "base": "react",
+      "color": "teal-500"
+    },
+    {
+      "name": "react-sub-components-jsx",
+      "base": "react",
+      "color": "green-500"
+    },
+    {
+      "name": "react-sub-components-tsx",
+      "base": "react",
+      "color": "light-green-500"
+    },
+    {
+      "name": "react-context-jsx",
+      "base": "react",
+      "color": "purple-500"
+    },
+    {
+      "name": "react-context-tsx",
+      "base": "react",
+      "color": "deep-purple-500"
+    },
+    {
+      "name": "react-page-jsx",
+      "base": "xml",
+      "color": "orange-500"
+    },
+    {
+      "name": "react-page-tsx",
+      "base": "xml",
+      "color": "deep-orange-500"
+    },
+    {
+      "name": "react-provider-jsx",
+      "base": "react",
+      "color": "orange-500"
+    },
+    {
+      "name": "react-provider-tsx",
+      "base": "react",
+      "color": "deep-orange-500"
+    },
+    {
+      "name": "util-js",
+      "base": "javascript",
+      "color": "green-500"
+    },
+    {
+      "name": "util-ts",
+      "base": "typescript",
+      "color": "green-500"
+    },
+    {
+      "name": "middleware-js",
+      "base": "wxt",
+      "color": "indigo-500"
+    },
+    {
+      "name": "middleware-ts",
+      "base": "wxt",
+      "color": "deep-purple-500"
+    },
+    {
+      "name": "model-js",
+      "base": "database",
+      "color": "deep-orange-500"
+    },
+    {
+      "name": "model-ts",
+      "base": "database",
+      "color": "red-500"
+    },
+    {
+      "name": "service-js",
+      "base": "3d",
+      "color": "blue-500"
+    },
+    {
+      "name": "service-ts",
+      "base": "3d",
+      "color": "deep-purple-500"
+    },
+    {
+      "name": "validator-js",
+      "base": "conduct",
+      "color": "deep-orange-500"
+    },
+    {
+      "name": "validator-ts",
+      "base": "conduct",
+      "color": "red-500"
+    },
+    {
+      "name": "mern-controller",
+      "base": "pkl",
+      "color": "blue-gray-500"
+    },
+    {
+      "name": "jobs",
+      "base": "syncpack",
+      "color": "blue-500"
+    },
+    {
+      "name": "jobs-ts",
+      "base": "syncpack",
+      "color": "deep-purple-500"
+    },
+    {
+      "name": "query-js",
+      "base": "hurl",
+      "color": "yellow-500"
+    },
+    {
+      "name": "query-ts",
+      "base": "hurl",
+      "color": "amber-500"
+    },
+    {
+      "name": "react-wrapper",
+      "base": "react",
+      "color": "blue-gray-500"
+    },
+    {
+      "name": "flow-js",
+      "base": "tree",
+      "color": "light-green-500"
+    },
+    {
+      "name": "flow-ts",
+      "base": "tree",
+      "color": "green-500"
+    }
+  ],
+  "material-icon-theme.files.associations": {
+    "*.c.jsx": "react-c-jsx",
+    "*.c.tsx": "react-components-tsx",
+    "*.sc.jsx": "react-sub-components-jsx",
+    "*.sc.tsx": "react-sub-components-tsx",
+    "*.context.jsx": "react-context-jsx",
+    "*.context.tsx": "react-context-tsx",
+    "*.page.jsx": "react-page-jsx",
+    "*.page.tsx": "react-page-tsx",
+    "*.provider.jsx": "react-provider-jsx",
+    "*.provider.tsx": "react-provider-tsx",
+    "*.flow.js": "flow-js",
+    "*.flow.ts": "flow-ts",
+    "*.js": "util-js",
+    "*.ts": "util-ts",
+    "*.middleware.js": "middleware-js",
+    "*.middleware.ts": "middleware-ts",
+    "*.model.js": "model-js",
+    "*.model.ts": "model-ts",
+    "*.service.js": "service-js",
+    "*.service.ts": "service-ts",
+    "*.validator.js": "validator-js",
+    "*.validator.ts": "validator-ts",
+    "*.controller.js": "mern-controller",
+    "*.controller.ts": "mern-controller",
+    "*.job.js": "jobs",
+    "*.job.ts": "jobs",
+    "*.query.js": "query-js",
+    "*.query.ts": "query-ts",
+    "*.wrapper.jsx": "react-wrapper",
+    "*.wrapper.tsx": "react-wrapper"
+  },
+  "material-icon-theme.folders.customClones": [
+    {
+      "name": "folder-services",
+      "base": "folder-container",
+      "color": "blue-500",
+      "lightColor": "light-blue-500",
+      "folderNames": ["services"]
+    },
+    {
+      "name": "folder-react-sub-components",
+      "base": "folder-react-components",
+      "color": "green-500",
+      "lightColor": "light-green-500",
+      "folderNames": ["sub-components"]
+    },
+    {
+      "name": "folder-jobs",
+      "base": "folder-generator",
+      "color": "blue-500",
+      "lightColor": "light-blue-500",
+      "folderNames": ["jobs"]
+    },
+    {
+      "name": "folder-mern-controller",
+      "base": "folder-controller",
+      "color": "blue-gray-500",
+      "lightColor": "light-blue-500",
+      "folderNames": ["controllers"]
+    },
+    {
+      "name": "folder-react-wrapper",
+      "base": "folder-react-components",
+      "color": "blue-gray-500",
+      "lightColor": "light-blue-500",
+      "folderNames": ["wrappers"]
+    },
+    {
+      "name": "folder-features",
+      "base": "folder-app",
+      "color": "blue-500",
+      "lightColor": "light-blue-500",
+      "folderNames": ["features", "feature"]
+    },
+    {
+      "name": "feature-folder-account",
+      "base": "folder-coverage",
+      "color": "red-500",
+      "lightColor": "red-500",
+      "folderNames": ["account", "user"]
+    },
+    {
+      "name": "folder-validators",
+      "base": "folder-rules",
+      "color": "red-500",
+      "lightColor": "red-500",
+      "folderNames": ["verify", "validators"]
+    },
+    {
+      "name": "feature-folder-dashboard",
+      "base": "folder-layout",
+      "color": "deep-purple-500",
+      "lightColor": "amber-500",
+      "folderNames": ["analytics", "dashboard"]
+    },
+    {
+      "name": "feature-folder-tables",
+      "base": "folder-interface",
+      "color": "teal-500",
+      "lightColor": "amber-500",
+      "folderNames": ["tables"]
+    },
+    {
+      "name": "folder-flows",
+      "base": "folder-gh-workflows",
+      "color": "green-500",
+      "lightColor": "amber-500",
+      "folderNames": ["flows"]
+    }
+  ]
+}

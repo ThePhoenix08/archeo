@@ -1,13 +1,12 @@
+import { ROLES } from "@/shared/constants/roles.constant";
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 
 function LoginPage() {
-	const navigate = useNavigate();
 	const role = useParams();
 
-	const validRoles = ["issuer", "verifier", "user"];
-	if (!validRoles.includes(role)) {
-		navigate("/");
+	if (!Object.values(ROLES).includes(role)) {
+		role = ROLES.USER; // if role invalid or missing, default to "user"
 	}
 
 	const getFieldsForRoles = () => {

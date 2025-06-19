@@ -1,2 +1,11 @@
-package com.archeo.server.modules.auth.dtos;public class SignupRequest {
+package com.archeo.server.modules.auth.dtos;
+
+import lombok.Data;
+
+@Data
+public class SignupRequest {
+
+    private String username;
+    private String email;
+    private String password;
 }

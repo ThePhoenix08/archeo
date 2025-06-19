@@ -13,6 +13,8 @@
 
 	<!-- Sub-modules -->
 	<modules>
+		<module>application</module>
+		<module>common</module>
 		<module>auth</module>
 		<module>user</module>
 		<module>template</module>
@@ -61,6 +63,13 @@
 				<artifactId>lombok</artifactId>
 				<version>1.18.30</version>
 				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-test</artifactId>
+				<version>3.2.5</version> <!-- or your Spring Boot version -->
+				<scope>test</scope>
 			</dependency>
 
 		</dependencies>

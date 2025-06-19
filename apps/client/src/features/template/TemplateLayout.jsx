@@ -1,4 +1,9 @@
 function TemplateLayout() {
-  return <div>TemplateLayout</div>;
+	return (
+		<div>
+			TemplateLayout
+			<Outlet />
+		</div>
+	);
 }
 export default TemplateLayout;

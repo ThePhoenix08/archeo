@@ -1,4 +1,11 @@
+import { Outlet } from "react-router";
+
 function DocumentLayout() {
-  return <div>DocumentLayout</div>;
+	return (
+		<div>
+			DocumentLayout
+			<Outlet />
+		</div>
+	);
 }
 export default DocumentLayout;

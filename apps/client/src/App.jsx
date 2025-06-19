@@ -1,36 +1,36 @@
 import { BrowserRouter, Route, Routes } from "react-router";
-import "./App.css";
-import AccountSection from "./features/account/AccountSection";
-import ActivityLogPage from "./features/account/pages/ActivityLog.page";
-import ContactsPage from "./features/account/pages/Contacts.page";
-import ProfilePage from "./features/account/pages/Profile.page";
-import SettingsPage from "./features/account/pages/Settings.page";
-import APILayout from "./features/api/APILayout";
-import AnalyticsPage from "./features/api/pages/Analytics.page";
-import ConfigPage from "./features/api/pages/Config.page";
-import RequestsPage from "./features/api/pages/Requests.page";
-import UsagePage from "./features/api/pages/Usage.page";
-import AuthLayout from "./features/auth/AuthLayout";
-import LoginPage from "./features/auth/pages/Login.page";
-import RegisterPage from "./features/auth/pages/Register.page";
-import DashboardPage from "./features/dashboard/Dashboard.page";
-import DocumentPage from "./features/document/Document.page";
-import DocumentLayout from "./features/document/DocumentLayout";
-import AboutPage from "./features/landing/About.page";
-import LandingPage from "./features/landing/Landing.page";
-import DocumentsListPage from "./features/library/documents/DocumentsList.page";
-import LibrarySection from "./features/library/LibrarySection";
-import TemplatesListPage from "./features/library/templates/TemplatesList.page";
-import EditTemplatePage from "./features/template/EditTemplate.page";
-import TemplatePage from "./features/template/Template.page";
-import TemplateLayout from "./features/template/TemplateLayout";
-import VerificationPage from "./features/verify/verification.page";
-import AppLayout from "./shared/layout/AppLayout";
-import { ROLES } from "./shared/constants/roles.constant";
+import "@/App.css";
+import AccountSection from "@/features/account/AccountSection";
+import ActivityLogPage from "@/features/account/pages/ActivityLog.page";
+import ContactsPage from "@/features/account/pages/Contacts.page";
+import ProfilePage from "@/features/account/pages/Profile.page";
+import SettingsPage from "@/features/account/pages/Settings.page";
+import APILayout from "@/features/api/APILayout";
+import AnalyticsPage from "@/features/api/pages/Analytics.page";
+import ConfigPage from "@/features/api/pages/Config.page";
+import RequestsPage from "@/features/api/pages/Requests.page";
+import UsagePage from "@/features/api/pages/Usage.page";
+import AuthLayout from "@/features/auth/AuthLayout";
+import LoginPage from "@/features/auth/pages/Login.page";
+import RegisterPage from "@/features/auth/pages/Register.page";
+import DashboardPage from "@/features/dashboard/Dashboard.page";
+import DocumentPage from "@/features/document/Document.page";
+import DocumentLayout from "@/features/document/DocumentLayout";
+import AboutPage from "@/features/landing/About.page";
+import LandingPage from "@/features/landing/Landing.page";
+import DocumentsListPage from "@/features/library/documents/DocumentsList.page";
+import LibrarySection from "@/features/library/LibrarySection";
+import TemplatesListPage from "@/features/library/templates/TemplatesList.page";
+import EditTemplatePage from "@/features/template/EditTemplate.page";
+import TemplatePage from "@/features/template/Template.page";
+import TemplateLayout from "@/features/template/TemplateLayout";
+import VerificationPage from "@/features/verify/verification.page";
+import AppLayout from "@/shared/layout/AppLayout";
+import { ROLES } from "@/shared/constants/roles.constant";
+import { RouteGuard } from "@/features/auth/components/RouteGuard";
+import NotFoundPage from "@/shared/routing/NotFound.page";
 
 function App() {
-	const userRole = ROLES.ISSUER;
-
 	return (
 		<BrowserRouter>
 			<Routes>
@@ -38,8 +38,8 @@ function App() {
 				<Route path="about" element={<AboutPage />} />
 
 				<Route element={<AuthLayout />}>
-					<Route path="login/:role" element={<LoginPage />} />
-					<Route path="register/:role" element={<RegisterPage />} />
+					<Route path="login/:role?" element={<LoginPage />} />
+					<Route path="register/:role?" element={<RegisterPage />} />
 				</Route>
 
 				<Route path="app" element={<AppLayout />}>
@@ -47,7 +47,15 @@ function App() {
 
 					<Route path="library" element={<LibrarySection />}>
 						{/* templatesList only for issuer */}
-						<Route path="templates" element={<TemplatesListPage />} />
+						<Route
+							path="templates"
+							element={
+								<RouteGuard
+									allowedRoles={[ROLES.ISSUER]}
+									routeComponent={<TemplatesListPage />}
+								/>
+							}
+						/>
 						<Route path="documents" element={<DocumentsListPage />} />
 					</Route>
 
@@ -63,21 +71,62 @@ function App() {
 					</Route>
 
 					{/* complete template section only for issuers */}
-					<Route path="template" element={<TemplateLayout />}>
-						<Route path=":templateId/view?" element={<TemplatePage />} />
-						<Route path=":templateId/edit" element={<EditTemplatePage />} />
+					<Route path="template" element={
+						<RouteGuard
+							allowedRoles={[ROLES.ISSUER]}
+							routeComponent={<TemplateLayout />}
+						/>
+					}>
+						<Route path=":templateId/view?" element={
+							<RouteGuard
+								allowedRoles={[ROLES.ISSUER]}
+								routeComponent={<TemplatePage />}
+							/>
+						} />
+						<Route path=":templateId/edit" element={
+							<RouteGuard
+								allowedRoles={[ROLES.ISSUER]}
+								routeComponent={<EditTemplatePage />}
+							/>
+						} />
 					</Route>
 
 					{/* complete api section only for verifiers */}
-					<Route path="api" element={<APILayout />}>
-						<Route index element={<AnalyticsPage />} />
-						<Route path="usage" element={<UsagePage />} />
-						<Route path="config" element={<ConfigPage />} />
-						<Route path="requests" element={<RequestsPage />} />
+					<Route path="api" element={
+						<RouteGuard
+							allowedRoles={[ROLES.VERIFIER]}
+							routeComponent={<APILayout />}
+						/>
+					}>
+						<Route index element={
+							<RouteGuard
+								allowedRoles={[ROLES.VERIFIER]}
+								routeComponent={<AnalyticsPage />}
+							/>
+						} />
+						<Route path="usage" element={
+							<RouteGuard
+								allowedRoles={[ROLES.VERIFIER]}
+								routeComponent={<UsagePage />}
+							/>
+						} />
+						<Route path="config" element={
+							<RouteGuard
+								allowedRoles={[ROLES.VERIFIER]}
+								routeComponent={<ConfigPage />}
+							/>
+						} />
+						<Route path="requests" element={
+							<RouteGuard
+								allowedRoles={[ROLES.VERIFIER]}
+								routeComponent={<RequestsPage />}
+							/>
+						} />
 					</Route>
 				</Route>
 
 				<Route path="verify/:qr_url" element={<VerificationPage />} />
+				<Route path="*" element={<NotFoundPage />} />
 			</Routes>
 		</BrowserRouter>
 	);

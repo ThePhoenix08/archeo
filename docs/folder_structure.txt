@@ -54,6 +54,8 @@
 │   │   │   │   │   ├── components/
 │   │   │   │   │   │   ├── ProtectedRoute.wrapper.jsx
 │   │   │   │   │   │   └── RouteGuard.jsx
+│   │   │   │   │   ├── constants/
+│   │   │   │   │   │   └── getFieldsForRole.constant.js
 │   │   │   │   │   ├── flows/
 │   │   │   │   │   │   ├── accountRecovery.flow.js
 │   │   │   │   │   │   ├── orgAuth.flow.js
@@ -426,4 +428,4 @@
 └── tests/
     └── .gitkeep
 
-258 directories, 169 files
+259 directories, 170 files

@@ -5,6 +5,9 @@
 │       ├── .gitkeep
 │       └── generate-folder-structure.yml
 ├── .gitignore
+├── .vscode/
+│   ├── extensions.json
+│   └── settings.json
 ├── README.md
 ├── apps/
 │   ├── client/
@@ -48,6 +51,9 @@
 │   │   │   │   │   ├── AuthLayout.jsx
 │   │   │   │   │   ├── actions/
 │   │   │   │   │   │   └── authApi.action.js
+│   │   │   │   │   ├── components/
+│   │   │   │   │   │   ├── ProtectedRoute.wrapper.jsx
+│   │   │   │   │   │   └── RouteGuard.jsx
 │   │   │   │   │   ├── flows/
 │   │   │   │   │   │   ├── accountRecovery.flow.js
 │   │   │   │   │   │   ├── orgAuth.flow.js
@@ -86,6 +92,7 @@
 │   │   │   ├── main.jsx
 │   │   │   └── shared/
 │   │   │       ├── constants/
+│   │   │       │   ├── env.constant.js
 │   │   │       │   └── roles.constant.js
 │   │   │       ├── layout/
 │   │   │       │   └── AppLayout.jsx
@@ -94,7 +101,8 @@
 │   │   │       │   └── slice.barrel.js
 │   │   │       ├── routing/
 │   │   │       │   ├── AccessDenied.page.jsx
-│   │   │       │   ├── ProtectedRoute.wrapper.jsx
+│   │   │       │   ├── Error.page.jsx
+│   │   │       │   ├── NotFound.page.jsx
 │   │   │       │   ├── routes.constant.js
 │   │   │       │   ├── routes.permissions.js
 │   │   │       │   └── routes.util.js
@@ -385,4 +393,4 @@
 └── tests/
     └── .gitkeep
 
-236 directories, 150 files
+238 directories, 156 files

@@ -128,7 +128,8 @@
 │       │       │   │   └── com/
 │       │       │   │       └── archeo/
 │       │       │   │           └── application/
-│       │       │   │               └── Application.java
+│       │       │   │               ├── Application.java
+│       │       │   │               └── HelloController.java
 │       │       │   └── resources/
 │       │       │       └── application.properties
 │       │       └── test/
@@ -151,12 +152,18 @@
 │       │       │   │                       │   └── SecurityConfig.java
 │       │       │   │                       ├── controllers/
 │       │       │   │                       │   └── AuthController.java
+│       │       │   │                       ├── dtos/
+│       │       │   │                       │   ├── AuthResponse.java
+│       │       │   │                       │   ├── SigninRequest.java
+│       │       │   │                       │   └── SignupRequest.java
 │       │       │   │                       ├── models/
 │       │       │   │                       │   └── Users.java
 │       │       │   │                       ├── repositories/
 │       │       │   │                       │   └── UserRepository.java
 │       │       │   │                       └── services/
-│       │       │   │                           └── AuthService.java
+│       │       │   │                           ├── AuthService.java
+│       │       │   │                           └── serviceImpl/
+│       │       │   │                               └── AuthServiceImpl.java
 │       │       │   └── resources/
 │       │       │       └── application.yml
 │       │       └── test/
@@ -197,6 +204,34 @@
 │       │                           └── modules/
 │       │                               └── blockchain/
 │       │                                   └── BlockchainTests.java
+│       ├── common/
+│       │   ├── pom.xml
+│       │   └── src/
+│       │       ├── main/
+│       │       │   ├── java/
+│       │       │   │   └── com/
+│       │       │   │       └── archeo/
+│       │       │   │           └── common/
+│       │       │   │               ├── config/
+│       │       │   │               │   └── WebConfig.java
+│       │       │   │               ├── constants/
+│       │       │   │               │   └── AppConstants.java
+│       │       │   │               ├── dto/
+│       │       │   │               │   └── ApiResponse.java
+│       │       │   │               ├── enums/
+│       │       │   │               │   └── USER_ROLE.java
+│       │       │   │               ├── exceptions/
+│       │       │   │               │   └── GlobalExceptionHandler.java
+│       │       │   │               └── utils/
+│       │       │   │                   └── CommonUtils.java
+│       │       │   └── resources/
+│       │       │       └── application.properties
+│       │       └── test/
+│       │           └── java/
+│       │               └── com/
+│       │                   └── archeo/
+│       │                       └── common/
+│       │                           └── CommonTests.java
 │       ├── document/
 │       │   ├── pom.xml
 │       │   └── src/
@@ -393,4 +428,4 @@
 └── tests/
     └── .gitkeep
 
-238 directories, 156 files
+259 directories, 170 files

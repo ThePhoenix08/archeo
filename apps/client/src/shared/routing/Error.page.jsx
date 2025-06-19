@@ -10,13 +10,13 @@ import { Link } from "react-router";
  * @returns {JSX.Element}
  * @purpose Shows an Error page to user with link to dashboard
  */
-function ErrorPage({ message, error }) {
+function ErrorPage({ message, error, fallbackRoute }) {
 	return (
 		<div className="error">
 			<h2>Oops! An Error occured</h2>
 			<p>{message}</p>
 			{ENVS.DEV_MODE && <p>{error}</p>}
-			<Link to={ROUTES.DASHBOARD}>Go to Dashboard</Link>
+			<Link to={fallbackRoute}>Go Back</Link>
 		</div>
 	);
 }

@@ -27,7 +27,13 @@ function LoginPage() {
 		const result = await flow("login", formData);
 
 		if (result?.error) {
-			return <ErrorPage message="" />;
+			return (
+				<ErrorPage
+					message="Login Page Error"
+					error={result.error}
+					fallbackRoute={ROUTES.LOGIN}
+				/>
+			);
 		}
 	};
 

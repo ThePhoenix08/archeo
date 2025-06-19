@@ -156,8 +156,6 @@
 │       │       │   │                       │   ├── AuthResponse.java
 │       │       │   │                       │   ├── SigninRequest.java
 │       │       │   │                       │   └── SignupRequest.java
-│       │       │   │                       ├── models/
-│       │       │   │                       │   └── Users.java
 │       │       │   │                       ├── repositories/
 │       │       │   │                       │   └── UserRepository.java
 │       │       │   │                       └── services/
@@ -428,4 +426,4 @@
 └── tests/
     └── .gitkeep
 
-259 directories, 170 files
+258 directories, 169 files

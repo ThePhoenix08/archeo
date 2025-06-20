@@ -20,15 +20,15 @@ public class AuthController{
 
     private final AuthService authService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> signup(@RequestBody SignupRequest signupRequest){
-        AuthResponse response=authService.signup(signupRequest);
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponse> register(@RequestBody SignupRequest signupRequest){
+        AuthResponse response=authService.register(signupRequest);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/signin")
-    public ResponseEntity<AuthResponse> signin(@RequestBody SigninRequest signinRequest){
-        AuthResponse response=authService.signin(signinRequest);
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody SigninRequest signinRequest){
+        AuthResponse response=authService.login(signinRequest);
         return ResponseEntity.ok(response);
     }
 

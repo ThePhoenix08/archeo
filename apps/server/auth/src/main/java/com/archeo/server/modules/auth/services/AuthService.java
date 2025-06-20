@@ -6,7 +6,7 @@ import com.archeo.server.modules.auth.dtos.SignupRequest;
 
 public interface AuthService {
 
-    AuthResponse signup(SignupRequest request);
+    AuthResponse register(SignupRequest request);
 
-    AuthResponse signin(SigninRequest signinRequest);
+    AuthResponse login(SigninRequest signinRequest);
 }

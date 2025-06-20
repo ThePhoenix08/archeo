@@ -6,5 +6,7 @@ import ProtectedRoute from "@/features/auth/components/ProtectedRoute.wrapper.js
  * @param {JSX.Element} props.routeComponent component to render at this route
  */
 export const RouteGuard = ({ allowedRoles, routeComponent }) => (
-	<ProtectedRoute allowedRoles={allowedRoles}>{routeComponent}</ProtectedRoute>
+	<ProtectedRoute allowedRoles={allowedRoles}>
+		{routeComponent}
+	</ProtectedRoute>
 );

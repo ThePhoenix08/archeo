@@ -151,7 +151,12 @@
 │       │       │   │               └── modules/
 │       │       │   │                   └── auth/
 │       │       │   │                       ├── config/
-│       │       │   │                       │   └── SecurityConfig.java
+│       │       │   │                       │   ├── AppConfig.java
+│       │       │   │                       │   ├── CustomUserDetailsService.java
+│       │       │   │                       │   ├── JwtConstant.java
+│       │       │   │                       │   ├── JwtProvider.java
+│       │       │   │                       │   ├── JwtTokenValidator.java
+│       │       │   │                       │   └── ROIDeserializer.java
 │       │       │   │                       ├── controllers/
 │       │       │   │                       │   └── AuthController.java
 │       │       │   │                       ├── dtos/
@@ -213,7 +218,7 @@
 │       │       │   │       └── archeo/
 │       │       │   │           └── common/
 │       │       │   │               ├── config/
-│       │       │   │               │   └── WebConfig.java
+│       │       │   │               │   └── CORSConfig.java
 │       │       │   │               ├── constants/
 │       │       │   │               │   └── AppConstants.java
 │       │       │   │               ├── dto/
@@ -428,4 +433,4 @@
 └── tests/
     └── .gitkeep
 
-259 directories, 170 files
+259 directories, 175 files

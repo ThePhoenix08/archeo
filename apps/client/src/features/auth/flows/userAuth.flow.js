@@ -9,6 +9,7 @@ import { useLoginMutation } from "@/features/auth/actions/authApi.action.js";
 export const useUserAuthFlow = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const [login, { isSuccess, isError, data, error }] = useLoginMutation();
 
 	const apiCalls = {
 		login: authApi.endpoints.login.initiate,
@@ -19,7 +20,6 @@ export const useUserAuthFlow = () => {
 		try {
 			if (!Object.keys(apiCalls).includes(type))
 				throw new Error(`No type ${type} flow available for role user.`);
-			const [login, { isSuccess, isError, data, error }] = useLoginMutation();
 			const result = await login(formData).unwrap();
 			// validate result.user
 			if (isSuccess) {

@@ -1,9 +1,12 @@
 /* eslint-disable no-useless-escape */
 import { ROLES } from "@/shared/constants/roles.constant.js";
 
-const EMAIL_REGEX = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
-const URL_REGEX = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
-const PHONE_NUMBER_REGEX = /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
+const EMAIL_REGEX =
+	/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+const URL_REGEX =
+	/^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+const PHONE_NUMBER_REGEX =
+	/^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
 
 export const getLoginFieldsForRole = {
 	[ROLES.USER]: [
@@ -20,7 +23,7 @@ export const getLoginFieldsForRole = {
 			label: "Email",
 			required: true,
 			initialValue: "",
-			regex: EMAIL_REGEX
+			regex: EMAIL_REGEX,
 		},
 		{
 			name: "password",
@@ -58,14 +61,14 @@ export const getLoginFieldsForRole = {
 		{
 			name: "verifier name",
 			type: "text",
-			label: "Organization Name",
+			label: "Verifier Name",
 			required: true,
 			initialValue: "",
 		},
 		{
 			name: "verifier email",
 			type: "email",
-			label: "Organization Email",
+			label: "Verifier Email",
 			required: true,
 			initialValue: "",
 			regex: EMAIL_REGEX,
@@ -73,7 +76,7 @@ export const getLoginFieldsForRole = {
 		{
 			name: "verifier password",
 			type: "password",
-			label: "Organization Password",
+			label: "Verifier Password",
 			required: true,
 			initialValue: "",
 		},
@@ -143,8 +146,8 @@ const ORG_TYPES = {
 	EMB: "Embassy / Diplomatic Mission",
 	LAB: "Accredited Lab / Testing Facility",
 	UTL: "Utility / Infrastructure Provider",
-	TRN: "Training & Certification Body"
-}
+	TRN: "Training & Certification Body",
+};
 
 const PROOF_TYPES = {
 	GST: "GST Certificate",
@@ -161,17 +164,17 @@ const PROOF_TYPES = {
 	LOC: "Letter of Consent / Authorization",
 	IDP: "Identity Proof of Authorized Signatory",
 	ADD: "Address Proof (Utility Bill, Rent Agreement)",
-	BRN: "Business Registration Number Proof"
-}
+	BRN: "Business Registration Number Proof",
+};
 
 export const registerFieldsForOrg = {
-	"basic": [
+	basic: [
 		{
 			name: "orgname",
 			type: "text",
 			label: "Organization Name",
 			required: true,
-			initialValue: ""
+			initialValue: "",
 		},
 		{
 			name: "orgtype",
@@ -179,10 +182,10 @@ export const registerFieldsForOrg = {
 			label: "Organization Type",
 			required: true,
 			initialValue: ORG_TYPES.COM,
-			options: ORG_TYPES
+			options: ORG_TYPES,
 		},
 	],
-	"contactInfo": [
+	contactInfo: [
 		{
 			name: "email",
 			type: "email",
@@ -205,23 +208,23 @@ export const registerFieldsForOrg = {
 			label: "Organization Address",
 			required: false,
 			initialValue: [],
-			lineCount: 3
+			lineCount: 3,
 		},
 	],
-	"contactPersonInfo": [
+	contactPersonInfo: [
 		{
 			name: "contactname",
 			type: "text",
 			label: "Contact Person Name",
 			required: true,
-			initialValue: ""
+			initialValue: "",
 		},
 		{
 			name: "desgination",
 			type: "text",
 			label: "Designation",
 			required: true,
-			initialValue: ""
+			initialValue: "",
 		},
 		{
 			name: "phonenumber",
@@ -230,9 +233,9 @@ export const registerFieldsForOrg = {
 			required: true,
 			initialValue: "",
 			regex: PHONE_NUMBER_REGEX,
-		}
+		},
 	],
-	"proof": [
+	proof: [
 		{
 			name: "proof",
 			type: "file",
@@ -245,6 +248,6 @@ export const registerFieldsForOrg = {
 			label: "Type of Proof Document",
 			required: true,
 			options: PROOF_TYPES,
-		}
-	]
-}
+		},
+	],
+};

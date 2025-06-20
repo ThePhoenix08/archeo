@@ -7,17 +7,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router";
+import { LogIn, Mail, CircleUserRound } from "lucide-react";
+
+import { getLoginFieldsForRole } from "@/features/auth/constants/getFieldsForRole.constant.js";
 
 export function LoginForm({ className, ...props }) {
 	const [loginType, setLoginType] = useState("email"); // "email" or "username"
 	const navigate = useNavigate();
 	let { role } = useParams();
 	console.log(role);
+	console.log(getLoginFieldsForRole[role]);
 
 	return (
 		<form className={cn("flex flex-col gap-6", className)} {...props}>
 			<div className="flex flex-col items-center gap-2 text-center">
-				<h1 className="text-2xl font-bold">Login to your account</h1>
+				<h1 className="text-2xl font-bold">
+					{" "}
+					<span className="bg-gradient-to-r from-pink-400 via-purple-800 to-blue-500 bg-clip-text text-transparent">
+						Login
+					</span>{" "}
+					to your account <LogIn className="inline-block text-black/45" />
+				</h1>
 				<p className="text-sm text-balance text-muted-foreground">
 					Enter your {loginType} below to login to your account
 				</p>
@@ -30,8 +40,9 @@ export function LoginForm({ className, ...props }) {
 						variant={loginType === "email" ? "default" : "ghost"}
 						size="sm"
 						onClick={() => setLoginType("email")}
-						className="text-sm"
+						className={`text-sm transition-all duration-300 ease-out ${loginType === "email" ? "hover:bg-bg-violet-800 bg-violet-800" : "bg-transparent"}`}
 					>
+						<Mail />
 						Email
 					</Button>
 					<Button
@@ -39,8 +50,9 @@ export function LoginForm({ className, ...props }) {
 						variant={loginType === "username" ? "default" : "ghost"}
 						size="sm"
 						onClick={() => setLoginType("username")}
-						className="text-sm"
+						className={`text-sm transition-all duration-400 ease-in-out ${loginType === "username" ? "hover:bg-bg-violet-800 bg-violet-800" : "bg-transparent"}`}
 					>
+						<CircleUserRound />
 						Username
 					</Button>
 				</div>
@@ -48,11 +60,27 @@ export function LoginForm({ className, ...props }) {
 				{/* Dynamic input field based on login type */}
 				<div className="grid gap-3">
 					<Label htmlFor={loginType}>
-						{loginType === "email" ? "Email" : "Username"}
+						{loginType === "email"
+							? getLoginFieldsForRole[role][1].label
+							: getLoginFieldsForRole[role][0].label}
 					</Label>
 					<Input
 						id={loginType}
-						type={loginType === "email" ? "email" : "text"}
+						name={
+							loginType === "email"
+								? getLoginFieldsForRole[role][1].name
+								: getLoginFieldsForRole[role][0].name
+						}
+						type={
+							loginType === "email"
+								? getLoginFieldsForRole[role][1].type
+								: getLoginFieldsForRole[role][0].type
+						}
+						initialValue={
+							loginType === "email"
+								? getLoginFieldsForRole[role][1].initialValue
+								: getLoginFieldsForRole[role][0].initialValue
+						}
 						placeholder={loginType === "email" ? "m@example.com" : "username"}
 						required
 					/>
@@ -70,8 +98,10 @@ export function LoginForm({ className, ...props }) {
 					</div>
 					<Input
 						id="password"
+						name={getLoginFieldsForRole[role][2].name}
 						placeholder="************"
-						type="password"
+						type={getLoginFieldsForRole[role][2].type}
+						initialValue={getLoginFieldsForRole[role][2].initialValue}
 						required
 					/>
 				</div>

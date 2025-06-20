@@ -1,11 +1,11 @@
 /* eslint-disable no-useless-escape */
 import { ROLES } from "@/shared/constants/roles.constant.js";
 
-const EMAIL_REGEX =
+export const EMAIL_REGEX =
 	/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
-const URL_REGEX =
+export const URL_REGEX =
 	/^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
-const PHONE_NUMBER_REGEX =
+export const PHONE_NUMBER_REGEX =
 	/^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
 
 export const getLoginFieldsForRole = {

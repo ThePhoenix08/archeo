@@ -10,16 +10,43 @@ import { useParams } from "react-router";
 import { LogIn, Mail, CircleUserRound } from "lucide-react";
 
 import { getLoginFieldsForRole } from "@/features/auth/constants/getFieldsForRole.constant.js";
+import { useUserAuthFlow } from "@/features/auth/flows/userAuth.flow.js";
+import { EMAIL_REGEX } from "@/features/auth/constants/getFieldsForRole.constant.js";
 
 export function LoginForm({ className, ...props }) {
 	const [loginType, setLoginType] = useState("email"); // "email" or "username"
+	const [formdata, setFormdata] = useState({
+		username: "",
+		email: "",
+		password: "",
+	});
 	const navigate = useNavigate();
+	const { flow } = useUserAuthFlow();
+
 	let { role } = useParams();
-	console.log(role);
-	console.log(getLoginFieldsForRole[role]);
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+
+		const loginData = {
+			[loginType]: formdata[loginType],
+			password: formdata.password,
+		};
+
+		try {
+			flow("login", loginData);
+		} catch (error) {
+			console.error(`[${type.toUpperCase()} ERROR]:`, error);
+			return { error: error.message || "Something went wrong" };
+		}
+	};
 
 	return (
-		<form className={cn("flex flex-col gap-6", className)} {...props}>
+		<form
+			onSubmit={handleSubmit}
+			className={cn("flex flex-col gap-6", className)}
+			{...props}
+		>
 			<div className="flex flex-col items-center gap-2 text-center">
 				<h1 className="text-2xl font-bold">
 					{" "}
@@ -76,11 +103,14 @@ export function LoginForm({ className, ...props }) {
 								? getLoginFieldsForRole[role][1].type
 								: getLoginFieldsForRole[role][0].type
 						}
-						initialValue={
-							loginType === "email"
-								? getLoginFieldsForRole[role][1].initialValue
-								: getLoginFieldsForRole[role][0].initialValue
-						}
+						{...(loginType === "email" && { regex: EMAIL_REGEX })}
+						value={formdata[loginType]}
+						onChange={(e) => {
+							setFormdata({
+								...formdata,
+								[loginType]: e.target.value,
+							});
+						}}
 						placeholder={loginType === "email" ? "m@example.com" : "username"}
 						required
 					/>
@@ -101,7 +131,13 @@ export function LoginForm({ className, ...props }) {
 						name={getLoginFieldsForRole[role][2].name}
 						placeholder="************"
 						type={getLoginFieldsForRole[role][2].type}
-						initialValue={getLoginFieldsForRole[role][2].initialValue}
+						value={formdata[getLoginFieldsForRole[role][2].name]}
+						onChange={(e) => {
+							setFormdata({
+								...formdata,
+								[getLoginFieldsForRole[role][2].name]: e.target.value,
+							});
+						}}
 						required
 					/>
 				</div>

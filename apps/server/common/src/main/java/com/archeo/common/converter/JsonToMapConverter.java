@@ -26,6 +26,9 @@ public class JsonToMapConverter implements AttributeConverter<Map<String, String
     @Override
     public Map<String, String> convertToEntityAttribute(String dbData) {
 
+        if (dbData == null || dbData.trim().isEmpty()) {
+            return Map.of();
+        }
         try{
             return objectMapper.readValue(dbData, new TypeReference<>(){});
         }

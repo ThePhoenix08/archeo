@@ -33,7 +33,7 @@ public class Users {
     @Column(nullable = false, length = 20)
     private USER_ROLE userRole = USER_ROLE.ROLE_OWNER;
 
-    @Column(columnDefinition = "jsonb")
+    @Column(columnDefinition = "jsonb", nullable = true)
     @Convert(converter = JsonToMapConverter.class)
     private Map<String, String> attributes;
 

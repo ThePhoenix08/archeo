@@ -1,18 +1,16 @@
-import { ROUTES } from "./routes.constant";
+import { ROUTES } from "@/shared/routing/routes.constant";
+import { Link } from "react-router";
 
 /**
- * 
+ *
  * @param {object} props
  * @param {string[]} props.allowedRoles list of roles allowed to access the previous route
  * @param {string} props.userRole user's role
- *  
+ *
  * @returns {JSX.Element}
  * @purpose Shows an Access Denied page to user with link to dashboard
  */
-function AccessDeniedPage({
-  allowedRoles,
-  userRole,
-}) {
+function AccessDeniedPage({ allowedRoles, userRole }) {
 	return (
 		<div className="access-denied">
 			<h2>Access Denied</h2>

@@ -5,6 +5,9 @@
 │       ├── .gitkeep
 │       └── generate-folder-structure.yml
 ├── .gitignore
+├── .vscode/
+│   ├── extensions.json
+│   └── settings.json
 ├── README.md
 ├── apps/
 │   ├── client/
@@ -22,13 +25,19 @@
 │   │   ├── package.json
 │   │   ├── public/
 │   │   │   └── assets/
-│   │   │       └── .gitkeep
+│   │   │       ├── .gitkeep
+│   │   │       └── login.jpg
 │   │   ├── src/
 │   │   │   ├── App.css
 │   │   │   ├── App.jsx
 │   │   │   ├── components/
+│   │   │   │   ├── login-form.jsx
 │   │   │   │   └── ui/
-│   │   │   │       └── .gitkeep
+│   │   │   │       ├── .gitkeep
+│   │   │   │       ├── button.jsx
+│   │   │   │       ├── card.jsx
+│   │   │   │       ├── input.jsx
+│   │   │   │       └── label.jsx
 │   │   │   ├── features/
 │   │   │   │   ├── account/
 │   │   │   │   │   ├── AccountSection.jsx
@@ -48,6 +57,11 @@
 │   │   │   │   │   ├── AuthLayout.jsx
 │   │   │   │   │   ├── actions/
 │   │   │   │   │   │   └── authApi.action.js
+│   │   │   │   │   ├── components/
+│   │   │   │   │   │   ├── ProtectedRoute.wrapper.jsx
+│   │   │   │   │   │   └── RouteGuard.jsx
+│   │   │   │   │   ├── constants/
+│   │   │   │   │   │   └── getFieldsForRole.constant.js
 │   │   │   │   │   ├── flows/
 │   │   │   │   │   │   ├── accountRecovery.flow.js
 │   │   │   │   │   │   ├── orgAuth.flow.js
@@ -83,9 +97,12 @@
 │   │   │   ├── hooks/
 │   │   │   │   └── .gitkeep
 │   │   │   ├── index.css
+│   │   │   ├── lib/
+│   │   │   │   └── utils.js
 │   │   │   ├── main.jsx
 │   │   │   └── shared/
 │   │   │       ├── constants/
+│   │   │       │   ├── env.constant.js
 │   │   │       │   └── roles.constant.js
 │   │   │       ├── layout/
 │   │   │       │   └── AppLayout.jsx
@@ -94,7 +111,8 @@
 │   │   │       │   └── slice.barrel.js
 │   │   │       ├── routing/
 │   │   │       │   ├── AccessDenied.page.jsx
-│   │   │       │   ├── ProtectedRoute.wrapper.jsx
+│   │   │       │   ├── Error.page.jsx
+│   │   │       │   ├── NotFound.page.jsx
 │   │   │       │   ├── routes.constant.js
 │   │   │       │   ├── routes.permissions.js
 │   │   │       │   └── routes.util.js
@@ -112,51 +130,305 @@
 │       ├── .mvn/
 │       │   └── wrapper/
 │       │       └── maven-wrapper.properties
+│       ├── application/
+│       │   ├── pom.xml
+│       │   └── src/
+│       │       ├── main/
+│       │       │   ├── java/
+│       │       │   │   └── com/
+│       │       │   │       └── archeo/
+│       │       │   │           └── application/
+│       │       │   │               ├── Application.java
+│       │       │   │               └── HelloController.java
+│       │       │   └── resources/
+│       │       │       └── application.properties
+│       │       └── test/
+│       │           └── java/
+│       │               └── com/
+│       │                   └── archeo/
+│       │                       └── application/
+│       │                           └── ApplicationTests.java
+│       ├── auth/
+│       │   ├── pom.xml
+│       │   └── src/
+│       │       ├── main/
+│       │       │   ├── java/
+│       │       │   │   └── com/
+│       │       │   │       └── archeo/
+│       │       │   │           └── server/
+│       │       │   │               └── modules/
+│       │       │   │                   └── auth/
+│       │       │   │                       ├── config/
+│       │       │   │                       │   ├── AppConfig.java
+│       │       │   │                       │   ├── CustomUserDetailsService.java
+│       │       │   │                       │   ├── JwtConstant.java
+│       │       │   │                       │   ├── JwtProvider.java
+│       │       │   │                       │   ├── JwtTokenValidator.java
+│       │       │   │                       │   └── ROIDeserializer.java
+│       │       │   │                       ├── controllers/
+│       │       │   │                       │   └── AuthController.java
+│       │       │   │                       ├── dtos/
+│       │       │   │                       │   ├── AuthResponse.java
+│       │       │   │                       │   ├── SigninRequest.java
+│       │       │   │                       │   └── SignupRequest.java
+│       │       │   │                       ├── repositories/
+│       │       │   │                       │   └── UserRepository.java
+│       │       │   │                       └── services/
+│       │       │   │                           ├── AuthService.java
+│       │       │   │                           └── serviceImpl/
+│       │       │   │                               └── AuthServiceImpl.java
+│       │       │   └── resources/
+│       │       │       └── application.yml
+│       │       └── test/
+│       │           └── java/
+│       │               └── com/
+│       │                   └── archeo/
+│       │                       └── server/
+│       │                           └── modules/
+│       │                               └── auth/
+│       │                                   └── AuthTests.java
+│       ├── blockchain/
+│       │   ├── pom.xml
+│       │   └── src/
+│       │       ├── main/
+│       │       │   ├── java/
+│       │       │   │   └── com/
+│       │       │   │       └── archeo/
+│       │       │   │           └── server/
+│       │       │   │               └── modules/
+│       │       │   │                   └── blockchain/
+│       │       │   │                       ├── config/
+│       │       │   │                       │   └── SecurityConfig.java
+│       │       │   │                       ├── controllers/
+│       │       │   │                       │   └── BlockchainController.java
+│       │       │   │                       ├── models/
+│       │       │   │                       │   └── Blockchain.java
+│       │       │   │                       ├── repositories/
+│       │       │   │                       │   └── BlockchainRepository.java
+│       │       │   │                       └── services/
+│       │       │   │                           └── BlockchainService.java
+│       │       │   └── resources/
+│       │       │       └── application.properties
+│       │       └── test/
+│       │           └── java/
+│       │               └── com/
+│       │                   └── archeo/
+│       │                       └── server/
+│       │                           └── modules/
+│       │                               └── blockchain/
+│       │                                   └── BlockchainTests.java
+│       ├── common/
+│       │   ├── pom.xml
+│       │   └── src/
+│       │       ├── main/
+│       │       │   ├── java/
+│       │       │   │   └── com/
+│       │       │   │       └── archeo/
+│       │       │   │           └── common/
+│       │       │   │               ├── config/
+│       │       │   │               │   └── CORSConfig.java
+│       │       │   │               ├── constants/
+│       │       │   │               │   └── AppConstants.java
+│       │       │   │               ├── dto/
+│       │       │   │               │   └── ApiResponse.java
+│       │       │   │               ├── enums/
+│       │       │   │               │   └── USER_ROLE.java
+│       │       │   │               ├── exceptions/
+│       │       │   │               │   └── GlobalExceptionHandler.java
+│       │       │   │               └── utils/
+│       │       │   │                   └── CommonUtils.java
+│       │       │   └── resources/
+│       │       │       └── application.properties
+│       │       └── test/
+│       │           └── java/
+│       │               └── com/
+│       │                   └── archeo/
+│       │                       └── common/
+│       │                           └── CommonTests.java
+│       ├── document/
+│       │   ├── pom.xml
+│       │   └── src/
+│       │       ├── main/
+│       │       │   ├── java/
+│       │       │   │   └── com/
+│       │       │   │       └── archeo/
+│       │       │   │           └── server/
+│       │       │   │               └── modules/
+│       │       │   │                   └── document/
+│       │       │   │                       ├── config/
+│       │       │   │                       │   └── SecurityConfig.java
+│       │       │   │                       ├── controllers/
+│       │       │   │                       │   └── DocumentController.java
+│       │       │   │                       ├── models/
+│       │       │   │                       │   └── Document.java
+│       │       │   │                       ├── repositories/
+│       │       │   │                       │   └── DocumentRepository.java
+│       │       │   │                       └── services/
+│       │       │   │                           └── DocumentService.java
+│       │       │   └── resources/
+│       │       │       └── application.properties
+│       │       └── test/
+│       │           └── java/
+│       │               └── com/
+│       │                   └── archeo/
+│       │                       └── server/
+│       │                           └── modules/
+│       │                               └── document/
+│       │                                   └── DocumentTests.java
+│       ├── encryption/
+│       │   ├── pom.xml
+│       │   └── src/
+│       │       ├── main/
+│       │       │   ├── java/
+│       │       │   │   └── com/
+│       │       │   │       └── archeo/
+│       │       │   │           └── server/
+│       │       │   │               └── modules/
+│       │       │   │                   └── encryption/
+│       │       │   │                       ├── config/
+│       │       │   │                       │   └── SecurityConfig.java
+│       │       │   │                       ├── controllers/
+│       │       │   │                       │   └── EncryptionController.java
+│       │       │   │                       ├── models/
+│       │       │   │                       │   └── Encryption.java
+│       │       │   │                       ├── repositories/
+│       │       │   │                       │   └── EncryptionRepository.java
+│       │       │   │                       └── services/
+│       │       │   │                           └── EncryptionService.java
+│       │       │   └── resources/
+│       │       │       └── application.properties
+│       │       └── test/
+│       │           └── java/
+│       │               └── com/
+│       │                   └── archeo/
+│       │                       └── server/
+│       │                           └── modules/
+│       │                               └── encryption/
+│       │                                   └── EncryptionTests.java
+│       ├── generate-auth-module.sh
 │       ├── mvnw
 │       ├── mvnw.cmd
 │       ├── pom.xml
-│       └── src/
-│           ├── main/
-│           │   ├── java/
-│           │   │   └── com/
-│           │   │       └── archeo/
-│           │   │           └── server/
-│           │   │               ├── ServerApplication.java
-│           │   │               ├── common/
-│           │   │               │   ├── config/
-│           │   │               │   │   └── .gitkeep
-│           │   │               │   ├── dto/
-│           │   │               │   │   └── .gitkeep
-│           │   │               │   ├── enums/
-│           │   │               │   │   └── .gitkeep
-│           │   │               │   └── utils/
-│           │   │               │       └── .gitkeep
-│           │   │               └── modules/
-│           │   │                   ├── auth/
-│           │   │                   │   └── .gitkeep
-│           │   │                   ├── blockchain/
-│           │   │                   │   └── .gitkeep
-│           │   │                   ├── document/
-│           │   │                   │   └── .gitkeep
-│           │   │                   ├── encryption/
-│           │   │                   │   └── .gitkeep
-│           │   │                   ├── processing/
-│           │   │                   │   └── .gitkeep
-│           │   │                   ├── template/
-│           │   │                   │   └── .gitkeep
-│           │   │                   ├── user/
-│           │   │                   │   └── .gitkeep
-│           │   │                   └── verification/
-│           │   │                       └── .gitkeep
-│           │   └── resources/
-│           │       ├── .gitkeep
-│           │       └── application.properties
-│           └── test/
-│               └── java/
-│                   └── com/
-│                       └── archeo/
-│                           └── server/
-│                               └── ServerApplicationTests.java
+│       ├── processing/
+│       │   ├── pom.xml
+│       │   └── src/
+│       │       ├── main/
+│       │       │   ├── java/
+│       │       │   │   └── com/
+│       │       │   │       └── archeo/
+│       │       │   │           └── server/
+│       │       │   │               └── modules/
+│       │       │   │                   └── processing/
+│       │       │   │                       ├── config/
+│       │       │   │                       │   └── SecurityConfig.java
+│       │       │   │                       ├── controllers/
+│       │       │   │                       │   └── ProcessingController.java
+│       │       │   │                       ├── models/
+│       │       │   │                       │   └── Processing.java
+│       │       │   │                       ├── repositories/
+│       │       │   │                       │   └── ProcessingRepository.java
+│       │       │   │                       └── services/
+│       │       │   │                           └── ProcessingService.java
+│       │       │   └── resources/
+│       │       │       └── application.properties
+│       │       └── test/
+│       │           └── java/
+│       │               └── com/
+│       │                   └── archeo/
+│       │                       └── server/
+│       │                           └── modules/
+│       │                               └── processing/
+│       │                                   └── ProcessingTests.java
+│       ├── template/
+│       │   ├── pom.xml
+│       │   └── src/
+│       │       ├── main/
+│       │       │   ├── java/
+│       │       │   │   └── com/
+│       │       │   │       └── archeo/
+│       │       │   │           └── server/
+│       │       │   │               └── modules/
+│       │       │   │                   └── template/
+│       │       │   │                       ├── config/
+│       │       │   │                       │   └── SecurityConfig.java
+│       │       │   │                       ├── controllers/
+│       │       │   │                       │   └── TemplateController.java
+│       │       │   │                       ├── models/
+│       │       │   │                       │   └── Template.java
+│       │       │   │                       ├── repositories/
+│       │       │   │                       │   └── TemplateRepository.java
+│       │       │   │                       └── services/
+│       │       │   │                           └── TemplateService.java
+│       │       │   └── resources/
+│       │       │       └── application.properties
+│       │       └── test/
+│       │           └── java/
+│       │               └── com/
+│       │                   └── archeo/
+│       │                       └── server/
+│       │                           └── modules/
+│       │                               └── template/
+│       │                                   └── TemplateTests.java
+│       ├── user/
+│       │   ├── pom.xml
+│       │   └── src/
+│       │       ├── main/
+│       │       │   ├── java/
+│       │       │   │   └── com/
+│       │       │   │       └── archeo/
+│       │       │   │           └── server/
+│       │       │   │               └── modules/
+│       │       │   │                   └── user/
+│       │       │   │                       ├── config/
+│       │       │   │                       │   └── SecurityConfig.java
+│       │       │   │                       ├── controllers/
+│       │       │   │                       │   └── AuthController.java
+│       │       │   │                       ├── models/
+│       │       │   │                       │   └── Users.java
+│       │       │   │                       ├── repositories/
+│       │       │   │                       │   └── UserRepository.java
+│       │       │   │                       └── services/
+│       │       │   │                           └── AuthService.java
+│       │       │   └── resources/
+│       │       │       └── application.yml
+│       │       └── test/
+│       │           └── java/
+│       │               └── com/
+│       │                   └── archeo/
+│       │                       └── server/
+│       │                           └── modules/
+│       │                               └── user/
+│       │                                   └── AuthTests.java
+│       └── verification/
+│           ├── pom.xml
+│           └── src/
+│               ├── main/
+│               │   ├── java/
+│               │   │   └── com/
+│               │   │       └── archeo/
+│               │   │           └── server/
+│               │   │               └── modules/
+│               │   │                   └── verification/
+│               │   │                       ├── config/
+│               │   │                       │   └── SecurityConfig.java
+│               │   │                       ├── controllers/
+│               │   │                       │   └── VerificationController.java
+│               │   │                       ├── models/
+│               │   │                       │   └── Verification.java
+│               │   │                       ├── repositories/
+│               │   │                       │   └── VerificationRepository.java
+│               │   │                       └── services/
+│               │   │                           └── VerificationService.java
+│               │   └── resources/
+│               │       └── application.properties
+│               └── test/
+│                   └── java/
+│                       └── com/
+│                           └── archeo/
+│                               └── server/
+│                                   └── modules/
+│                                       └── verification/
+│                                           └── VerificationTests.java
 ├── docker-compose.yml
 ├── infra/
 │   └── docker/
@@ -169,4 +441,4 @@
 └── tests/
     └── .gitkeep
 
-73 directories, 97 files
+260 directories, 182 files

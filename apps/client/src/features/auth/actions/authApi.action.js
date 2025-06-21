@@ -1,4 +1,4 @@
-import { apiSlice } from "../../../shared/reducer/slice.barrel";
+import { apiSlice } from "@/shared/reducer/slice.barrel";
 
 export const authApi = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
@@ -11,9 +11,25 @@ export const authApi = apiSlice.injectEndpoints({
 			invalidatesTags: ["Auth"],
 		}),
 
+		verifyEmail: builder.mutation({
+			query: (userEmail) => ({
+				url: "/auth/verifyEmail",
+				method: "POST",
+				body: userEmail,
+			})
+		}),
+
 		register: builder.mutation({
 			query: (userData) => ({
-				url: "/auth/register",
+				url: "/auth/registerUser",
+				method: "POST",
+				body: userData,
+			}),
+		}),
+
+		registerOrganization: builder.mutation({
+			query: (userData) => ({
+				url: "/auth/registerOrg",
 				method: "POST",
 				body: userData,
 			}),
@@ -34,5 +50,11 @@ export const authApi = apiSlice.injectEndpoints({
 	}),
 });
 
-export const { useLoginMutation, useRegisterMutation, useLogoutMutation, useGetCurrentUserQuery } =
-	authApi;
+export const {
+	useLoginMutation,
+	useRegisterMutation,
+	useRegisterOrganizationMutation,
+	useLogoutMutation,
+	useGetCurrentUserQuery,
+	useVerifyEmailMutation
+} = authApi;

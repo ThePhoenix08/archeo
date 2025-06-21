@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",         // ESLint support
+    "esbenp.prettier-vscode",         // Prettier formatter
+    "pkief.material-icon-theme",      // Material Design file/folder icons
+    "mhutchie.git-graph"              // Visual Git history graph
+  ],
+  "unwantedRecommendations": []
+}

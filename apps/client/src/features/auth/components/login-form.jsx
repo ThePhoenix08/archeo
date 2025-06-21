@@ -19,6 +19,11 @@ export function LoginForm({ className, ...props }) {
 		email: "",
 		password: "",
 	});
+	const [errors, setErrors] = useState({
+		username: "",
+		email: "",
+		password: "",
+	});
 	const navigate = useNavigate();
 	const { flow } = useUserAuthFlow();
 
@@ -66,7 +71,7 @@ export function LoginForm({ className, ...props }) {
 						variant={loginType === "email" ? "default" : "ghost"}
 						size="sm"
 						onClick={() => setLoginType("email")}
-						className={`text-sm transition-all duration-300 ease-out ${loginType === "email" ? "hover:bg-bg-violet-800 bg-violet-800" : "bg-transparent"}`}
+						className="text-sm transition-all duration-300 ease-out"
 					>
 						<Mail />
 						Email
@@ -76,7 +81,7 @@ export function LoginForm({ className, ...props }) {
 						variant={loginType === "username" ? "default" : "ghost"}
 						size="sm"
 						onClick={() => setLoginType("username")}
-						className={`text-sm transition-all duration-400 ease-in-out ${loginType === "username" ? "hover:bg-bg-violet-800 bg-violet-800" : "bg-transparent"}`}
+						className="text-sm transition-all duration-400 ease-in-out"
 					>
 						<CircleUserRound />
 						Username

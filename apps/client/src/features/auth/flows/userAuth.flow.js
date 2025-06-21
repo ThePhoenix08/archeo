@@ -23,7 +23,7 @@ export const useUserAuthFlow = () => {
 				throw new Error(`No type ${type} flow available for role user.`);
 
 			const [fn, { isSuccess, isError, data, error }] = apiCalls[type]();
-
+	
 			const result = await fn(formData).unwrap();
 			// validate result.user
 			if (isSuccess) {

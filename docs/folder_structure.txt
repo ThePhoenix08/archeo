@@ -25,13 +25,19 @@
 │   │   ├── package.json
 │   │   ├── public/
 │   │   │   └── assets/
-│   │   │       └── .gitkeep
+│   │   │       ├── .gitkeep
+│   │   │       └── login.jpg
 │   │   ├── src/
 │   │   │   ├── App.css
 │   │   │   ├── App.jsx
 │   │   │   ├── components/
+│   │   │   │   ├── login-form.jsx
 │   │   │   │   └── ui/
-│   │   │   │       └── .gitkeep
+│   │   │   │       ├── .gitkeep
+│   │   │   │       ├── button.jsx
+│   │   │   │       ├── card.jsx
+│   │   │   │       ├── input.jsx
+│   │   │   │       └── label.jsx
 │   │   │   ├── features/
 │   │   │   │   ├── account/
 │   │   │   │   │   ├── AccountSection.jsx
@@ -91,6 +97,8 @@
 │   │   │   ├── hooks/
 │   │   │   │   └── .gitkeep
 │   │   │   ├── index.css
+│   │   │   ├── lib/
+│   │   │   │   └── utils.js
 │   │   │   ├── main.jsx
 │   │   │   └── shared/
 │   │   │       ├── constants/
@@ -151,7 +159,12 @@
 │       │       │   │               └── modules/
 │       │       │   │                   └── auth/
 │       │       │   │                       ├── config/
-│       │       │   │                       │   └── SecurityConfig.java
+│       │       │   │                       │   ├── AppConfig.java
+│       │       │   │                       │   ├── CustomUserDetailsService.java
+│       │       │   │                       │   ├── JwtConstant.java
+│       │       │   │                       │   ├── JwtProvider.java
+│       │       │   │                       │   ├── JwtTokenValidator.java
+│       │       │   │                       │   └── ROIDeserializer.java
 │       │       │   │                       ├── controllers/
 │       │       │   │                       │   └── AuthController.java
 │       │       │   │                       ├── dtos/
@@ -213,7 +226,7 @@
 │       │       │   │       └── archeo/
 │       │       │   │           └── common/
 │       │       │   │               ├── config/
-│       │       │   │               │   └── WebConfig.java
+│       │       │   │               │   └── CORSConfig.java
 │       │       │   │               ├── constants/
 │       │       │   │               │   └── AppConstants.java
 │       │       │   │               ├── dto/
@@ -428,4 +441,4 @@
 └── tests/
     └── .gitkeep
 
-259 directories, 170 files
+260 directories, 182 files

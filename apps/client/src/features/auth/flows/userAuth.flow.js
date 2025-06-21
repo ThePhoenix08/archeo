@@ -1,4 +1,4 @@
-import { authApi } from "@/features/auth/actions/authApi.action.js";
+import { authApi, useRegisterMutation } from "@/features/auth/actions/authApi.action.js";
 import { setCredentials } from "@/features/auth/reducer/authSlice.reducer.js";
 import { ROUTES } from "@/shared/routing/routes.constant.js";
 import { useDispatch } from "react-redux";
@@ -9,18 +9,22 @@ import { useLoginMutation } from "@/features/auth/actions/authApi.action.js";
 export const useUserAuthFlow = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const [login, { isSuccess, isError, data, error }] = useLoginMutation();
+	// const [login, { isSuccess, isError, data, error }] = useLoginMutation();
+	// const [register, { isSuccess, isError, data, error }] = useRegisterMutation();
 
 	const apiCalls = {
-		login: authApi.endpoints.login.initiate,
-		register: authApi.endpoints.register.initiate,
+		login: useLoginMutation,
+		register: useRegisterMutation,
 	};
 
 	const flow = async (type, formData) => {
 		try {
 			if (!Object.keys(apiCalls).includes(type))
 				throw new Error(`No type ${type} flow available for role user.`);
-			const result = await login(formData).unwrap();
+
+			const [fn, { isSuccess, isError, data, error }] = apiCalls[type]();
+
+			const result = await fn(formData).unwrap();
 			// validate result.user
 			if (isSuccess) {
 				dispatch(setCredentials({ ...result.user }));

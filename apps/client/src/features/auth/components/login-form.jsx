@@ -36,7 +36,7 @@ export function LoginForm({ className, ...props }) {
 		try {
 			flow("login", loginData);
 		} catch (error) {
-			console.error(`[${type.toUpperCase()} ERROR]:`, error);
+			console.error(`[${loginType.toUpperCase()} ERROR]:`, error);
 			return { error: error.message || "Something went wrong" };
 		}
 	};

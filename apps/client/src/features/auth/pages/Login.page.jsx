@@ -5,7 +5,7 @@ import { useParams } from "react-router";
 import { getLoginFieldsForRole } from "@/features/auth/constants/getFieldsForRole.constant.js";
 import ErrorPage from "@/shared/routing/Error.page.jsx";
 import { FolderLock } from "lucide-react";
-import { LoginForm } from "@/components/login-form.jsx";
+import { LoginForm } from "@/features/auth/components/login-form.jsx";
 
 function LoginPage() {
 	let { role } = useParams();

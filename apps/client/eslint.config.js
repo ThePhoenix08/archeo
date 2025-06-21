@@ -34,7 +34,8 @@ export default [
 					pattern: [
 						"src/hooks/**/*",
 						"src/components/**/*",
-						"src/shared/**/*"
+						"src/shared/**/*",
+						"src/lib/**/*"
 					],
 				},
 				{

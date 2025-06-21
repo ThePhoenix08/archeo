@@ -3,11 +3,65 @@ import { ROLES } from "@/shared/constants/roles.constant.js";
 
 const EMAIL_REGEX = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 const URL_REGEX = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
-const PHONE_NUMBER_REGEX = /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
 const ALPHA_NUMERIC_REGEX = /^[A-Za-z0-9\s]{2,100}$/;
 const OTP_REGEX = /^\d{6}$/;
 const ALPHA_REGEX = /^[A-Za-z\s]{2,100}$/;
 const IND_PHONE_NUMBER_REGEX = /^(\+91[\-\s]?)?[0]?(91)?[6789]\d{9}$/;
+const FILENAME_REGEX = /^[a-zA-Z0-9_.-]+$/;
+
+function validatePasswordDetailed(password) {
+	const errors = [];
+
+	if (password.length < 8 || password.length > 128) {
+		errors.push("Password must be between 8 and 128 characters.");
+	}
+	if (!/[A-Z]/.test(password)) {
+		errors.push("Must include at least one uppercase letter.");
+	}
+	if (!/[a-z]/.test(password)) {
+		errors.push("Must include at least one lowercase letter.");
+	}
+	if (!/\d/.test(password)) {
+		errors.push("Must include at least one digit.");
+	}
+	if (!/[@_]/.test(password)) {
+		errors.push("Must include at least one special character (@ or _).");
+	}
+	if (/[^A-Za-z\d@_]/.test(password)) {
+		errors.push("Only alphanumeric characters and @ or _ are allowed.");
+	}
+
+	return {
+		isValid: errors.length === 0,
+		errors
+	};
+}
+
+function validateDOB(dobString, minAge = 18, maxAge = 100) {
+	// Check valid date format (YYYY-MM-DD or ISO)
+	const dob = new Date(dobString);
+	if (isNaN(dob.getTime())) {
+		return { valid: false, reason: "Invalid date format" };
+	}
+
+	const today = new Date();
+	const age = today.getFullYear() - dob.getFullYear();
+	const monthDiff = today.getMonth() - dob.getMonth();
+	const dayDiff = today.getDate() - dob.getDate();
+
+	// Adjust age if birthday hasn't occurred yet this year
+	const realAge = monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) ? age - 1 : age;
+
+	if (realAge < minAge) {
+		return { valid: false, reason: `Age must be at least ${minAge}` };
+	}
+	if (realAge > maxAge) {
+		return { valid: false, reason: `Age cannot be more than ${maxAge}` };
+	}
+
+	return { valid: true, age: realAge };
+}
+
 
 export const getLoginFieldsForRole = {
 	[ROLES.USER]: [
@@ -17,6 +71,7 @@ export const getLoginFieldsForRole = {
 			label: "Username",
 			required: true,
 			initialValue: "",
+			regex: ALPHA_NUMERIC_REGEX
 		},
 		{
 			name: "email",
@@ -32,6 +87,7 @@ export const getLoginFieldsForRole = {
 			label: "Password",
 			required: true,
 			initialValue: "",
+			checker: validatePasswordDetailed
 		},
 	],
 	[ROLES.ISSUER]: [
@@ -41,6 +97,7 @@ export const getLoginFieldsForRole = {
 			label: "Organization Name",
 			required: true,
 			initialValue: "",
+			regex: ALPHA_NUMERIC_REGEX
 		},
 		{
 			name: "org email",
@@ -56,15 +113,17 @@ export const getLoginFieldsForRole = {
 			label: "Organization Password",
 			required: true,
 			initialValue: "",
+			checker: validatePasswordDetailed
 		},
 	],
 	[ROLES.VERIFIER]: [
 		{
-			name: "verifier name",
+			name: "verifier username",
 			type: "text",
-			label: "Verifier Name",
+			label: "Verifier Username",
 			required: true,
 			initialValue: "",
+			regex: ALPHA_NUMERIC_REGEX
 		},
 		{
 			name: "verifier email",
@@ -80,6 +139,7 @@ export const getLoginFieldsForRole = {
 			label: "Verifier Password",
 			required: true,
 			initialValue: "",
+			checker: validatePasswordDetailed
 		},
 	],
 };
@@ -95,6 +155,7 @@ export const registerFieldsForUser = {
 		label: "Username",
 		required: true,
 		initialValue: "",
+		regex: ALPHA_NUMERIC_REGEX,
 	},
 	email: {
 		name: "email",
@@ -110,6 +171,7 @@ export const registerFieldsForUser = {
 		label: "Password",
 		required: true,
 		initialValue: "",
+		checker: validatePasswordDetailed
 	},
 	fullname: {
 		name: "fullname",
@@ -117,6 +179,7 @@ export const registerFieldsForUser = {
 		label: "Full Name",
 		required: true,
 		initialValue: "",
+		regex: ALPHA_REGEX,
 	},
 	dob: {
 		name: "dob",
@@ -124,6 +187,7 @@ export const registerFieldsForUser = {
 		label: "Date Of Birth",
 		required: true,
 		initialValue: "",
+		checker: validateDOB
 	},
 };
 
@@ -176,6 +240,7 @@ export const registerFieldsForOrg = {
 			label: "Organization Name",
 			required: true,
 			initialValue: "",
+			regex: ALPHA_NUMERIC_REGEX,
 		},
 		orgtype: {
 			name: "orgtype",
@@ -201,6 +266,7 @@ export const registerFieldsForOrg = {
 			label: "Verfication OTP",
 			required: true,
 			initialValue: "",
+			regex: OTP_REGEX,
 		},
 		website: {
 			name: "website",
@@ -217,6 +283,7 @@ export const registerFieldsForOrg = {
 			required: false,
 			initialValue: [],
 			lineCount: 3,
+			regex: ALPHA_REGEX,
 		},
 	},
 	"Contact Person": {
@@ -226,6 +293,7 @@ export const registerFieldsForOrg = {
 			label: "Contact Person Name",
 			required: true,
 			initialValue: "",
+			regex: ALPHA_REGEX,
 		},
 		designation: {
 			name: "designation",
@@ -233,6 +301,7 @@ export const registerFieldsForOrg = {
 			label: "Designation",
 			required: true,
 			initialValue: "",
+			regex: ALPHA_NUMERIC_REGEX,
 		},
 		phonenumber: {
 			name: "phonenumber",
@@ -240,7 +309,7 @@ export const registerFieldsForOrg = {
 			label: "Official Contact Number",
 			required: true,
 			initialValue: "",
-			regex: PHONE_NUMBER_REGEX,
+			regex: IND_PHONE_NUMBER_REGEX,
 		},
 	},
 	"Verification": {
@@ -250,6 +319,7 @@ export const registerFieldsForOrg = {
 			label: "Document - Proof Of Legitmacy",
 			required: true,
 			initialValue: "filename.ext", // Stores filename
+			regex: FILENAME_REGEX
 		},
 		prooftype: {
 			name: "prooftype",

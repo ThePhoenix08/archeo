@@ -1,7 +1,7 @@
-package com.archeo.server.modules.auth.config;
+package com.archeo.server.modules.auth.services;
 
-import com.archeo.server.modules.auth.repositories.UserRepository;
 import com.archeo.server.modules.user.models.Users;
+import com.archeo.server.modules.user.repositories.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -29,8 +29,81 @@ export function LoginForm({ className, ...props }) {
 
 	let { role } = useParams();
 
+	// Validation function
+	const validateField = (fieldName, value) => {
+		let error = "";
+
+		if (fieldName === "email" && loginType === "email") {
+			const emailRegex = getLoginFieldsForRole[role][1].regex;
+			if (value && emailRegex && !new RegExp(emailRegex).test(value)) {
+				error = "Please enter a valid email address";
+			}
+		} else if (fieldName === "username" && loginType === "username") {
+			const usernameRegex = getLoginFieldsForRole[role][0].regex;
+			if (value && usernameRegex && !new RegExp(usernameRegex).test(value)) {
+				error = "Please enter a valid username";
+			}
+		} else if (fieldName === "password") {
+			const passwordChecker = getLoginFieldsForRole[role][2].checker;
+			if (value && passwordChecker) {
+				const validation = passwordChecker(value);
+				if (!validation.isValid) {
+					error = validation.errors[0]; // Show first error
+				}
+			}
+		}
+
+		return error;
+	};
+
+	// Handle input change with validation
+	const handleInputChange = (fieldName, value) => {
+		setFormdata({
+			...formdata,
+			[fieldName]: value,
+		});
+
+		// Clear error when user starts typing
+		if (errors[fieldName]) {
+			setErrors({
+				...errors,
+				[fieldName]: "",
+			});
+		}
+	};
+
+	// Handle input blur for validation
+	const handleInputBlur = (fieldName, value) => {
+		const error = validateField(fieldName, value);
+		setErrors({
+			...errors,
+			[fieldName]: error,
+		});
+	};
+
 	const handleSubmit = (e) => {
 		e.preventDefault();
+
+		// Validate all fields before submission
+		const newErrors = {};
+		newErrors[loginType] = validateField(loginType, formdata[loginType]);
+		newErrors.password = validateField("password", formdata.password);
+
+		// Check for empty required fields
+		if (!formdata[loginType]) {
+			newErrors[loginType] =
+				`${loginType === "email" ? "Email" : "Username"} is required`;
+		}
+		if (!formdata.password) {
+			newErrors.password = "Password is required";
+		}
+
+		setErrors(newErrors);
+
+		// If there are errors, don't submit
+		if (Object.values(newErrors).some((error) => error !== "")) {
+			return;
+		}
 
 		const loginData = {
 			[loginType]: formdata[loginType],
@@ -49,6 +122,7 @@ export function LoginForm({ className, ...props }) {
 		<form
 			onSubmit={handleSubmit}
 			className={cn("flex flex-col gap-6", className)}
+			noValidate
 			{...props}
 		>
 			<div className="flex flex-col items-center gap-2 text-center">
@@ -70,7 +144,11 @@ export function LoginForm({ className, ...props }) {
 						type="button"
 						variant={loginType === "email" ? "default" : "ghost"}
 						size="sm"
-						onClick={() => setLoginType("email")}
+						onClick={() => {
+							setLoginType("email");
+							// Clear errors when switching login type
+							setErrors({ ...errors, username: "", email: "" });
+						}}
 						className="text-sm transition-all duration-300 ease-out"
 					>
 						<Mail />
@@ -80,7 +158,11 @@ export function LoginForm({ className, ...props }) {
 						type="button"
 						variant={loginType === "username" ? "default" : "ghost"}
 						size="sm"
-						onClick={() => setLoginType("username")}
+						onClick={() => {
+							setLoginType("username");
+							// Clear errors when switching login type
+							setErrors({ ...errors, username: "", email: "" });
+						}}
 						className="text-sm transition-all duration-400 ease-in-out"
 					>
 						<CircleUserRound />
@@ -112,19 +194,17 @@ export function LoginForm({ className, ...props }) {
 								? getLoginFieldsForRole[role][1].type
 								: getLoginFieldsForRole[role][0].type
 						}
-						{...(loginType === "email" && {
-							regex: getLoginFieldsForRole[role][0].regex,
-						})}
 						value={formdata[loginType]}
-						onChange={(e) => {
-							setFormdata({
-								...formdata,
-								[loginType]: e.target.value,
-							});
-						}}
+						onChange={(e) => handleInputChange(loginType, e.target.value)}
+						onBlur={(e) => handleInputBlur(loginType, e.target.value)}
 						placeholder={loginType === "email" ? "m@example.com" : "username"}
-						required
+						className={
+							errors[loginType] ? "border-red-500 focus:border-red-500" : ""
+						}
 					/>
+					{errors[loginType] && (
+						<p className="text-xs text-destructive">{errors[loginType]}</p>
+					)}
 				</div>
 
 				<div className="grid gap-3">
@@ -146,14 +226,20 @@ export function LoginForm({ className, ...props }) {
 						placeholder="************"
 						type={getLoginFieldsForRole[role][2].type}
 						value={formdata[getLoginFieldsForRole[role][2].name]}
-						onChange={(e) => {
-							setFormdata({
-								...formdata,
-								[getLoginFieldsForRole[role][2].name]: e.target.value,
-							});
-						}}
-						required
+						onChange={(e) =>
+							handleInputChange(
+								getLoginFieldsForRole[role][2].name,
+								e.target.value
+							)
+						}
+						onBlur={(e) => handleInputBlur("password", e.target.value)}
+						className={
+							errors.password ? "border-red-500 focus:border-red-500" : ""
+						}
 					/>
+					{errors.password && (
+						<p className="text-xs text-destructive">{errors.password}</p>
+					)}
 				</div>
 
 				<Button type="submit" className="w-full cursor-pointer">

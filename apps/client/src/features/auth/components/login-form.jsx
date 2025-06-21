@@ -7,11 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router";
-import { LogIn, Mail, CircleUserRound } from "lucide-react";
+import { LogIn, Mail, CircleUserRound, LockKeyhole } from "lucide-react";
 
 import { getLoginFieldsForRole } from "@/features/auth/constants/getFieldsForRole.constant.js";
 import { useUserAuthFlow } from "@/features/auth/flows/userAuth.flow.js";
-import { EMAIL_REGEX } from "@/features/auth/constants/getFieldsForRole.constant.js";
 
 export function LoginForm({ className, ...props }) {
 	const [loginType, setLoginType] = useState("email"); // "email" or "username"
@@ -87,6 +86,11 @@ export function LoginForm({ className, ...props }) {
 				{/* Dynamic input field based on login type */}
 				<div className="grid gap-3">
 					<Label htmlFor={loginType}>
+						{loginType === "email" ? (
+							<Mail size={16} />
+						) : (
+							<CircleUserRound size={16} />
+						)}
 						{loginType === "email"
 							? getLoginFieldsForRole[role][1].label
 							: getLoginFieldsForRole[role][0].label}
@@ -103,7 +107,9 @@ export function LoginForm({ className, ...props }) {
 								? getLoginFieldsForRole[role][1].type
 								: getLoginFieldsForRole[role][0].type
 						}
-						{...(loginType === "email" && { regex: EMAIL_REGEX })}
+						{...(loginType === "email" && {
+							regex: getLoginFieldsForRole[role][0].regex,
+						})}
 						value={formdata[loginType]}
 						onChange={(e) => {
 							setFormdata({
@@ -118,7 +124,10 @@ export function LoginForm({ className, ...props }) {
 
 				<div className="grid gap-3">
 					<div className="flex items-center">
-						<Label htmlFor="password">Password</Label>
+						<Label htmlFor="password">
+							<LockKeyhole size={16} />
+							Password
+						</Label>
 						<a
 							href="#"
 							className="ml-auto text-sm underline-offset-4 hover:underline"

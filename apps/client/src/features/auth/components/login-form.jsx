@@ -11,7 +11,6 @@ import { LogIn, Mail, CircleUserRound } from "lucide-react";
 
 import { getLoginFieldsForRole } from "@/features/auth/constants/getFieldsForRole.constant.js";
 import { useUserAuthFlow } from "@/features/auth/flows/userAuth.flow.js";
-import { EMAIL_REGEX } from "@/features/auth/constants/getFieldsForRole.constant.js";
 
 export function LoginForm({ className, ...props }) {
 	const [loginType, setLoginType] = useState("email"); // "email" or "username"
@@ -103,7 +102,9 @@ export function LoginForm({ className, ...props }) {
 								? getLoginFieldsForRole[role][1].type
 								: getLoginFieldsForRole[role][0].type
 						}
-						{...(loginType === "email" && { regex: EMAIL_REGEX })}
+						{...(loginType === "email" && {
+							regex: getLoginFieldsForRole[role][0].regex,
+						})}
 						value={formdata[loginType]}
 						onChange={(e) => {
 							setFormdata({

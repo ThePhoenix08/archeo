@@ -162,7 +162,7 @@ export const registerFieldsForUser = {
 		type: "email",
 		label: "Email",
 		required: true,
-		initialValue: "",
+		initialValue: "johndoe",
 		regex: EMAIL_REGEX,
 	},
 	password: {
@@ -180,6 +180,8 @@ export const registerFieldsForUser = {
 		required: true,
 		initialValue: "",
 		regex: ALPHA_REGEX,
+		maxLength: (35 * 3 + 3),
+		minLength: 3
 	},
 	dob: {
 		name: "dob",

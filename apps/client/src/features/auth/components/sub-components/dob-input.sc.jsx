@@ -36,6 +36,7 @@ export default function DateOfBirthInput({
 	fieldDetails,
 	handleFieldChange,
 	value,
+	error,
 }) {
 	const [open, setOpen] = useState(false);
 	const [date, setDate] = useState(null);
@@ -107,6 +108,7 @@ export default function DateOfBirthInput({
 					</PopoverContent>
 				</Popover>
 			</div>
+			{error && <p className="text-xs text-destructive">{error}</p>}
 		</div>
 	);
 }

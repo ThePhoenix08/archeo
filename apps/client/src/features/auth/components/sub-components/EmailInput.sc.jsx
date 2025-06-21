@@ -5,7 +5,12 @@ import { Label } from "@/components/ui/label";
 import { SelectNative } from "@/components/ui/select-native";
 import { useVerifyEmailMutation } from "@/features/auth/actions/authApi.action.js";
 
-export default function EmailInput({ fieldDetails, handleFieldChange, value }) {
+export default function EmailInput({
+	fieldDetails,
+	handleFieldChange,
+	value,
+	error,
+}) {
 	const { name, label, required, initialValue } = fieldDetails;
 	const id = useId();
 	const [localPart, setLocalPart] = useState(() => value?.split("@")[0] || "");
@@ -87,6 +92,7 @@ export default function EmailInput({ fieldDetails, handleFieldChange, value }) {
 					onVerify={handleVerifyEmail}
 				/>
 			</div>
+			{error && <p className="text-xs text-destructive">{error}</p>}
 		</div>
 	);
 }

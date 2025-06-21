@@ -10,6 +10,7 @@ export default function PasswordInput({
 	fieldDetails,
 	handleFieldChange,
 	value,
+	error,
 }) {
 	const id = useId();
 	const [isVisible, setIsVisible] = useState(false);
@@ -86,6 +87,7 @@ export default function PasswordInput({
 						)}
 					</button>
 				</div>
+				{error && <p className="text-xs text-destructive">{error}</p>}
 			</div>
 
 			{/* Password strength indicator */}

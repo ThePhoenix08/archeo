@@ -2,12 +2,14 @@
 
 package com.archeo.server.modules.user.models;
 
+import com.archeo.common.converter.JsonToMapConverter;
 import com.archeo.common.enums.USER_ROLE;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 @Entity
 @Data
@@ -30,6 +32,10 @@ public class Users {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private USER_ROLE userRole = USER_ROLE.ROLE_OWNER;
+
+    @Column(columnDefinition = "jsonb")
+    @Convert(converter = JsonToMapConverter.class)
+    private Map<String, String> attributes;
 
     @Column(name = "is_active", nullable = false)
     private boolean isActive = true;

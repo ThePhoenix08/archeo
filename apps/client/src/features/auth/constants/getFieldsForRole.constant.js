@@ -1,8 +1,10 @@
 /* eslint-disable no-useless-escape */
 import { ROLES } from "@/shared/constants/roles.constant.js";
 
-const EMAIL_REGEX = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
-const URL_REGEX = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+const EMAIL_REGEX =
+	/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+const URL_REGEX =
+	/^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
 const ALPHA_NUMERIC_REGEX = /^[A-Za-z0-9\s]{2,100}$/;
 const OTP_REGEX = /^\d{6}$/;
 const ALPHA_REGEX = /^[A-Za-z\s]{2,100}$/;
@@ -33,7 +35,7 @@ function validatePasswordDetailed(password) {
 
 	return {
 		isValid: errors.length === 0,
-		errors
+		errors,
 	};
 }
 
@@ -50,7 +52,8 @@ function validateDOB(dobString, minAge = 18, maxAge = 100) {
 	const dayDiff = today.getDate() - dob.getDate();
 
 	// Adjust age if birthday hasn't occurred yet this year
-	const realAge = monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) ? age - 1 : age;
+	const realAge =
+		monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) ? age - 1 : age;
 
 	if (realAge < minAge) {
 		return { valid: false, reason: `Age must be at least ${minAge}` };
@@ -62,7 +65,6 @@ function validateDOB(dobString, minAge = 18, maxAge = 100) {
 	return { valid: true, age: realAge };
 }
 
-
 export const getLoginFieldsForRole = {
 	[ROLES.USER]: [
 		{
@@ -71,7 +73,7 @@ export const getLoginFieldsForRole = {
 			label: "Username",
 			required: true,
 			initialValue: "",
-			regex: ALPHA_NUMERIC_REGEX
+			regex: ALPHA_NUMERIC_REGEX,
 		},
 		{
 			name: "email",
@@ -87,7 +89,7 @@ export const getLoginFieldsForRole = {
 			label: "Password",
 			required: true,
 			initialValue: "",
-			checker: validatePasswordDetailed
+			checker: validatePasswordDetailed,
 		},
 	],
 	[ROLES.ISSUER]: [
@@ -97,7 +99,7 @@ export const getLoginFieldsForRole = {
 			label: "Organization Name",
 			required: true,
 			initialValue: "",
-			regex: ALPHA_NUMERIC_REGEX
+			regex: ALPHA_NUMERIC_REGEX,
 		},
 		{
 			name: "org email",
@@ -113,7 +115,7 @@ export const getLoginFieldsForRole = {
 			label: "Organization Password",
 			required: true,
 			initialValue: "",
-			checker: validatePasswordDetailed
+			checker: validatePasswordDetailed,
 		},
 	],
 	[ROLES.VERIFIER]: [
@@ -123,7 +125,7 @@ export const getLoginFieldsForRole = {
 			label: "Verifier Username",
 			required: true,
 			initialValue: "",
-			regex: ALPHA_NUMERIC_REGEX
+			regex: ALPHA_NUMERIC_REGEX,
 		},
 		{
 			name: "verifier email",
@@ -139,7 +141,7 @@ export const getLoginFieldsForRole = {
 			label: "Verifier Password",
 			required: true,
 			initialValue: "",
-			checker: validatePasswordDetailed
+			checker: validatePasswordDetailed,
 		},
 	],
 };
@@ -162,7 +164,7 @@ export const registerFieldsForUser = {
 		type: "email",
 		label: "Email",
 		required: true,
-		initialValue: "",
+		initialValue: "johndoe",
 		regex: EMAIL_REGEX,
 	},
 	password: {
@@ -171,7 +173,7 @@ export const registerFieldsForUser = {
 		label: "Password",
 		required: true,
 		initialValue: "",
-		checker: validatePasswordDetailed
+		checker: validatePasswordDetailed,
 	},
 	fullname: {
 		name: "fullname",
@@ -180,6 +182,8 @@ export const registerFieldsForUser = {
 		required: true,
 		initialValue: "",
 		regex: ALPHA_REGEX,
+		maxLength: (35 * 3 + 3),
+		minLength: 3
 	},
 	dob: {
 		name: "dob",
@@ -187,7 +191,7 @@ export const registerFieldsForUser = {
 		label: "Date Of Birth",
 		required: true,
 		initialValue: "",
-		checker: validateDOB
+		checker: validateDOB,
 	},
 };
 
@@ -319,7 +323,7 @@ export const registerFieldsForOrg = {
 			label: "Document - Proof Of Legitmacy",
 			required: true,
 			initialValue: "filename.ext", // Stores filename
-			regex: FILENAME_REGEX
+			regex: FILENAME_REGEX,
 		},
 		prooftype: {
 			name: "prooftype",
@@ -327,7 +331,19 @@ export const registerFieldsForOrg = {
 			label: "Type of Proof Document",
 			required: true,
 			options: PROOF_TYPES,
-			initialValue: PROOF_TYPES.CIN
+			initialValue: PROOF_TYPES.CIN,
 		},
 	},
-}
+};
+
+export {
+	EMAIL_REGEX,
+	URL_REGEX,
+	ALPHA_NUMERIC_REGEX,
+	OTP_REGEX,
+	ALPHA_REGEX,
+	IND_PHONE_NUMBER_REGEX,
+	FILENAME_REGEX,
+	validatePasswordDetailed,
+	validateDOB,
+};

@@ -8,6 +8,7 @@ export default function UserNameInput({
 	fieldDetails,
 	handleFieldChange,
 	value,
+	error,
 }) {
 	const id = useId();
 	const { label, required, name, initialValue } = fieldDetails;
@@ -29,6 +30,7 @@ export default function UserNameInput({
 					<AtSignIcon size={16} aria-hidden="true" />
 				</div>
 			</div>
+			{error && <p className="text-xs text-destructive">{error}</p>}
 		</div>
 	);
 }

@@ -4,6 +4,8 @@ import { AtSignIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import { CircleUserRound } from "lucide-react";
+
 export default function UserNameInput({
 	fieldDetails,
 	handleFieldChange,
@@ -14,7 +16,10 @@ export default function UserNameInput({
 	const { label, required, name, initialValue } = fieldDetails;
 	return (
 		<div className="*:not-first:mt-2">
-			<Label htmlFor={id}>{label}</Label>
+			<Label htmlFor={id}>
+				<CircleUserRound size={16} />
+				{label}
+			</Label>
 			<div className="relative">
 				<Input
 					id={id}

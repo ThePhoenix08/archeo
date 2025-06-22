@@ -11,6 +11,7 @@ import FullNameInput from "@/features/auth/components/sub-components/fullname-in
 import DateOfBirthInput from "@/features/auth/components/sub-components/dob-input.sc.jsx";
 import EmailInput from "@/features/auth/components/sub-components/EmailInput.sc.jsx";
 import { ENVS } from "@/shared/constants/env.constant.js";
+import { SquareUser } from "lucide-react";
 
 const FORMDATA_BLUEPRINT = {
 	username: "",
@@ -165,7 +166,12 @@ const RegisterForm = ({
 			onSubmit={handleSubmit}
 		>
 			<div className="flex flex-col items-center gap-2 text-center">
-				<h1 className="text-2xl font-bold">Create your account</h1>
+				<h1 className="text-2xl font-bold">
+					<span className="bg-gradient-to-r from-pink-400 via-purple-800 to-blue-500 bg-clip-text text-transparent">
+						Create
+					</span>{" "}
+					your account <SquareUser className="inline-block text-black/45" />
+				</h1>
 				<p className="text-sm text-balance text-muted-foreground">
 					Enter your information below to create your account
 				</p>

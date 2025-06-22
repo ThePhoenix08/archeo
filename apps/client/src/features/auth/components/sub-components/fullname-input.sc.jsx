@@ -5,6 +5,8 @@ import { useId } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import { FolderPen } from "lucide-react";
+
 export default function FullNameInput({
 	fieldDetails,
 	handleFieldChange,
@@ -23,7 +25,9 @@ export default function FullNameInput({
 
 	return (
 		<div className="*:not-first:mt-2">
-			<Label htmlFor={id}>{label}</Label>
+			<Label htmlFor={id}>
+				<FolderPen size={16} /> {label}
+			</Label>
 			<div className="relative">
 				<Input
 					id={id}

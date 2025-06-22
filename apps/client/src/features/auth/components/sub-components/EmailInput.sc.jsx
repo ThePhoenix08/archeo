@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label";
 import { SelectNative } from "@/components/ui/select-native";
 import { useVerifyEmailMutation } from "@/features/auth/actions/authApi.action.js";
 
+import { Mail } from "lucide-react";
+
 export default function EmailInput({
 	fieldDetails,
 	handleFieldChange,
@@ -56,7 +58,11 @@ export default function EmailInput({
 
 	return (
 		<div className="*:not-first:mt-2">
-			<Label htmlFor={id}>{label}</Label>
+			<Label htmlFor={id}>
+				{" "}
+				<Mail size={16} />
+				{label}
+			</Label>
 			<div className="flex w-full max-w-sm items-center gap-2">
 				<div className="flex rounded-md shadow-xs">
 					<Input

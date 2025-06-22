@@ -13,6 +13,8 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 
+import { Cake } from "lucide-react";
+
 function formatDate(date) {
 	if (!date) {
 		return "";
@@ -49,6 +51,7 @@ export default function DateOfBirthInput({
 	return (
 		<div className="flex flex-col gap-3">
 			<Label htmlFor="date" className="px-1">
+				<Cake size={16} />
 				{label}
 			</Label>
 			<div className="relative flex gap-2">

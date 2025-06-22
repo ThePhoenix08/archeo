@@ -1,8 +1,8 @@
 
 
-package com.archeo.user.models;
+package com.archeo.server.modules.common.models;
 
-import com.archeo.common.enums.USER_ROLE;
+import com.archeo.server.modules.common.enums.USER_ROLE;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,8 +11,8 @@ import java.sql.Timestamp;
 
 @Entity
 @Data
-@Table(name = "users")
-public class Users {
+@Table(name = "users_common")
+public class UsersCommon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // SERIAL in PostgreSQL

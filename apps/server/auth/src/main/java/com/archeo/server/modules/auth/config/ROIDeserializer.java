@@ -1,4 +1,4 @@
-package com.archeo.auth.config;
+package com.archeo.server.modules.auth.config;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;

@@ -1,4 +1,4 @@
-package com.archeo.auth.config;
+package com.archeo.server.modules.auth.config;
 
 import org.springframework.context.annotation.Configuration;
 

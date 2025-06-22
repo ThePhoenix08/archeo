@@ -1,8 +1,8 @@
-package com.archeo.auth.services;
+package com.archeo.server.modules.auth.services;
 
-import com.archeo.auth.repositories.AuthLogsRepo;
-import com.archeo.auth.models.AuthLogs;
-import com.archeo.user.models.Users;
+import com.archeo.server.modules.auth.repositories.AuthLogsRepo;
+import com.archeo.server.modules.auth.models.AuthLogs;
+import com.archeo.server.modules.user.models.Owner;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +15,7 @@ public class AuthLogsService {
     private final AuthLogsRepo authLogsRepo;
     private final PasswordEncoder passwordEncoder;
 
-    public void log(Users user, String refreshToken, HttpServletRequest request){
+    public void log(Owner user, String refreshToken, HttpServletRequest request){
 
         AuthLogs authLogs=AuthLogs.builder()
                 .user(user)

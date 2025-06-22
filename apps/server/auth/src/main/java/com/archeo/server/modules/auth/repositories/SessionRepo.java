@@ -1,7 +1,7 @@
-package com.archeo.auth.repositories;
+package com.archeo.server.modules.auth.repositories;
 
-import com.archeo.auth.models.Session;
-import com.archeo.user.models.Users;
+import com.archeo.server.modules.auth.models.Session;
+import com.archeo.server.modules.user.models.Owner;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface SessionRepo extends JpaRepository<Session, UUID> {
 
-    List<Session> findByUser(Users user);
+    List<Session> findByUser(Owner user);
     void deleteByRefreshTokenHash(String refreshTokenHash);
 
 }

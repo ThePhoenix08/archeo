@@ -1,5 +1,5 @@
 
-package com.archeo.common.config;
+package com.archeo.server.modules.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

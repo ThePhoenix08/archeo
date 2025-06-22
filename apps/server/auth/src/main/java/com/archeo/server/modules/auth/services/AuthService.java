@@ -1,8 +1,8 @@
-package com.archeo.auth.services;
+package com.archeo.server.modules.auth.services;
 
-import com.archeo.auth.dtos.AuthResponse;
-import com.archeo.auth.dtos.SigninRequest;
-import com.archeo.auth.dtos.SignupRequest;
+import com.archeo.server.modules.auth.dtos.AuthResponse;
+import com.archeo.server.modules.auth.dtos.SigninRequest;
+import com.archeo.server.modules.auth.dtos.SignupRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 

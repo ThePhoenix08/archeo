@@ -3,7 +3,7 @@
 //
 //import com.archeo.common.models.Permission;
 //import com.archeo.common.repositories.PermissionRepo;
-//import com.archeo.user.models.Users;
+//import com.archeo.user.models.Owner;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.stereotype.Service;
 //
@@ -16,7 +16,7 @@
 //
 //    private final PermissionRepo permissionRepo;
 //
-//    public boolean isAccessGranted(Users user, String resource, String action){
+//    public boolean isAccessGranted(Owner user, String resource, String action){
 //        List<Permission> policies=permissionRepo.findByResourceAndAction(resource, action);
 //        Map<String, String> attributes=user.getAttributes();
 //

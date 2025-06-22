@@ -1,4 +1,4 @@
-package com.archeo.user.config;
+package com.archeo.server.modules.user.config;
 
 import org.springframework.context.annotation.Configuration;
 

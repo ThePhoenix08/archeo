@@ -1,14 +1,14 @@
-package com.archeo.user.repositories;
+package com.archeo.server.modules.user.repositories;
 
-import com.archeo.user.models.Users;
+import com.archeo.server.modules.user.models.Owner;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<Users, Long> {
+public interface UserRepository extends JpaRepository<Owner, Long> {
 
-    Optional<Users> findByEmail(String email);
-    Optional<Users> findByUsername(String username);
+    Optional<Owner> findByEmail(String email);
+    Optional<Owner> findByUsername(String username);
 }

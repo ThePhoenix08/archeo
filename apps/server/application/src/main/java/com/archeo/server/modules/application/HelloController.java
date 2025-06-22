@@ -1,2 +1,2 @@
-package com.archeo.application;public class HelloController {
+package com.archeo.server.modules.application;public class HelloController {
 }

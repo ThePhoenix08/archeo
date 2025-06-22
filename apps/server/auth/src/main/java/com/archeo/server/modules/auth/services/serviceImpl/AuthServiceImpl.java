@@ -1,15 +1,15 @@
-package com.archeo.auth.services.serviceImpl;
+package com.archeo.server.modules.auth.services.serviceImpl;
 
-import com.archeo.auth.repositories.SessionRepo;
-import com.archeo.auth.config.JwtProvider;
-import com.archeo.auth.dtos.AuthResponse;
-import com.archeo.auth.dtos.SigninRequest;
-import com.archeo.auth.dtos.SignupRequest;
-import com.archeo.auth.services.AuthLogsService;
-import com.archeo.auth.services.AuthService;
-import com.archeo.auth.services.SessionService;
-import com.archeo.user.models.Users;
-import com.archeo.user.repositories.UserRepository;
+import com.archeo.server.modules.auth.repositories.SessionRepo;
+import com.archeo.server.modules.auth.config.JwtProvider;
+import com.archeo.server.modules.auth.dtos.AuthResponse;
+import com.archeo.server.modules.auth.dtos.SigninRequest;
+import com.archeo.server.modules.auth.dtos.SignupRequest;
+import com.archeo.server.modules.auth.services.AuthLogsService;
+import com.archeo.server.modules.auth.services.AuthService;
+import com.archeo.server.modules.auth.services.SessionService;
+import com.archeo.server.modules.user.models.Owner;
+import com.archeo.server.modules.user.repositories.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,12 +33,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse register(SignupRequest request, HttpServletRequest servletRequest) {
 
-        Optional<Users> user=userRepository.findByEmail(request.getEmail());
+        Optional<Owner> user=userRepository.findByEmail(request.getEmail());
         if(user==null){
             throw new RuntimeException("User already exists");
         }
 
-        Users newUser=new Users();
+        Owner newUser=new Owner();
         newUser.setUsername(request.getUsername());
         newUser.setEmail(request.getEmail());
         newUser.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -64,7 +64,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse login(SigninRequest signinRequest, HttpServletRequest servletRequest) {
 
-        Users user=userRepository.findByEmail(signinRequest.getEmail())
+        Owner user=userRepository.findByEmail(signinRequest.getEmail())
                 .or(()-> userRepository.findByUsername(signinRequest.getUsername()))
                 .orElseThrow(()->new RuntimeException("Invalid credentials"));
 

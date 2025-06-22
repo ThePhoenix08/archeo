@@ -1,6 +1,6 @@
-package com.archeo.common.repositories;
+package com.archeo.server.modules.common.repositories;
 
-import com.archeo.common.models.Permission;
+import com.archeo.server.modules.common.models.Permission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

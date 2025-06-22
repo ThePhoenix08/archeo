@@ -1,6 +1,6 @@
-package com.archeo.auth.repositories;
+package com.archeo.server.modules.auth.repositories;
 
-import com.archeo.auth.models.AuthLogs;
+import com.archeo.server.modules.auth.models.AuthLogs;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

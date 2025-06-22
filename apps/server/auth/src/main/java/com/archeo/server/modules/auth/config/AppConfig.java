@@ -1,4 +1,4 @@
-package com.archeo.auth.config;
+package com.archeo.server.modules.auth.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

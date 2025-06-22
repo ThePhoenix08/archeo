@@ -1,4 +1,4 @@
-package com.archeo.auth.dtos;
+package com.archeo.server.modules.auth.dtos;
 
 import lombok.Data;
 

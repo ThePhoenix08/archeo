@@ -1,10 +1,10 @@
-package com.archeo.auth.controllers;
+package com.archeo.server.modules.auth.controllers;
 
 
-import com.archeo.auth.dtos.AuthResponse;
-import com.archeo.auth.dtos.SigninRequest;
-import com.archeo.auth.dtos.SignupRequest;
-import com.archeo.auth.services.AuthService;
+import com.archeo.server.modules.auth.dtos.AuthResponse;
+import com.archeo.server.modules.auth.dtos.SigninRequest;
+import com.archeo.server.modules.auth.dtos.SignupRequest;
+import com.archeo.server.modules.auth.services.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

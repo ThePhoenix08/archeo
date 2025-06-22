@@ -30,6 +30,9 @@ import { ROLES } from "@/shared/constants/roles.constant";
 import { RouteGuard } from "@/features/auth/components/RouteGuard";
 import NotFoundPage from "@/shared/routing/NotFound.page";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function App() {
 	return (
 		<BrowserRouter>
@@ -71,63 +74,99 @@ function App() {
 					</Route>
 
 					{/* complete template section only for issuers */}
-					<Route path="template" element={
-						<RouteGuard
-							allowedRoles={[ROLES.ISSUER]}
-							routeComponent={<TemplateLayout />}
+					<Route
+						path="template"
+						element={
+							<RouteGuard
+								allowedRoles={[ROLES.ISSUER]}
+								routeComponent={<TemplateLayout />}
+							/>
+						}
+					>
+						<Route
+							path=":templateId/view?"
+							element={
+								<RouteGuard
+									allowedRoles={[ROLES.ISSUER]}
+									routeComponent={<TemplatePage />}
+								/>
+							}
 						/>
-					}>
-						<Route path=":templateId/view?" element={
-							<RouteGuard
-								allowedRoles={[ROLES.ISSUER]}
-								routeComponent={<TemplatePage />}
-							/>
-						} />
-						<Route path=":templateId/edit" element={
-							<RouteGuard
-								allowedRoles={[ROLES.ISSUER]}
-								routeComponent={<EditTemplatePage />}
-							/>
-						} />
+						<Route
+							path=":templateId/edit"
+							element={
+								<RouteGuard
+									allowedRoles={[ROLES.ISSUER]}
+									routeComponent={<EditTemplatePage />}
+								/>
+							}
+						/>
 					</Route>
 
 					{/* complete api section only for verifiers */}
-					<Route path="api" element={
-						<RouteGuard
-							allowedRoles={[ROLES.VERIFIER]}
-							routeComponent={<APILayout />}
+					<Route
+						path="api"
+						element={
+							<RouteGuard
+								allowedRoles={[ROLES.VERIFIER]}
+								routeComponent={<APILayout />}
+							/>
+						}
+					>
+						<Route
+							index
+							element={
+								<RouteGuard
+									allowedRoles={[ROLES.VERIFIER]}
+									routeComponent={<AnalyticsPage />}
+								/>
+							}
 						/>
-					}>
-						<Route index element={
-							<RouteGuard
-								allowedRoles={[ROLES.VERIFIER]}
-								routeComponent={<AnalyticsPage />}
-							/>
-						} />
-						<Route path="usage" element={
-							<RouteGuard
-								allowedRoles={[ROLES.VERIFIER]}
-								routeComponent={<UsagePage />}
-							/>
-						} />
-						<Route path="config" element={
-							<RouteGuard
-								allowedRoles={[ROLES.VERIFIER]}
-								routeComponent={<ConfigPage />}
-							/>
-						} />
-						<Route path="requests" element={
-							<RouteGuard
-								allowedRoles={[ROLES.VERIFIER]}
-								routeComponent={<RequestsPage />}
-							/>
-						} />
+						<Route
+							path="usage"
+							element={
+								<RouteGuard
+									allowedRoles={[ROLES.VERIFIER]}
+									routeComponent={<UsagePage />}
+								/>
+							}
+						/>
+						<Route
+							path="config"
+							element={
+								<RouteGuard
+									allowedRoles={[ROLES.VERIFIER]}
+									routeComponent={<ConfigPage />}
+								/>
+							}
+						/>
+						<Route
+							path="requests"
+							element={
+								<RouteGuard
+									allowedRoles={[ROLES.VERIFIER]}
+									routeComponent={<RequestsPage />}
+								/>
+							}
+						/>
 					</Route>
 				</Route>
 
 				<Route path="verify/:qr_url" element={<VerificationPage />} />
 				<Route path="*" element={<NotFoundPage />} />
 			</Routes>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick={false}
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+				theme="light"
+			/>
 		</BrowserRouter>
 	);
 }

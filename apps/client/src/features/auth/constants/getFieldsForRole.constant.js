@@ -336,14 +336,3 @@ export const registerFieldsForOrg = {
 	},
 };
 
-export {
-	EMAIL_REGEX,
-	URL_REGEX,
-	ALPHA_NUMERIC_REGEX,
-	OTP_REGEX,
-	ALPHA_REGEX,
-	IND_PHONE_NUMBER_REGEX,
-	FILENAME_REGEX,
-	validatePasswordDetailed,
-	validateDOB,
-};

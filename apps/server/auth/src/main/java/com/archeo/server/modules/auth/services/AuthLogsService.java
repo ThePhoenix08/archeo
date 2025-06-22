@@ -1,8 +1,8 @@
 package com.archeo.server.modules.auth.services;
 
-import com.archeo.server.modules.auth.repositories.AuthLogsRepo;
 import com.archeo.server.modules.auth.models.AuthLogs;
-import com.archeo.server.modules.user.models.Owner;
+import com.archeo.server.modules.auth.repositories.AuthLogsRepo;
+import com.archeo.server.modules.common.models.UsersCommon;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,10 +15,10 @@ public class AuthLogsService {
     private final AuthLogsRepo authLogsRepo;
     private final PasswordEncoder passwordEncoder;
 
-    public void log(Owner user, String refreshToken, HttpServletRequest request){
+    public void log(UsersCommon user, String refreshToken, HttpServletRequest request){
 
         AuthLogs authLogs=AuthLogs.builder()
-                .user(user)
+                .usersCommon(user)
                 .refreshTokenHash(passwordEncoder.encode(refreshToken))
                 .ipAddress(request.getRemoteAddr())
                 .userAgent(request.getHeader("User-Agent"))

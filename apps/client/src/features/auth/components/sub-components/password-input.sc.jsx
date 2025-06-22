@@ -6,6 +6,8 @@ import { CheckIcon, EyeIcon, EyeOffIcon, XIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import { LockKeyhole } from "lucide-react";
+
 export default function PasswordInput({
 	fieldDetails,
 	handleFieldChange,
@@ -59,7 +61,10 @@ export default function PasswordInput({
 		<div>
 			{/* Password input field with toggle visibility button */}
 			<div className="*:not-first:mt-2">
-				<Label htmlFor={id}>{label}</Label>
+				<Label htmlFor={id}>
+					<LockKeyhole size={16} />
+					{label}
+				</Label>
 				<div className="relative">
 					<Input
 						id={id}

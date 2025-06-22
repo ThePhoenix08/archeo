@@ -1,6 +1,6 @@
 package com.archeo.server.modules.auth.models;
 
-import com.archeo.server.modules.user.models.Users;
+import com.archeo.server.modules.user.models.Owner;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,7 +19,7 @@ public class Session {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private Users user;
+    private Owner user;
 
     @Column(name = "refresh_token", nullable = false, length = 255)
     private String refreshTokenHash;

@@ -1,4 +1,4 @@
-package com.archeo.application;
+package com.archeo.server.modules.application;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;

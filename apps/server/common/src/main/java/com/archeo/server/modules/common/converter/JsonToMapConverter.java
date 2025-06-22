@@ -1,4 +1,4 @@
-package com.archeo.common.converter;
+package com.archeo.server.modules.common.converter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

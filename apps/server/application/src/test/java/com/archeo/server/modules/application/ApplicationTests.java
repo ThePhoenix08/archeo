@@ -1,4 +1,4 @@
-package com.archeo.application;
+package com.archeo.server.modules.application;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

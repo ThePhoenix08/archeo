@@ -1,7 +1,7 @@
-package com.archeo.common.models;
+package com.archeo.server.modules.common.models;
 
 
-import com.archeo.common.converter.JsonToMapConverter;
+import com.archeo.server.modules.common.converter.JsonToMapConverter;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;

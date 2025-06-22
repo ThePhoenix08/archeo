@@ -1,8 +1,8 @@
 package com.archeo.server.modules.auth.services;
 
-import com.archeo.server.modules.auth.repositories.SessionRepo;
 import com.archeo.server.modules.auth.models.Session;
-import com.archeo.server.modules.user.models.Owner;
+import com.archeo.server.modules.auth.repositories.SessionRepo;
+import com.archeo.server.modules.common.models.UsersCommon;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,9 +19,9 @@ public class SessionService {
     private final SessionRepo sessionRepo;
     private final PasswordEncoder passwordEncoder;
 
-    public void saveSession(Owner user, String refreshToken, HttpServletRequest request){
+    public void saveSession(UsersCommon user, String refreshToken, HttpServletRequest request){
         Session session=new Session();
-        session.setUser(user);
+        session.setUsersCommon(user);
         session.setRefreshTokenHash(passwordEncoder.encode(refreshToken));
         session.setIpAddress(request.getRemoteAddr());
         session.setUserAgent(request.getHeader("User-Agent"));

@@ -28,7 +28,7 @@ public class Organization {
     @Column(name = "organization_type", length = 50)
     private String organizationType;
 
-    // If you want multiple domains, use @ElementCollection
+    // If you want multiple domains
     @ElementCollection
     @CollectionTable(name = "organization_domains", joinColumns = @JoinColumn(name = "organization_id"))
     @Column(name = "domain")

@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router";
 import { LogIn, Mail, CircleUserRound, LockKeyhole } from "lucide-react";
+import { toast, Bounce } from "react-toastify";
 
 import { getLoginFieldsForRole } from "@/features/auth/constants/getFieldsForRole.constant.js";
 import { useUserAuthFlow } from "@/features/auth/flows/userAuth.flow.js";
@@ -42,14 +43,6 @@ export function LoginForm({ className, ...props }) {
 			const usernameRegex = getLoginFieldsForRole[role][0].regex;
 			if (value && usernameRegex && !new RegExp(usernameRegex).test(value)) {
 				error = "Please enter a valid username";
-			}
-		} else if (fieldName === "password") {
-			const passwordChecker = getLoginFieldsForRole[role][2].checker;
-			if (value && passwordChecker) {
-				const validation = passwordChecker(value);
-				if (!validation.isValid) {
-					error = validation.errors[0]; // Show first error
-				}
 			}
 		}
 
@@ -203,7 +196,9 @@ export function LoginForm({ className, ...props }) {
 						}
 					/>
 					{errors[loginType] && (
-						<p className="text-xs text-destructive">{errors[loginType]}</p>
+						<p className="-mt-2 text-xs text-destructive">
+							{errors[loginType]}
+						</p>
 					)}
 				</div>
 
@@ -232,13 +227,12 @@ export function LoginForm({ className, ...props }) {
 								e.target.value
 							)
 						}
-						onBlur={(e) => handleInputBlur("password", e.target.value)}
 						className={
 							errors.password ? "border-red-500 focus:border-red-500" : ""
 						}
 					/>
 					{errors.password && (
-						<p className="text-xs text-destructive">{errors.password}</p>
+						<p className="-mt-2 text-xs text-destructive">{errors.password}</p>
 					)}
 				</div>
 

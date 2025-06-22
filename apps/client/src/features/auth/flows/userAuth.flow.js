@@ -1,9 +1,13 @@
-import { authApi, useRegisterMutation } from "@/features/auth/actions/authApi.action.js";
+import {
+	authApi,
+	useRegisterMutation,
+} from "@/features/auth/actions/authApi.action.js";
 import { setCredentials } from "@/features/auth/reducer/authSlice.reducer.js";
 import { ROUTES } from "@/shared/routing/routes.constant.js";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { useLoginMutation } from "@/features/auth/actions/authApi.action.js";
+import { toast, Bounce } from "react-toastify";
 
 // custom hook
 export const useUserAuthFlow = () => {
@@ -23,12 +27,26 @@ export const useUserAuthFlow = () => {
 				throw new Error(`No type ${type} flow available for role user.`);
 
 			const [fn, { isSuccess, isError, data, error }] = apiCalls[type]();
-	
+
 			const result = await fn(formData).unwrap();
 			// validate result.user
 			if (isSuccess) {
 				dispatch(setCredentials({ ...result.user }));
 				navigate(ROUTES.DASHBOARD);
+				toast.success(
+					`${type === "login" ? "Login" : "Registration"} successful!`,
+					{
+						position: "top-center",
+						autoClose: 2000,
+						hideProgressBar: false,
+						closeOnClick: false,
+						pauseOnHover: true,
+						draggable: false,
+						progress: undefined,
+						theme: "dark",
+						transition: Bounce,
+					}
+				);
 			}
 		} catch (error) {
 			console.error(`[${type.toUpperCase()} ERROR]:`, error);

@@ -1,18 +1,20 @@
 package com.archeo.server.modules.auth.models;
 
 
-import com.archeo.server.modules.user.models.Owner;
+import com.archeo.server.modules.common.models.UsersCommon;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "auth_logs")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
-@Data
 public class AuthLogs {
 
     @Id
@@ -21,7 +23,7 @@ public class AuthLogs {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private Owner user;
+    private UsersCommon usersCommon;
 
     @Column(name = "refresh_token", nullable = false, length = 255)
     private String refreshTokenHash;

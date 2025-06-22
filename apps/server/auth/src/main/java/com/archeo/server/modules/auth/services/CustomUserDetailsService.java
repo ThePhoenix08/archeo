@@ -1,7 +1,7 @@
 package com.archeo.server.modules.auth.services;
 
-import com.archeo.server.modules.user.models.Owner;
-import com.archeo.server.modules.user.repositories.UserRepository;
+import com.archeo.server.modules.common.models.UsersCommon;
+import com.archeo.server.modules.common.repositories.UsersCommonRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,15 +13,15 @@ import java.util.Collections;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UsersCommonRepository userRepository;
 
-    public CustomUserDetailsService(UserRepository userRepository) {
+    public CustomUserDetailsService(UsersCommonRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Owner user = userRepository.findByEmail(email)
+        UsersCommon user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),

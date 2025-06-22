@@ -4,13 +4,17 @@ import com.archeo.server.modules.auth.repositories.SessionRepo;
 import com.archeo.server.modules.auth.config.JwtProvider;
 import com.archeo.server.modules.auth.dtos.AuthResponse;
 import com.archeo.server.modules.auth.dtos.SigninRequest;
-import com.archeo.server.modules.auth.dtos.SignupRequest;
+import com.archeo.server.modules.auth.dtos.OwnerRegisterRequest;
 import com.archeo.server.modules.auth.services.AuthLogsService;
 import com.archeo.server.modules.auth.services.AuthService;
 import com.archeo.server.modules.auth.services.SessionService;
+import com.archeo.server.modules.common.enums.USER_ROLE;
+import com.archeo.server.modules.common.models.UsersCommon;
 import com.archeo.server.modules.user.models.Owner;
-import com.archeo.server.modules.user.repositories.UserRepository;
+import com.archeo.server.modules.common.repositories.UsersCommonRepository;
+import com.archeo.server.modules.user.repositories.OwnerRepo;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,35 +26,44 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final UserRepository userRepository;
+    private final UsersCommonRepository userRepository;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
     private final SessionRepo sessionRepo;
     private final AuthLogsService authLogsService;
     private final SessionService sessionService;
+    private final UsersCommonRepository usersCommonRepository;
+    private final OwnerRepo ownerRepo;
 
 
     @Override
-    public AuthResponse register(SignupRequest request, HttpServletRequest servletRequest) {
+    @Transactional
+    public AuthResponse register(OwnerRegisterRequest request, HttpServletRequest servletRequest) {
 
-        Optional<Owner> user=userRepository.findByEmail(request.getEmail());
-        if(user==null){
+        Optional<UsersCommon> existingUser=userRepository.findByEmail(request.getEmail());
+        if(existingUser.isPresent()){
             throw new RuntimeException("User already exists");
         }
 
-        Owner newUser=new Owner();
+        UsersCommon newUser=new UsersCommon();
         newUser.setUsername(request.getUsername());
         newUser.setEmail(request.getEmail());
         newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+        newUser.setUserRole(USER_ROLE.ROLE_OWNER);
+        UsersCommon savedUser=usersCommonRepository.save(newUser);
 
-        userRepository.save(newUser);
+        Owner newOwner=new Owner();
+        newOwner.setFullName(request.getFullName());
+        newOwner.setDob(request.getDob());
+        newOwner.setUser(savedUser);
+        ownerRepo.save(newOwner);
 
-        Map<String, Object> claims = Map.of("role", newUser.getUserRole().name());
-        String accessToken = jwtProvider.generateAccessToken(claims, newUser.getEmail());
-        String refreshToken = jwtProvider.generateRefreshToken(newUser.getEmail());
+        Map<String, Object> claims = Map.of("role", savedUser.getUserRole().name());
+        String accessToken = jwtProvider.generateAccessToken(claims, savedUser.getEmail());
+        String refreshToken = jwtProvider.generateRefreshToken(savedUser.getEmail());
 
-        sessionService.saveSession(newUser, refreshToken, servletRequest);
-        authLogsService.log(newUser, refreshToken, servletRequest);
+        sessionService.saveSession(savedUser, refreshToken, servletRequest);
+        authLogsService.log(savedUser, refreshToken, servletRequest);
 
         return AuthResponse.builder()
                 .accessToken(accessToken)
@@ -64,7 +77,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse login(SigninRequest signinRequest, HttpServletRequest servletRequest) {
 
-        Owner user=userRepository.findByEmail(signinRequest.getEmail())
+        UsersCommon user=userRepository.findByEmail(signinRequest.getEmail())
                 .or(()-> userRepository.findByUsername(signinRequest.getUsername()))
                 .orElseThrow(()->new RuntimeException("Invalid credentials"));
 

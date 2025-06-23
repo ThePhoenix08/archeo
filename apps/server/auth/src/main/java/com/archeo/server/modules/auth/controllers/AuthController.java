@@ -1,10 +1,11 @@
-package com.archeo.server.modules.user.controllers;
+package com.archeo.server.modules.auth.controllers;
 
 
-import com.archeo.server.modules.common.dto.AuthResponse;
-import com.archeo.server.modules.auth.dtos.SigninRequest;
+import com.archeo.server.modules.auth.dtos.AuthResponse;
+import com.archeo.server.modules.auth.dtos.LoginRequest;
+import com.archeo.server.modules.auth.dtos.OrganizationRegisterRequest;
 import com.archeo.server.modules.auth.dtos.OwnerRegisterRequest;
-import com.archeo.server.modules.user.services.AuthService;
+import com.archeo.server.modules.auth.services.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,16 +21,25 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/owner-register")
+    @PostMapping("/register-owner")
     public ResponseEntity<AuthResponse> register(@Valid  @RequestBody OwnerRegisterRequest registerRequest, HttpServletRequest request){
-        AuthResponse response=authService.register(registerRequest, request);
+        AuthResponse response=authService.registerOwner(registerRequest, request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody SigninRequest signinRequest, HttpServletRequest request){
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest signinRequest, HttpServletRequest request){
         AuthResponse response=authService.login(signinRequest, request);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/register-organization")
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody OrganizationRegisterRequest registerRequest, HttpServletRequest servletRequest) {
+
+        System.out.println("Registration started");
+        AuthResponse response = authService.registerOrganization(registerRequest, servletRequest);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+
     }
 
     @PostMapping("/logout")

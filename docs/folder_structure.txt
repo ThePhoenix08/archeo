@@ -19,25 +19,25 @@
 │   │   ├── eslint.config.js
 │   │   ├── index.html
 │   │   ├── jsconfig.json
-│   │   ├── lib/
-│   │   │   └── utils.js
 │   │   ├── package-lock.json
 │   │   ├── package.json
 │   │   ├── public/
 │   │   │   └── assets/
 │   │   │       ├── .gitkeep
-│   │   │       └── login.jpg
+│   │   │       └── login.png
 │   │   ├── src/
 │   │   │   ├── App.css
 │   │   │   ├── App.jsx
 │   │   │   ├── components/
-│   │   │   │   ├── login-form.jsx
 │   │   │   │   └── ui/
 │   │   │   │       ├── .gitkeep
 │   │   │   │       ├── button.jsx
+│   │   │   │       ├── calendar.jsx
 │   │   │   │       ├── card.jsx
 │   │   │   │       ├── input.jsx
-│   │   │   │       └── label.jsx
+│   │   │   │       ├── label.jsx
+│   │   │   │       ├── popover.jsx
+│   │   │   │       └── select-native.jsx
 │   │   │   ├── features/
 │   │   │   │   ├── account/
 │   │   │   │   │   ├── AccountSection.jsx
@@ -59,7 +59,16 @@
 │   │   │   │   │   │   └── authApi.action.js
 │   │   │   │   │   ├── components/
 │   │   │   │   │   │   ├── ProtectedRoute.wrapper.jsx
-│   │   │   │   │   │   └── RouteGuard.jsx
+│   │   │   │   │   │   ├── RegisterFormTV.c.jsx
+│   │   │   │   │   │   ├── RouteGuard.jsx
+│   │   │   │   │   │   ├── login-form.jsx
+│   │   │   │   │   │   └── sub-components/
+│   │   │   │   │   │       ├── EmailInput.sc.jsx
+│   │   │   │   │   │       ├── Timeline.sc.jsx
+│   │   │   │   │   │       ├── dob-input.sc.jsx
+│   │   │   │   │   │       ├── fullname-input.sc.jsx
+│   │   │   │   │   │       ├── password-input.sc.jsx
+│   │   │   │   │   │       └── username-input.sc.jsx
 │   │   │   │   │   ├── constants/
 │   │   │   │   │   │   └── getFieldsForRole.constant.js
 │   │   │   │   │   ├── flows/
@@ -69,7 +78,9 @@
 │   │   │   │   │   ├── pages/
 │   │   │   │   │   │   ├── AccountRecovery.page.jsx
 │   │   │   │   │   │   ├── Login.page.jsx
-│   │   │   │   │   │   └── Register.page.jsx
+│   │   │   │   │   │   ├── Register.page.jsx
+│   │   │   │   │   │   ├── RegisterOrg.page.jsx
+│   │   │   │   │   │   └── RegisterUser.page.jsx
 │   │   │   │   │   └── reducer/
 │   │   │   │   │       └── authSlice.reducer.js
 │   │   │   │   ├── dashboard/
@@ -95,7 +106,7 @@
 │   │   │   │   └── verify/
 │   │   │   │       └── Verification.page.jsx
 │   │   │   ├── hooks/
-│   │   │   │   └── .gitkeep
+│   │   │   │   └── use-character-limit.js
 │   │   │   ├── index.css
 │   │   │   ├── lib/
 │   │   │   │   └── utils.js
@@ -137,17 +148,21 @@
 │       │       │   ├── java/
 │       │       │   │   └── com/
 │       │       │   │       └── archeo/
-│       │       │   │           └── application/
-│       │       │   │               ├── Application.java
-│       │       │   │               └── HelloController.java
+│       │       │   │           └── server/
+│       │       │   │               └── modules/
+│       │       │   │                   └── application/
+│       │       │   │                       ├── Application.java
+│       │       │   │                       └── HelloController.java
 │       │       │   └── resources/
 │       │       │       └── application.properties
 │       │       └── test/
 │       │           └── java/
 │       │               └── com/
 │       │                   └── archeo/
-│       │                       └── application/
-│       │                           └── ApplicationTests.java
+│       │                       └── server/
+│       │                           └── modules/
+│       │                               └── application/
+│       │                                   └── ApplicationTests.java
 │       ├── auth/
 │       │   ├── pom.xml
 │       │   └── src/
@@ -160,7 +175,6 @@
 │       │       │   │                   └── auth/
 │       │       │   │                       ├── config/
 │       │       │   │                       │   ├── AppConfig.java
-│       │       │   │                       │   ├── CustomUserDetailsService.java
 │       │       │   │                       │   ├── JwtConstant.java
 │       │       │   │                       │   ├── JwtProvider.java
 │       │       │   │                       │   ├── JwtTokenValidator.java
@@ -169,12 +183,20 @@
 │       │       │   │                       │   └── AuthController.java
 │       │       │   │                       ├── dtos/
 │       │       │   │                       │   ├── AuthResponse.java
-│       │       │   │                       │   ├── SigninRequest.java
-│       │       │   │                       │   └── SignupRequest.java
+│       │       │   │                       │   ├── OwnerRegisterRequest.java
+│       │       │   │                       │   └── SigninRequest.java
+│       │       │   │                       ├── models/
+│       │       │   │                       │   ├── AuthLogs.java
+│       │       │   │                       │   └── Session.java
 │       │       │   │                       ├── repositories/
-│       │       │   │                       │   └── UserRepository.java
+│       │       │   │                       │   ├── AuthLogsRepo.java
+│       │       │   │                       │   └── SessionRepo.java
 │       │       │   │                       └── services/
+│       │       │   │                           ├── ABACService.java
+│       │       │   │                           ├── AuthLogsService.java
 │       │       │   │                           ├── AuthService.java
+│       │       │   │                           ├── CustomUserDetailsService.java
+│       │       │   │                           ├── SessionService.java
 │       │       │   │                           └── serviceImpl/
 │       │       │   │                               └── AuthServiceImpl.java
 │       │       │   └── resources/
@@ -224,27 +246,39 @@
 │       │       │   ├── java/
 │       │       │   │   └── com/
 │       │       │   │       └── archeo/
-│       │       │   │           └── common/
-│       │       │   │               ├── config/
-│       │       │   │               │   └── CORSConfig.java
-│       │       │   │               ├── constants/
-│       │       │   │               │   └── AppConstants.java
-│       │       │   │               ├── dto/
-│       │       │   │               │   └── ApiResponse.java
-│       │       │   │               ├── enums/
-│       │       │   │               │   └── USER_ROLE.java
-│       │       │   │               ├── exceptions/
-│       │       │   │               │   └── GlobalExceptionHandler.java
-│       │       │   │               └── utils/
-│       │       │   │                   └── CommonUtils.java
+│       │       │   │           └── server/
+│       │       │   │               └── modules/
+│       │       │   │                   └── common/
+│       │       │   │                       ├── config/
+│       │       │   │                       │   └── CORSConfig.java
+│       │       │   │                       ├── constants/
+│       │       │   │                       │   └── AppConstants.java
+│       │       │   │                       ├── converter/
+│       │       │   │                       │   └── JsonToMapConverter.java
+│       │       │   │                       ├── dto/
+│       │       │   │                       │   └── ApiResponse.java
+│       │       │   │                       ├── enums/
+│       │       │   │                       │   └── USER_ROLE.java
+│       │       │   │                       ├── exceptions/
+│       │       │   │                       │   └── GlobalExceptionHandler.java
+│       │       │   │                       ├── models/
+│       │       │   │                       │   ├── Permission.java
+│       │       │   │                       │   └── UsersCommon.java
+│       │       │   │                       ├── repositories/
+│       │       │   │                       │   ├── PermissionRepo.java
+│       │       │   │                       │   └── UsersCommonRepository.java
+│       │       │   │                       └── utils/
+│       │       │   │                           └── CommonUtils.java
 │       │       │   └── resources/
 │       │       │       └── application.properties
 │       │       └── test/
 │       │           └── java/
 │       │               └── com/
 │       │                   └── archeo/
-│       │                       └── common/
-│       │                           └── CommonTests.java
+│       │                       └── server/
+│       │                           └── modules/
+│       │                               └── common/
+│       │                                   └── CommonTests.java
 │       ├── document/
 │       │   ├── pom.xml
 │       │   └── src/
@@ -383,10 +417,14 @@
 │       │       │   │                       │   └── SecurityConfig.java
 │       │       │   │                       ├── controllers/
 │       │       │   │                       │   └── AuthController.java
+│       │       │   │                       ├── enums/
+│       │       │   │                       │   └── VERIFICATION_STATUS.java
 │       │       │   │                       ├── models/
-│       │       │   │                       │   └── Users.java
+│       │       │   │                       │   ├── Organization.java
+│       │       │   │                       │   └── Owner.java
 │       │       │   │                       ├── repositories/
-│       │       │   │                       │   └── UserRepository.java
+│       │       │   │                       │   ├── OrganizationRepo.java
+│       │       │   │                       │   └── OwnerRepo.java
 │       │       │   │                       └── services/
 │       │       │   │                           └── AuthService.java
 │       │       │   └── resources/
@@ -441,4 +479,4 @@
 └── tests/
     └── .gitkeep
 
-260 directories, 182 files
+273 directories, 207 files

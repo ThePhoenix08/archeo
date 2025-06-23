@@ -1,2 +1,8 @@
-package com.archeo.server.modules.common.exceptions;public class InvalidCredentialException {
+package com.archeo.server.modules.common.exceptions;
+
+public class InvalidCredentialsException extends RuntimeException{
+
+    public InvalidCredentialsException(String message){
+        super(message);
+    }
 }

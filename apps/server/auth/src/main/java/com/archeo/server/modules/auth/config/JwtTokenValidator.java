@@ -29,8 +29,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 
         String requestURI = request.getRequestURI();
 
-        // Skip JWT validation for public endpoints
-        if (requestURI.startsWith("/api/auth") || requestURI.startsWith("/api/auth")) {
+        if (requestURI.startsWith("/api/auth/**")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -38,7 +37,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
         String jwt = request.getHeader("Authorization");
 
         if (jwt != null && jwt.startsWith("Bearer ")) {
-            jwt = jwt.substring(7); // Remove "Bearer " prefix
+            jwt = jwt.substring(7);
 
             try {
                 SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes(StandardCharsets.UTF_8));
@@ -49,14 +48,14 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                         .parseClaimsJws(jwt)
                         .getBody();
 
-                String email = claims.getSubject(); // Assumes 'sub' claim holds the email
+                String email = claims.getSubject();
                 String authorities = String.valueOf(claims.get("authorities"));
 
                 System.out.println("Authorities: "+authorities);
 
                 List<GrantedAuthority> authorityList = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
 
-                System.out.println("Authorities from token: " + authorityList);  // Log authorities to check correctness
+                System.out.println("Authorities from token: " + authorityList);
 
                 Authentication auth = new UsernamePasswordAuthenticationToken(
                         email,

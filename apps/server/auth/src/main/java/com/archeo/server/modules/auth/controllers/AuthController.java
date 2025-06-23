@@ -6,12 +6,15 @@ import com.archeo.server.modules.auth.dtos.LoginRequest;
 import com.archeo.server.modules.auth.dtos.OrganizationRegisterRequest;
 import com.archeo.server.modules.auth.dtos.OwnerRegisterRequest;
 import com.archeo.server.modules.auth.services.AuthService;
+import com.archeo.server.modules.auth.services.IdentityProofStorageService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -20,6 +23,7 @@ public class AuthController {
 
 
     private final AuthService authService;
+    private final IdentityProofStorageService proofStorageService;
 
     @PostMapping("/register-owner")
     public ResponseEntity<AuthResponse> register(@Valid  @RequestBody OwnerRegisterRequest registerRequest, HttpServletRequest request){
@@ -33,10 +37,16 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/register-organization")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody OrganizationRegisterRequest registerRequest, HttpServletRequest servletRequest) {
+    @PostMapping(value = "/register-organization", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AuthResponse> register(
+            @RequestPart("data") @Valid OrganizationRegisterRequest registerRequest,
+            @RequestPart("identityProofFile") MultipartFile identityProofFile,
+            HttpServletRequest servletRequest) {
 
-        System.out.println("Registration started");
+        System.out.println("Org registration");
+
+        String filePath=proofStorageService.uploadProof(identityProofFile);
+        registerRequest.setIdentityProof(filePath);
         AuthResponse response = authService.registerOrganization(registerRequest, servletRequest);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
 

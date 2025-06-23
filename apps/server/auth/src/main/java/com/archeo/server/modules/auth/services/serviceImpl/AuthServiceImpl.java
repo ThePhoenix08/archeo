@@ -1,21 +1,21 @@
 package com.archeo.server.modules.auth.services.serviceImpl;
 
 import com.archeo.server.modules.auth.config.JwtProvider;
+import com.archeo.server.modules.auth.dtos.AuthResponse;
+import com.archeo.server.modules.auth.dtos.LoginRequest;
 import com.archeo.server.modules.auth.dtos.OrganizationRegisterRequest;
 import com.archeo.server.modules.auth.dtos.OwnerRegisterRequest;
-import com.archeo.server.modules.auth.dtos.LoginRequest;
 import com.archeo.server.modules.auth.repositories.SessionRepo;
 import com.archeo.server.modules.auth.services.AuthLogsService;
 import com.archeo.server.modules.auth.services.AuthService;
 import com.archeo.server.modules.auth.services.SessionService;
-import com.archeo.server.modules.auth.dtos.AuthResponse;
 import com.archeo.server.modules.common.enums.USER_ROLE;
 import com.archeo.server.modules.common.exceptions.ResourceNotFoundException;
 import com.archeo.server.modules.common.exceptions.UserAlreadyExistsException;
 import com.archeo.server.modules.common.models.UsersCommon;
 import com.archeo.server.modules.common.repositories.UsersCommonRepository;
-import com.archeo.server.modules.user.models.Owner;
 import com.archeo.server.modules.user.models.Organization;
+import com.archeo.server.modules.user.models.Owner;
 import com.archeo.server.modules.user.repositories.OrganizationRepo;
 import com.archeo.server.modules.user.repositories.OwnerRepo;
 import jakarta.servlet.http.HttpServletRequest;
@@ -131,16 +131,13 @@ public class AuthServiceImpl implements AuthService {
         organization.setAddress(request.getAddress());
         organizationRepo.save(organization);
 
-        // 4. Generate tokens
         Map<String, Object> claims = Map.of("role", savedUser.getUserRole().name());
         String accessToken = jwtProvider.generateAccessToken(claims, savedUser.getEmail());
         String refreshToken = jwtProvider.generateRefreshToken(savedUser.getEmail());
 
-        // 5. Log session & activity
         sessionService.saveSession(savedUser, refreshToken, servletRequest);
         authLogsService.log(savedUser, refreshToken, servletRequest);
 
-        // 6. Return AuthResponse
         return AuthResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
@@ -152,6 +149,8 @@ public class AuthServiceImpl implements AuthService {
     public String logout(String token) {
         return "Logout successful";
     }
+
+
 
 
 

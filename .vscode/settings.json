@@ -267,5 +267,6 @@
       "lightColor": "amber-500",
       "folderNames": ["flows"]
     }
-  ]
+  ],
+  "java.compile.nullAnalysis.mode": "automatic"
 }

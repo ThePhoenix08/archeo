@@ -1,11 +1,12 @@
-package com.archeo.server.modules.auth.controllers;
+package com.archeo.server.modules.user.controllers;
 
 
-import com.archeo.server.modules.auth.dtos.AuthResponse;
+import com.archeo.server.modules.common.dto.AuthResponse;
 import com.archeo.server.modules.auth.dtos.SigninRequest;
 import com.archeo.server.modules.auth.dtos.OwnerRegisterRequest;
-import com.archeo.server.modules.auth.services.AuthService;
+import com.archeo.server.modules.user.services.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,8 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody OwnerRegisterRequest registerRequest, HttpServletRequest request){
+    @PostMapping("/owner-register")
+    public ResponseEntity<AuthResponse> register(@Valid  @RequestBody OwnerRegisterRequest registerRequest, HttpServletRequest request){
         AuthResponse response=authService.register(registerRequest, request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

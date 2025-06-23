@@ -30,7 +30,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
 
         // Skip JWT validation for public endpoints
-        if (requestURI.startsWith("/api/auth/signIn") || requestURI.startsWith("/api/auth/signUp")) {
+        if (requestURI.startsWith("/api/auth") || requestURI.startsWith("/api/auth")) {
             filterChain.doFilter(request, response);
             return;
         }

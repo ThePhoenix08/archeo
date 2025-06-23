@@ -1,18 +1,20 @@
-package com.archeo.server.modules.auth.services.serviceImpl;
+package com.archeo.server.modules.auth.services.serviceImpl.ServiceImpl;
 
-import com.archeo.server.modules.auth.repositories.SessionRepo;
 import com.archeo.server.modules.auth.config.JwtProvider;
-import com.archeo.server.modules.auth.dtos.AuthResponse;
-import com.archeo.server.modules.auth.dtos.SigninRequest;
 import com.archeo.server.modules.auth.dtos.OwnerRegisterRequest;
+import com.archeo.server.modules.auth.dtos.LoginRequest;
+import com.archeo.server.modules.auth.repositories.SessionRepo;
 import com.archeo.server.modules.auth.services.AuthLogsService;
-import com.archeo.server.modules.auth.services.AuthService;
 import com.archeo.server.modules.auth.services.SessionService;
+import com.archeo.server.modules.auth.dtos.AuthResponse;
 import com.archeo.server.modules.common.enums.USER_ROLE;
+import com.archeo.server.modules.common.exceptions.ResourceNotFoundException;
+import com.archeo.server.modules.common.exceptions.UserAlreadyExistsException;
 import com.archeo.server.modules.common.models.UsersCommon;
-import com.archeo.server.modules.user.models.Owner;
 import com.archeo.server.modules.common.repositories.UsersCommonRepository;
+import com.archeo.server.modules.user.models.Owner;
 import com.archeo.server.modules.user.repositories.OwnerRepo;
+import com.archeo.server.modules.user.services.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +44,7 @@ public class AuthServiceImpl implements AuthService {
 
         Optional<UsersCommon> existingUser=userRepository.findByEmail(request.getEmail());
         if(existingUser.isPresent()){
-            throw new RuntimeException("User already exists");
+            throw new UserAlreadyExistsException("User already exists");
         }
 
         UsersCommon newUser=new UsersCommon();
@@ -75,11 +77,11 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse login(SigninRequest signinRequest, HttpServletRequest servletRequest) {
+    public AuthResponse login(LoginRequest signinRequest, HttpServletRequest servletRequest) {
 
         UsersCommon user=userRepository.findByEmail(signinRequest.getEmail())
                 .or(()-> userRepository.findByUsername(signinRequest.getUsername()))
-                .orElseThrow(()->new RuntimeException("Invalid credentials"));
+                .orElseThrow(()->new ResourceNotFoundException("Invalid credentials"));
 
         if(!signinRequest.getPassword().equals(passwordEncoder.encode(user.getPassword())));
 

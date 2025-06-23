@@ -7,8 +7,8 @@
       "mainClass": "com.archeo.server.modules.application.Application",
       "projectName": "application",
       "args": "",
-      "cwd": "${workspaceFolder}/apps/server",
-      "envFile": "${workspaceFolder}/apps/server/.env"
+      "envFile": "${workspaceFolder}/apps/server/.env",
+      "cwd": "${workspaceFolder}/apps/server"
     }
   ]
 }

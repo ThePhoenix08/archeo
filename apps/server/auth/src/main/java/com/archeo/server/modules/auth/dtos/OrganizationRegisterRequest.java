@@ -1,4 +1,4 @@
-package com.archeo.server.modules.user.dtos;
+package com.archeo.server.modules.auth.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -2,12 +2,12 @@
   "configurations": [
     {
       "type": "java",
-      "name": "Spring Boot-Application<application>",
+      "name": "Application",
       "request": "launch",
-      "cwd": "${workspaceFolder}/apps/server",
-      "mainClass": "com.archeo.application.Application",
+      "mainClass": "com.archeo.server.modules.application.Application",
       "projectName": "application",
       "args": "",
+      "cwd": "${workspaceFolder}/apps/server",
       "envFile": "${workspaceFolder}/apps/server/.env"
     }
   ]

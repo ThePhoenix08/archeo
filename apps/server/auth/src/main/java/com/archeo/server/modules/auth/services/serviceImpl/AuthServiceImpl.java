@@ -1,10 +1,12 @@
-package com.archeo.server.modules.auth.services.serviceImpl.ServiceImpl;
+package com.archeo.server.modules.auth.services.serviceImpl;
 
 import com.archeo.server.modules.auth.config.JwtProvider;
+import com.archeo.server.modules.auth.dtos.OrganizationRegisterRequest;
 import com.archeo.server.modules.auth.dtos.OwnerRegisterRequest;
 import com.archeo.server.modules.auth.dtos.LoginRequest;
 import com.archeo.server.modules.auth.repositories.SessionRepo;
 import com.archeo.server.modules.auth.services.AuthLogsService;
+import com.archeo.server.modules.auth.services.AuthService;
 import com.archeo.server.modules.auth.services.SessionService;
 import com.archeo.server.modules.auth.dtos.AuthResponse;
 import com.archeo.server.modules.common.enums.USER_ROLE;
@@ -13,8 +15,9 @@ import com.archeo.server.modules.common.exceptions.UserAlreadyExistsException;
 import com.archeo.server.modules.common.models.UsersCommon;
 import com.archeo.server.modules.common.repositories.UsersCommonRepository;
 import com.archeo.server.modules.user.models.Owner;
+import com.archeo.server.modules.user.models.Organization;
+import com.archeo.server.modules.user.repositories.OrganizationRepo;
 import com.archeo.server.modules.user.repositories.OwnerRepo;
-import com.archeo.server.modules.user.services.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -36,11 +39,12 @@ public class AuthServiceImpl implements AuthService {
     private final SessionService sessionService;
     private final UsersCommonRepository usersCommonRepository;
     private final OwnerRepo ownerRepo;
+    private final OrganizationRepo organizationRepo;
 
 
     @Override
     @Transactional
-    public AuthResponse register(OwnerRegisterRequest request, HttpServletRequest servletRequest) {
+    public AuthResponse registerOwner(OwnerRegisterRequest request, HttpServletRequest servletRequest) {
 
         Optional<UsersCommon> existingUser=userRepository.findByEmail(request.getEmail());
         if(existingUser.isPresent()){
@@ -77,13 +81,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse login(LoginRequest signinRequest, HttpServletRequest servletRequest) {
+    public AuthResponse login(LoginRequest loginRequest, HttpServletRequest servletRequest) {
 
-        UsersCommon user=userRepository.findByEmail(signinRequest.getEmail())
-                .or(()-> userRepository.findByUsername(signinRequest.getUsername()))
+        UsersCommon user=userRepository.findByEmail(loginRequest.getEmail())
+                .or(()-> userRepository.findByUsername(loginRequest.getUsername()))
                 .orElseThrow(()->new ResourceNotFoundException("Invalid credentials"));
 
-        if(!signinRequest.getPassword().equals(passwordEncoder.encode(user.getPassword())));
+        if(!loginRequest.getPassword().equals(passwordEncoder.encode(user.getPassword())));
 
         Map<String, Object> claims = Map.of("role", user.getUserRole().name());
 
@@ -97,6 +101,50 @@ public class AuthServiceImpl implements AuthService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .userRole(user.getUserRole().name())
+                .build();
+    }
+
+
+    public AuthResponse registerOrganization(OrganizationRegisterRequest request, HttpServletRequest servletRequest) {
+
+        Optional<UsersCommon> existingUser = usersCommonRepository.findByEmail(request.getEmail());
+        if (existingUser.isPresent()) {
+            throw new UserAlreadyExistsException("User with this email already exists");
+        }
+
+        UsersCommon user = new UsersCommon();
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setUserRole(USER_ROLE.ROLE_ISSUER); //
+        UsersCommon savedUser = usersCommonRepository.save(user);
+
+        Organization organization = new Organization();
+        organization.setUser(savedUser);
+        organization.setOrganizationName(request.getOrganizationName());
+        organization.setOrganizationType(request.getOrganizationType());
+        organization.setOrganizationDomains(request.getOrganizationDomains());
+        organization.setContactName(request.getContactName());
+        organization.setContactEmail(request.getContactEmail());
+        organization.setContactPhone(request.getContactPhone());
+        organization.setIdentityProof(request.getIdentityProof());
+        organization.setAddress(request.getAddress());
+        organizationRepo.save(organization);
+
+        // 4. Generate tokens
+        Map<String, Object> claims = Map.of("role", savedUser.getUserRole().name());
+        String accessToken = jwtProvider.generateAccessToken(claims, savedUser.getEmail());
+        String refreshToken = jwtProvider.generateRefreshToken(savedUser.getEmail());
+
+        // 5. Log session & activity
+        sessionService.saveSession(savedUser, refreshToken, servletRequest);
+        authLogsService.log(savedUser, refreshToken, servletRequest);
+
+        // 6. Return AuthResponse
+        return AuthResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .userRole(savedUser.getUserRole().name())
                 .build();
     }
 

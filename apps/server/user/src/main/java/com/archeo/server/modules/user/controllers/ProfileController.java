@@ -8,28 +8,29 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/profile")
-public class OwnerProfileController {
+public class ProfileController {
 
 
     private final UsersCommonRepository usersCommonRepository;
     private final ProfileService profileService;
 
-    @PostMapping("/getOwner")
+    @GetMapping ("/getOwner")
     public ResponseEntity<OwnerProfileDTO> getOwnerProfile() {
-        String email= SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<UsersCommon> user= Optional.ofNullable(usersCommonRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found")));
 
-        OwnerProfileDTO profileDTO=profileService.getOwnerProfile(user.get());
+        String email= SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println("Email:"+email);
+
+        UsersCommon user= usersCommonRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        OwnerProfileDTO profileDTO=profileService.getOwnerProfile(user);
         return new ResponseEntity<>(profileDTO, HttpStatus.FOUND);
 
     }

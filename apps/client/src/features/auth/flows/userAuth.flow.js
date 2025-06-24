@@ -13,24 +13,35 @@ import { toast, Bounce } from "react-toastify";
 export const useUserAuthFlow = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	// const [login, { isSuccess, isError, data, error }] = useLoginMutation();
-	// const [register, { isSuccess, isError, data, error }] = useRegisterMutation();
+	const [login, loginResult] = useLoginMutation();
+	const [register, registerResult] = useRegisterMutation();
 
-	const apiCalls = {
-		login: useLoginMutation,
-		register: useRegisterMutation,
-	};
+	//👉🏻loginResult or registerResult contains the following properties:
+	// isLoading: true while the mutation is in progress.
+	// isSuccess: true if the mutation was successful.
+	// isError: true if there was an error.
+	// error: error object (if any).
+	// data: the response from the server (if successful).
+	// status: "uninitialized", "pending", "fulfilled", or "rejected"
 
 	const flow = async (type, formData) => {
 		try {
-			if (!Object.keys(apiCalls).includes(type))
-				throw new Error(`No type ${type} flow available for role user.`);
+			let fn, resultMeta;
 
-			const [fn, { isSuccess, isError, data, error }] = apiCalls[type]();
+			if (type === "login") {
+				fn = login;
+				resultMeta = loginResult;
+			} else if (type === "register") {
+				fn = register;
+				resultMeta = registerResult;
+			} else {
+				throw new Error(`No type ${type} flow available for role user.`);
+			}
 
 			const result = await fn(formData).unwrap();
 			// validate result.user
-			if (isSuccess) {
+			if (resultMeta.isSuccess) {
+				console.log(result);
 				dispatch(setCredentials({ ...result.user }));
 				navigate(ROUTES.DASHBOARD);
 				toast.success(

@@ -6,9 +6,19 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-@SpringBootApplication(scanBasePackages = "com.archeo") // Scans all modules under com.archeo.*
+import java.util.Arrays;
+
+@SpringBootApplication(scanBasePackages = {
+		"com.archeo.server.modules.application", // Ensures CORSConfig is picked up
+		"com.archeo.server.modules.auth",         // etc.
+		"com.archeo"
+})
 @EnableJpaRepositories(basePackages = "com.archeo")    // Picks up all repositories
 @EntityScan(basePackages = "com.archeo")               // Scans for @Entity classes
 public class Application {
@@ -33,5 +43,22 @@ public class Application {
 				}
 			});
 		}
+	}
+
+	@Bean(name = "corsConfigurationSource")
+	public CorsConfigurationSource corsConfigurationSource() {
+
+		CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
+		config.setAllowCredentials(true);
+		config.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+		config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization", "X-Requested-With"));
+		config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+		config.setExposedHeaders(Arrays.asList("Authorization"));
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", config);
+
+
+		return source;
 	}
 }

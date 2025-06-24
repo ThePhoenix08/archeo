@@ -74,6 +74,8 @@ export const getLoginFieldsForRole = {
 			required: true,
 			initialValue: "",
 			regex: ALPHA_NUMERIC_REGEX,
+			regexError:
+				"Username should only contain letters and spaces (2 to 100 characters)",
 		},
 		{
 			name: "email",
@@ -82,6 +84,7 @@ export const getLoginFieldsForRole = {
 			required: true,
 			initialValue: "",
 			regex: EMAIL_REGEX,
+			regexError: "Enter a valid email (e.g., user@example.com)",
 		},
 		{
 			name: "password",
@@ -182,8 +185,8 @@ export const registerFieldsForUser = {
 		required: true,
 		initialValue: "",
 		regex: ALPHA_REGEX,
-		maxLength: (35 * 3 + 3),
-		minLength: 3
+		maxLength: 35 * 3 + 3,
+		minLength: 3,
 	},
 	dob: {
 		name: "dob",
@@ -335,4 +338,3 @@ export const registerFieldsForOrg = {
 		},
 	},
 };
-

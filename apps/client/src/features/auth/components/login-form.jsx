@@ -37,12 +37,12 @@ export function LoginForm({ className, ...props }) {
 		if (fieldName === "email" && loginType === "email") {
 			const emailRegex = getLoginFieldsForRole[role][1].regex;
 			if (value && emailRegex && !new RegExp(emailRegex).test(value)) {
-				error = "Please enter a valid email address";
+				error = getLoginFieldsForRole[role][1].regexError;
 			}
 		} else if (fieldName === "username" && loginType === "username") {
 			const usernameRegex = getLoginFieldsForRole[role][0].regex;
 			if (value && usernameRegex && !new RegExp(usernameRegex).test(value)) {
-				error = "Please enter a valid username";
+				error = getLoginFieldsForRole[role][0].regexError;
 			}
 		}
 

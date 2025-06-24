@@ -30,7 +30,9 @@ export default function OptionsWithSearch({
 }) {
 	const id = useId();
 	const [open, setOpen] = useState(false);
-	const { label, name, required, options } = fieldDetails;
+	const { label, name, required } = fieldDetails;
+	const options = Object.values(fieldDetails.options);
+	const [searchValue, setSearchValue] = useState("");
 
 	return (
 		<div className="*:not-first:mt-2">
@@ -46,7 +48,7 @@ export default function OptionsWithSearch({
 					>
 						<span className={cn("truncate", !value && "text-muted-foreground")}>
 							{value
-								? options.find((option) => option.value === value)?.label
+								? options.find((option) => option === value)
 								: `Select ${label}`}
 						</span>
 						<ChevronDownIcon
@@ -63,31 +65,30 @@ export default function OptionsWithSearch({
 					<Command>
 						<CommandInput
 							placeholder={`Search ${label}...`}
-							required={required}
-							name={name}
-							value={value}
+							value={searchValue}
+							onValueChange={(value) => setSearchValue(value)}
 						/>
 						<CommandList>
-							<CommandEmpty>No framework found.</CommandEmpty>
+							<CommandEmpty>{`No ${label} found.`}</CommandEmpty>
 							<CommandGroup>
-								{options.map((option) => (
-									<CommandItem
-										key={option.value}
-										value={option.value}
-										onSelect={(currentValue) => {
-											handleFieldChange(
-												name,
-												currentValue === value ? "" : currentValue
-											);
-											setOpen(false);
-										}}
-									>
-										{option.label}
-										{value === option.value && (
-											<CheckIcon size={16} className="ml-auto" />
-										)}
-									</CommandItem>
-								))}
+								{options.map((option, index) => {
+									return (
+										<CommandItem
+											key={index}
+											value={option}
+											onSelect={(currentValue) => {
+												handleFieldChange(name, currentValue);
+												setSearchValue(currentValue);
+												setOpen(false);
+											}}
+										>
+											{option}
+											{value === option && (
+												<CheckIcon size={16} className="ml-auto" />
+											)}
+										</CommandItem>
+									);
+								})}
 							</CommandGroup>
 						</CommandList>
 					</Command>

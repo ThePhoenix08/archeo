@@ -47,7 +47,6 @@ export default function URLInput({
 				<div className="relative mt-2">
 					<Input
 						id={id}
-						className="peer ps-16 pr-10"
 						placeholder={initialValue || "example.com"}
 						type="text"
 						required={required}

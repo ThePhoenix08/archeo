@@ -23,7 +23,7 @@ export default function NameInputWithIcon({
 					required={required}
 					name={name}
 					value={value}
-					onChange={handleFieldChange}
+					onChange={(e) => handleFieldChange(name, e.target.value)}
 				/>
 				<div className="pointer-events-none absolute inset-y-0 end-0 flex items-center justify-center pe-3 text-muted-foreground/80 peer-disabled:opacity-50">
 					{icon}

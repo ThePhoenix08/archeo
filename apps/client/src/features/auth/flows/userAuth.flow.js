@@ -42,7 +42,7 @@ export const useUserAuthFlow = () => {
 			// validate result.user
 			if (resultMeta.isSuccess) {
 				console.log(result);
-				dispatch(setCredentials({ ...result.user }));
+				dispatch(setCredentials(result));
 				navigate(ROUTES.DASHBOARD);
 				toast.success(
 					`${type === "login" ? "Login" : "Registration"} successful!`,

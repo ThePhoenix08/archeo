@@ -267,14 +267,6 @@ export const registerFieldsForOrg = {
 			initialValue: "email@example.com",
 			regex: EMAIL_REGEX,
 		},
-		emailotp: {
-			name: "emailotp",
-			type: "otp",
-			label: "Verfication OTP",
-			required: true,
-			initialValue: "",
-			regex: OTP_REGEX,
-		},
 		website: {
 			name: "website",
 			type: "url",

@@ -1,22 +1,16 @@
 "use client";
 import { useCallback, useRef, useState } from "react";
 
-export const useFileUpload = (options = {
-  multiple: false,
-  maxFiles: 1,
-  maxSize: 10 * 1024 * 1024, // 10MB default
-  accept: "*",
-  initialFiles: [],
-}) => {
+export const useFileUpload = (options) => {
   const {
-    maxFiles = 1,
-    maxSize = 20 * 1024 * 1024,
-    accept = "*",
-    multiple = false,
-    initialFiles = [],
+    maxFiles,
+    maxSize,
+    accept,
+    multiple,
+    initialFiles,
     onFilesChange,
     onFilesAdded,
-  } = options
+  } = options;
 
   const [state, setState] = useState({
     files: initialFiles.map((file) => ({

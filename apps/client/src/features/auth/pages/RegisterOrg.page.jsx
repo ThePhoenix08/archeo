@@ -4,9 +4,11 @@ import FormStepper from "@/features/auth/components/FormStepper.jsx";
 import { registerFieldsForOrg } from "@/features/auth/constants/getFieldsForRole.constant.js";
 import { cn } from "@/lib/utils.js";
 import { Building2, FolderLock } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { validateFullAddress } from "@/features/auth/components/utils/address.utils.js";
 import { Button } from "@/components/ui/button.jsx";
+import { useOrgAuthFlow } from "@/features/auth/flows/orgAuth.flow.js";
+import { useParams } from "react-router";
 
 const formStages = Object.keys(registerFieldsForOrg);
 const FORMDATA_BLUEPRINT = {
@@ -18,8 +20,9 @@ const FORMDATA_BLUEPRINT = {
 	contactname: "",
 	designation: "",
 	phonenumber: "",
-	proof: registerFieldsForOrg["Verification"].proof.initialValue,
 	prooftype: registerFieldsForOrg["Verification"].prooftype.initialValue,
+	prooffilename: "",
+	prooffiletype: "",
 };
 
 const SUBMIT_CHECKLIST_BLUEPRINT = {
@@ -71,6 +74,8 @@ function RegisterOrgPage() {
 	);
 	const currentStageName = formStages[currentStage];
 	const currentStageFields = registerFieldsForOrg[currentStageName];
+	const { role } = useParams();
+	const { flow } = useOrgAuthFlow({ role });
 
 	// handlers
 	const handleFieldChange = (fieldName, value) => {
@@ -83,20 +88,27 @@ function RegisterOrgPage() {
 	};
 
 	const handleFileUploadChange = (files) => {
-		// console.log("files", files);
-		if (files && files[0] && files[0].file) {
-			setFormData((prev) => ({ ...prev, fileUpload: files[0]?.file }));
-			if (files[0]?.file.name) {
-				setFormData((prev) => ({ ...prev, proof: files[0]?.file.name }));
-			}
-			console.log(files[0]?.file.name ? files[0]?.file.name : "");
-			console.log(files[0]?.file.type ? files[0]?.file.type : "");
+		if (files && files.length > 0 && files[0].file) {
+			const file = files[0].file;
+			setFormData((prev) => ({
+				...prev,
+				fileUpload: file,
+				prooffilename: file.name ?? "",
+				prooffiletype: file.type ?? "",
+			}));
 		} else {
-			setFormData((prev) => ({ ...prev, proof: "", fileUpload: null }));
-			console.log("files", files);
-			console.error("File upload error");
+			setFormData((prev) => ({
+				...prev,
+				prooffilename: "",
+				prooffiletype: "",
+				fileUpload: null,
+			}));
 		}
 	};
+
+	useEffect(() => {
+		console.log(formData);
+	}, [formData]);
 
 	const validateStage = () => {
 		const stageErrors = {};
@@ -143,10 +155,30 @@ function RegisterOrgPage() {
 		}
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (!validateStage()) return;
-		console.log(formData);
+
+		const form = new FormData();
+		form.append("orgname", formData.orgname);
+		form.append("orgtype", formData.orgtype);
+		form.append("email", formData.email);
+		form.append("website", formData.website);
+		form.append("contactname", formData.contactname);
+		form.append("designation", formData.designation);
+		form.append("phonenumber", formData.phonenumber);
+		form.append("prooftype", formData.prooftype);
+		form.append("prooffilename", formData.prooffilename);
+		form.append("prooffiletype", formData.prooffiletype);
+		form.append("file", formData.fileUpload);
+		form.append("address", JSON.stringify(formData.address));
+
+		try {
+			const response = await flow("register", form);
+			console.log("Form Submitted Successfully:", response);
+		} catch (err) {
+			console.error("Form Submission Error:", err);
+		}
 	};
 
 	const isLastStage = currentStage === formStages.length - 1;
@@ -232,6 +264,7 @@ const RegisterOrgForm = ({
 	formStages,
 	submitCheckList,
 	setCurrentStage,
+	handleFileUploadChange,
 }) => {
 	return (
 		<form
@@ -272,6 +305,7 @@ const RegisterOrgForm = ({
 					formData={formData}
 					errors={errors}
 					handleFieldChange={handleFieldChange}
+					handleFileUploadChange={handleFileUploadChange}
 				/>
 			</div>
 

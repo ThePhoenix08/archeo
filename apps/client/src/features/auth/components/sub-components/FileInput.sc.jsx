@@ -19,11 +19,8 @@ const initialFiles = [
 	},
 ];
 
-export default function FileInput({
-	handleFileUploadChange,
-}) {
-	const maxSize = 10 * 1024 * 1024; // 10MB default
-
+export default function FileInput({ handleFileUploadChange }) {
+	const maxSize = 10 * 1024 * 1024;
 	const [
 		{ files, isDragging, errors },
 		{
@@ -36,9 +33,12 @@ export default function FileInput({
 			getInputProps,
 		},
 	] = useFileUpload({
-		maxSize,
 		initialFiles,
-		handleFileUploadChange,
+		onFilesChange: handleFileUploadChange,
+		multiple: false,
+		maxFiles: 1,
+		maxSize, // 10MB default
+		accept: "*",
 	});
 
 	const file = files[0];

@@ -37,7 +37,7 @@ export default function FormStepper({ currentStep, setCurrentStep, steps }) {
 					</StepperItem>
 				))}
 			</Stepper>
-			<div className="flex justify-center space-x-4">
+			{/* <div className="flex justify-center space-x-4">
 				<Button
 					variant="outline"
 					className="w-32"
@@ -54,7 +54,7 @@ export default function FormStepper({ currentStep, setCurrentStep, steps }) {
 				>
 					Next step
 				</Button>
-			</div>
+			</div> */}
 		</div>
 	);
 }

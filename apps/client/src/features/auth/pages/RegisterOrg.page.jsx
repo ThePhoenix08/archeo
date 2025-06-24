@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button.jsx";
 const formStages = Object.keys(registerFieldsForOrg);
 const FORMDATA_BLUEPRINT = {
 	orgname: "",
-	orgtype: registerFieldsForOrg["Basic Info"].orgtype.initialValue,
+	orgtype: "",
 	email: registerFieldsForOrg["Contact Info"].email.initialValue,
 	website: registerFieldsForOrg["Contact Info"].website.initialValue,
 	address: [],
@@ -204,6 +204,7 @@ function RegisterOrgPage() {
 								formStages={formStages}
 								submitCheckList={submitCheckList}
 								handleFileUploadChange={handleFileUploadChange}
+								setCurrentStage={setCurrentStage}
 							/>
 						</div>
 					</div>
@@ -230,6 +231,7 @@ const RegisterOrgForm = ({
 	isLastStage,
 	formStages,
 	submitCheckList,
+	setCurrentStage,
 }) => {
 	return (
 		<form
@@ -255,9 +257,10 @@ const RegisterOrgForm = ({
 					steps={formStages.map((stage, index) => ({
 						title: stage,
 						completed: submitCheckList[stage],
-						active: index === currentStage,
+						index: index,
 					}))}
 					currentStep={currentStage}
+					setCurrentStep={setCurrentStage}
 				/>
 			</div>
 

@@ -1,10 +1,11 @@
 import EmailInput from "@/features/auth/components/sub-components/EmailInput.sc.jsx";
 import NameInputWithIcon from "@/features/auth/components/sub-components/name-with-input-icon.sc.jsx";
-import { BriefcaseBusiness, Contact, Landmark } from "lucide-react";
+import { BriefcaseBusiness, Contact, Landmark, Phone } from "lucide-react";
 import OptionsWithSearch from "@/features/auth/components/sub-components/OptionsWithSearch.sc.jsx";
 import URLInput from "@/features/auth/components/sub-components/url-input.sc.jsx";
 import PhoneNumberInput from "@/features/auth/components/sub-components/PhoneNumberInput.sc.jsx";
 import AddressInput from "@/features/auth/components/sub-components/address-input.sc.jsx";
+import FileInput from "@/features/auth/components/sub-components/FileInput.sc.jsx";
 
 const FormStage = ({
 	currentStageName,
@@ -23,7 +24,7 @@ const FormStage = ({
 		};
 
 		switch (field.name) {
-			case "orgName":
+			case "orgname":
 				return (
 					<NameInputWithIcon
 						key={field.name}
@@ -31,7 +32,7 @@ const FormStage = ({
 						icon={<Landmark size={16} aria-hidden="true" />}
 					/>
 				);
-			case "contactName":
+			case "contactname":
 				return (
 					<NameInputWithIcon
 						key={field.name}
@@ -47,15 +48,9 @@ const FormStage = ({
 						icon={<BriefcaseBusiness size={16} aria-hidden="true" />}
 					/>
 				);
-			case "phoneNumber":
-				return (
-					<PhoneNumberInput
-						key={field.name}
-						{...commonProps}
-						icon={<Phone size={16} aria-hidden="true" />}
-					/>
-				);
-			case "proofType":
+			case "phonenumber":
+				return <PhoneNumberInput key={field.name} {...commonProps} />;
+			case "prooftype":
 				return <OptionsWithSearch key={field.name} {...commonProps} />;
 			case "fileUpload":
 				return (
@@ -65,20 +60,14 @@ const FormStage = ({
 						handleFileUploadChange={handleFileUploadChange}
 					/>
 				);
-			case "orgType":
+			case "orgtype":
 				return <OptionsWithSearch key={field.name} {...commonProps} />;
 			case "address":
 				return <AddressInput key={field.name} {...commonProps} />;
 			case "website":
 				return <URLInput key={field.name} {...commonProps} />;
 			case "email":
-				return (
-					<EmailInput
-						key={field.name}
-						{...commonProps}
-						icon={<Mail size={16} aria-hidden="true" />}
-					/>
-				);
+				return <EmailInput key={field.name} {...commonProps} />;
 			default:
 				return null;
 		}
@@ -90,11 +79,20 @@ const FormStage = ({
 				<div className="h-px bg-border" />
 			</div>
 
-			{Object.values(currentStageFields).map((field) => (
-				<div key={field.name} className="grid gap-3">
-					{renderField(field)}
-				</div>
-			))}
+			{Object.values(currentStageFields).map((field) => {
+				return (
+					<div key={field.name} className="grid gap-3">
+						{renderField(field)}
+					</div>
+				);
+			})}
+			{currentStageName === "Verification" && (
+				<>
+					<div className="grid gap-3">
+						<FileInput handleFileUploadChange={handleFileUploadChange} />
+					</div>
+				</>
+			)}
 		</div>
 	);
 };

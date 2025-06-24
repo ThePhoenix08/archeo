@@ -9,10 +9,7 @@ import {
 	StepperTrigger,
 } from "@/components/ui/stepper";
 
-const steps = [1, 2, 3, 4];
-
-export default function FormStepper() {
-	const [currentStep, setCurrentStep] = useState(2);
+export default function FormStepper({ currentStep, setCurrentStep, steps }) {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleNextStep = () => {
@@ -28,10 +25,10 @@ export default function FormStepper() {
 			<Stepper value={currentStep} onValueChange={setCurrentStep}>
 				{steps.map((step) => (
 					<StepperItem
-						key={step}
-						step={step}
+						key={step.title}
+						step={step.index}
 						className="not-last:flex-1"
-						loading={isLoading}
+						loading={!isLoading && currentStep > step.index}
 					>
 						<StepperTrigger asChild>
 							<StepperIndicator />
@@ -58,13 +55,6 @@ export default function FormStepper() {
 					Next step
 				</Button>
 			</div>
-			<p
-				className="mt-2 text-xs text-muted-foreground"
-				role="region"
-				aria-live="polite"
-			>
-				Controlled stepper with checkmarks and loading state
-			</p>
 		</div>
 	);
 }

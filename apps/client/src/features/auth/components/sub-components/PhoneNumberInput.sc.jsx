@@ -27,7 +27,7 @@ export default function PhoneNumberInput({
 				id={id}
 				placeholder="Enter phone number"
 				value={value}
-				onChange={(newValue) => handleFieldChange(newValue ?? "")}
+				onChange={(newValue) => handleFieldChange(name, newValue)}
 				name={name}
 				required={required}
 			/>

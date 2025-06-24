@@ -63,7 +63,7 @@ export default function EmailInput({
 				<Mail size={16} />
 				{label}
 			</Label>
-			<div className="flex w-full max-w-sm items-center gap-2">
+			<div className="flex w-full items-center gap-2">
 				<div className="flex rounded-md shadow-xs">
 					<Input
 						id={id}

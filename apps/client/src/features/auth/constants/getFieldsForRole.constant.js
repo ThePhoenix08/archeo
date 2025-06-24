@@ -202,7 +202,6 @@ export const registerFieldsForUser = {
 // basic data: org name, type,
 // contact info: official email, website?, address
 // representative contact: contact person name, designation, official contact number
-// proof of legitmacy document upload
 
 const ORG_TYPES = {
 	GOV: "Government",
@@ -267,14 +266,6 @@ export const registerFieldsForOrg = {
 			initialValue: "email@example.com",
 			regex: EMAIL_REGEX,
 		},
-		emailotp: {
-			name: "emailotp",
-			type: "otp",
-			label: "Verfication OTP",
-			required: true,
-			initialValue: "",
-			regex: OTP_REGEX,
-		},
 		website: {
 			name: "website",
 			type: "url",
@@ -320,14 +311,6 @@ export const registerFieldsForOrg = {
 		},
 	},
 	"Verification": {
-		proof: {
-			name: "proof",
-			type: "file",
-			label: "Document - Proof Of Legitmacy",
-			required: true,
-			initialValue: "filename.ext", // Stores filename
-			regex: FILENAME_REGEX,
-		},
 		prooftype: {
 			name: "prooftype",
 			type: "select",

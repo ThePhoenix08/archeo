@@ -33,6 +33,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest signinRequest, HttpServletRequest request){
+
         AuthResponse response=authService.login(signinRequest, request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

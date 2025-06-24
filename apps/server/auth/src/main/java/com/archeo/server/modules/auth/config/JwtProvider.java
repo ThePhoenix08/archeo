@@ -26,6 +26,8 @@ public class JwtProvider {
     }
 
     public String generateAccessToken(Map<String, Object> extraClaims, String username) {
+
+
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(username)

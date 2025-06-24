@@ -64,7 +64,7 @@ public class AuthServiceImpl implements AuthService {
         newOwner.setUser(savedUser);
         ownerRepo.save(newOwner);
 
-        Map<String, Object> claims = Map.of("role", savedUser.getUserRole().name());
+        Map<String, Object> claims = Map.of("authorities", savedUser.getUserRole().name());
         String accessToken = jwtProvider.generateAccessToken(claims, savedUser.getEmail());
         String refreshToken = jwtProvider.generateRefreshToken(savedUser.getEmail());
 
@@ -89,7 +89,7 @@ public class AuthServiceImpl implements AuthService {
 
         if(!loginRequest.getPassword().equals(passwordEncoder.encode(user.getPassword())));
 
-        Map<String, Object> claims = Map.of("role", user.getUserRole().name());
+        Map<String, Object> claims = Map.of("authorities", user.getUserRole().name());
 
         String accessToken = jwtProvider.generateAccessToken(claims, user.getEmail());
         String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
@@ -128,6 +128,7 @@ public class AuthServiceImpl implements AuthService {
         organization.setContactEmail(request.getContactEmail());
         organization.setContactPhone(request.getContactPhone());
         organization.setIdentityProof(request.getIdentityProof());
+        organization.setWebUrl(request.getWebUrl());
         organization.setAddress(request.getAddress());
         organizationRepo.save(organization);
 

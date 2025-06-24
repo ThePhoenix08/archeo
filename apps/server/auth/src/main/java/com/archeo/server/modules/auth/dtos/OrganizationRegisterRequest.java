@@ -47,6 +47,11 @@ public class OrganizationRegisterRequest {
     @Size(max = 255, message = "Identity proof URL or ID must be under 255 characters")
     private String identityProof;
 
+    @Size(max = 100, message = "Website URL must be under 100 characters")
+    private String webUrl;
+
     @Size(max = 500, message = "Address must be under 500 characters")
     private String address;
+
+
 }

@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class Owner {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // SERIAL in PostgreSQL
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
 
@@ -27,10 +27,19 @@ public class Owner {
     @Column(name = "dob")
     private LocalDate dob;
 
+    @Column(name="phone_number")
+    private String phoneNumber;
+
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private UsersCommon user;
+
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
+    @Column(name="bio")
+    private String bio;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

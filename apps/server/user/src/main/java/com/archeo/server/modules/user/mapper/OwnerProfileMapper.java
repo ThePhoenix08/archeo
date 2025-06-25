@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
-public interface OwnerMapper {
+public interface OwnerProfileMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)

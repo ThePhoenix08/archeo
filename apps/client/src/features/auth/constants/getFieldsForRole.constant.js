@@ -5,7 +5,7 @@ const EMAIL_REGEX =
 	/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 const URL_REGEX =
 	/^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
-const ALPHA_NUMERIC_REGEX = /^[A-Za-z0-9\s]{2,100}$/;
+const ALPHA_NUMERIC_REGEX = /^[A-Za-z0-9\s_-]{2,100}$/;
 const OTP_REGEX = /^\d{6}$/;
 const ALPHA_REGEX = /^[A-Za-z\s]{2,100}$/;
 const IND_PHONE_NUMBER_REGEX = /^(\+91[\-\s]?)?[0]?(91)?[6789]\d{9}$/;
@@ -75,7 +75,7 @@ export const getLoginFieldsForRole = {
 			initialValue: "",
 			regex: ALPHA_NUMERIC_REGEX,
 			regexError:
-				"Username should only contain letters and spaces (2 to 100 characters)",
+				"Username must be 2–100 characters with letters, numbers, spaces, - or _.",
 		},
 		{
 			name: "email",

@@ -39,26 +39,23 @@ export const useUserAuthFlow = () => {
 			}
 
 			const result = await fn(formData).unwrap();
-			// validate result.user
-			if (resultMeta.isSuccess) {
-				console.log(result);
-				dispatch(setCredentials(result));
-				navigate(ROUTES.DASHBOARD);
-				toast.success(
-					`${type === "login" ? "Login" : "Registration"} successful!`,
-					{
-						position: "top-center",
-						autoClose: 2000,
-						hideProgressBar: false,
-						closeOnClick: false,
-						pauseOnHover: true,
-						draggable: false,
-						progress: undefined,
-						theme: "dark",
-						transition: Bounce,
-					}
-				);
-			}
+			console.log(result);
+			dispatch(setCredentials(result));
+			navigate(ROUTES.DASHBOARD);
+			toast.success(
+				`${type === "login" ? "Login" : "Registration"} successful!`,
+				{
+					position: "top-right",
+					autoClose: 2000,
+					hideProgressBar: false,
+					closeOnClick: false,
+					pauseOnHover: true,
+					draggable: false,
+					progress: undefined,
+					theme: "dark",
+					transition: Bounce,
+				}
+			);
 		} catch (error) {
 			console.error(`[${type.toUpperCase()} ERROR]:`, error);
 			return { error: error.message || "Something went wrong" };

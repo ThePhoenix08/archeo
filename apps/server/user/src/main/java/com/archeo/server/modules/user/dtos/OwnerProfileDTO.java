@@ -14,9 +14,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class OwnerProfileDTO {
 
-    private String username;
+//    private String username;
 
-    private String email;
+//    private String email;
 
     private String fullName;
 

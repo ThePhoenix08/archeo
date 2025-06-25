@@ -7,6 +7,7 @@
 ├── .gitignore
 ├── .vscode/
 │   ├── extensions.json
+│   ├── launch.json
 │   └── settings.json
 ├── README.md
 ├── apps/
@@ -31,13 +32,18 @@
 │   │   │   ├── components/
 │   │   │   │   └── ui/
 │   │   │   │       ├── .gitkeep
+│   │   │   │       ├── badge.jsx
 │   │   │   │       ├── button.jsx
 │   │   │   │       ├── calendar.jsx
 │   │   │   │       ├── card.jsx
+│   │   │   │       ├── command.jsx
+│   │   │   │       ├── dialog.jsx
 │   │   │   │       ├── input.jsx
 │   │   │   │       ├── label.jsx
 │   │   │   │       ├── popover.jsx
-│   │   │   │       └── select-native.jsx
+│   │   │   │       ├── select-native.jsx
+│   │   │   │       ├── skeleton.jsx
+│   │   │   │       └── stepper.jsx
 │   │   │   ├── features/
 │   │   │   │   ├── account/
 │   │   │   │   │   ├── AccountSection.jsx
@@ -58,17 +64,29 @@
 │   │   │   │   │   ├── actions/
 │   │   │   │   │   │   └── authApi.action.js
 │   │   │   │   │   ├── components/
-│   │   │   │   │   │   ├── ProtectedRoute.wrapper.jsx
-│   │   │   │   │   │   ├── RegisterFormTV.c.jsx
-│   │   │   │   │   │   ├── RouteGuard.jsx
+│   │   │   │   │   │   ├── FeaturePreview.jsx
+│   │   │   │   │   │   ├── FeatureStepper.jsx
+│   │   │   │   │   │   ├── FormStage.jsx
+│   │   │   │   │   │   ├── FormStepper.jsx
 │   │   │   │   │   │   ├── login-form.jsx
-│   │   │   │   │   │   └── sub-components/
-│   │   │   │   │   │       ├── EmailInput.sc.jsx
-│   │   │   │   │   │       ├── Timeline.sc.jsx
-│   │   │   │   │   │       ├── dob-input.sc.jsx
-│   │   │   │   │   │       ├── fullname-input.sc.jsx
-│   │   │   │   │   │       ├── password-input.sc.jsx
-│   │   │   │   │   │       └── username-input.sc.jsx
+│   │   │   │   │   │   ├── sub-components/
+│   │   │   │   │   │   │   ├── EmailInput.sc.jsx
+│   │   │   │   │   │   │   ├── FileInput.sc.jsx
+│   │   │   │   │   │   │   ├── OTPInputDouble.sc.jsx
+│   │   │   │   │   │   │   ├── OptionsWithSearch.sc.jsx
+│   │   │   │   │   │   │   ├── PhoneNumberInput.sc.jsx
+│   │   │   │   │   │   │   ├── address-input.sc.jsx
+│   │   │   │   │   │   │   ├── dob-input.sc.jsx
+│   │   │   │   │   │   │   ├── fullname-input.sc.jsx
+│   │   │   │   │   │   │   ├── link-preview.sc.jsx
+│   │   │   │   │   │   │   ├── name-with-input-icon.sc.jsx
+│   │   │   │   │   │   │   ├── password-input.sc.jsx
+│   │   │   │   │   │   │   ├── url-input.sc.jsx
+│   │   │   │   │   │   │   └── username-input.sc.jsx
+│   │   │   │   │   │   └── utils/
+│   │   │   │   │   │       ├── ProtectedRoute.wrapper.jsx
+│   │   │   │   │   │       ├── RouteGuard.jsx
+│   │   │   │   │   │       └── address.utils.js
 │   │   │   │   │   ├── constants/
 │   │   │   │   │   │   └── getFieldsForRole.constant.js
 │   │   │   │   │   ├── flows/
@@ -106,7 +124,8 @@
 │   │   │   │   └── verify/
 │   │   │   │       └── Verification.page.jsx
 │   │   │   ├── hooks/
-│   │   │   │   └── use-character-limit.js
+│   │   │   │   ├── use-character-limit.js
+│   │   │   │   └── use-file-upload.js
 │   │   │   ├── index.css
 │   │   │   ├── lib/
 │   │   │   │   └── utils.js
@@ -152,6 +171,7 @@
 │       │       │   │               └── modules/
 │       │       │   │                   └── application/
 │       │       │   │                       ├── Application.java
+│       │       │   │                       ├── EnvPrinter.java
 │       │       │   │                       └── HelloController.java
 │       │       │   └── resources/
 │       │       │       └── application.properties
@@ -178,15 +198,20 @@
 │       │       │   │                       │   ├── JwtConstant.java
 │       │       │   │                       │   ├── JwtProvider.java
 │       │       │   │                       │   ├── JwtTokenValidator.java
-│       │       │   │                       │   └── ROIDeserializer.java
+│       │       │   │                       │   ├── ROIDeserializer.java
+│       │       │   │                       │   └── RequestLoggingFilter.java
 │       │       │   │                       ├── controllers/
-│       │       │   │                       │   └── AuthController.java
+│       │       │   │                       │   ├── AuthController.java
+│       │       │   │                       │   └── LinkPreviewController.java
 │       │       │   │                       ├── dtos/
 │       │       │   │                       │   ├── AuthResponse.java
-│       │       │   │                       │   ├── OwnerRegisterRequest.java
-│       │       │   │                       │   └── SigninRequest.java
+│       │       │   │                       │   ├── LinkPreviewRequest.java
+│       │       │   │                       │   ├── LoginRequest.java
+│       │       │   │                       │   ├── OrganizationRegisterRequest.java
+│       │       │   │                       │   └── OwnerRegisterRequest.java
 │       │       │   │                       ├── models/
 │       │       │   │                       │   ├── AuthLogs.java
+│       │       │   │                       │   ├── LinkPreviewResponse.java
 │       │       │   │                       │   └── Session.java
 │       │       │   │                       ├── repositories/
 │       │       │   │                       │   ├── AuthLogsRepo.java
@@ -196,11 +221,13 @@
 │       │       │   │                           ├── AuthLogsService.java
 │       │       │   │                           ├── AuthService.java
 │       │       │   │                           ├── CustomUserDetailsService.java
+│       │       │   │                           ├── IdentityProofStorageService.java
+│       │       │   │                           ├── LinkPreviewService.java
 │       │       │   │                           ├── SessionService.java
 │       │       │   │                           └── serviceImpl/
 │       │       │   │                               └── AuthServiceImpl.java
 │       │       │   └── resources/
-│       │       │       └── application.yml
+│       │       │       └── application.properties
 │       │       └── test/
 │       │           └── java/
 │       │               └── com/
@@ -249,8 +276,6 @@
 │       │       │   │           └── server/
 │       │       │   │               └── modules/
 │       │       │   │                   └── common/
-│       │       │   │                       ├── config/
-│       │       │   │                       │   └── CORSConfig.java
 │       │       │   │                       ├── constants/
 │       │       │   │                       │   └── AppConstants.java
 │       │       │   │                       ├── converter/
@@ -260,7 +285,10 @@
 │       │       │   │                       ├── enums/
 │       │       │   │                       │   └── USER_ROLE.java
 │       │       │   │                       ├── exceptions/
-│       │       │   │                       │   └── GlobalExceptionHandler.java
+│       │       │   │                       │   ├── GlobalExceptionHandler.java
+│       │       │   │                       │   ├── InvalidCredentialsException.java
+│       │       │   │                       │   ├── ResourceNotFoundException.java
+│       │       │   │                       │   └── UserAlreadyExistsException.java
 │       │       │   │                       ├── models/
 │       │       │   │                       │   ├── Permission.java
 │       │       │   │                       │   └── UsersCommon.java
@@ -373,6 +401,7 @@
 │       │                           └── modules/
 │       │                               └── processing/
 │       │                                   └── ProcessingTests.java
+│       ├── qodana.yaml
 │       ├── template/
 │       │   ├── pom.xml
 │       │   └── src/
@@ -416,7 +445,10 @@
 │       │       │   │                       ├── config/
 │       │       │   │                       │   └── SecurityConfig.java
 │       │       │   │                       ├── controllers/
-│       │       │   │                       │   └── AuthController.java
+│       │       │   │                       │   └── ProfileController.java
+│       │       │   │                       ├── dtos/
+│       │       │   │                       │   ├── OrganizationProfileDTO.java
+│       │       │   │                       │   └── OwnerProfileDTO.java
 │       │       │   │                       ├── enums/
 │       │       │   │                       │   └── VERIFICATION_STATUS.java
 │       │       │   │                       ├── models/
@@ -426,7 +458,9 @@
 │       │       │   │                       │   ├── OrganizationRepo.java
 │       │       │   │                       │   └── OwnerRepo.java
 │       │       │   │                       └── services/
-│       │       │   │                           └── AuthService.java
+│       │       │   │                           ├── ProfileService.java
+│       │       │   │                           └── serviceImpl/
+│       │       │   │                               └── ProfileServiceImpl.java
 │       │       │   └── resources/
 │       │       │       └── application.yml
 │       │       └── test/
@@ -479,4 +513,4 @@
 └── tests/
     └── .gitkeep
 
-273 directories, 207 files
+275 directories, 239 files

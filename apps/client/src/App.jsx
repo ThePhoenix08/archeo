@@ -27,7 +27,7 @@ import TemplateLayout from "@/features/template/TemplateLayout";
 import VerificationPage from "@/features/verify/verification.page";
 import AppLayout from "@/shared/layout/AppLayout";
 import { ROLES } from "@/shared/constants/roles.constant";
-import { RouteGuard } from "@/features/auth/components/RouteGuard";
+import { RouteGuard } from "@/features/auth/components/utils/RouteGuard";
 import NotFoundPage from "@/shared/routing/NotFound.page";
 
 import { ToastContainer } from "react-toastify";

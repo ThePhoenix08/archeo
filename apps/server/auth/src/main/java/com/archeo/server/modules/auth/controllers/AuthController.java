@@ -26,7 +26,7 @@ public class AuthController {
     private final IdentityProofStorageService proofStorageService;
 
     @PostMapping("/register-owner")
-    public ResponseEntity<AuthResponse> register(@Valid  @RequestBody OwnerRegisterRequest registerRequest, HttpServletRequest request){
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody  OwnerRegisterRequest registerRequest, HttpServletRequest request){
         AuthResponse response=authService.registerOwner(registerRequest, request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

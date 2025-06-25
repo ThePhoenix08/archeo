@@ -41,7 +41,14 @@ public class Owner {
     @Column(name="bio")
     private String bio;
 
+    @Column(name="address")
+    private String address;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private Timestamp createdAt;
+
+    @CreationTimestamp
+    @Column(name = "updated_at")
+    private Timestamp updatedAt;
 }

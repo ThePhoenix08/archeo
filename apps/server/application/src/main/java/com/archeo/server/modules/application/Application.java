@@ -15,9 +15,18 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 @SpringBootApplication(scanBasePackages = {
-		"com.archeo.server.modules.application", // Ensures CORSConfig is picked up
-		"com.archeo.server.modules.auth",         // etc.
-		"com.archeo"
+		"com.archeo.server.modules.application",
+		"com.archeo.server.modules.auth",
+		"com.archeo.server.modules.user",
+		"com.archeo.server.modules.common",
+		"com.archeo.server.modules.blockchain",
+		"com.archeo.server.modules.document",
+		"com.archeo.server.modules.encryption",
+		"com.archeo.server.modules.processing",
+		"com.archeo.server.modules.template",
+		"com.archeo.server.modules.verification",
+
+
 })
 @EnableJpaRepositories(basePackages = "com.archeo")    // Picks up all repositories
 @EntityScan(basePackages = "com.archeo")               // Scans for @Entity classes

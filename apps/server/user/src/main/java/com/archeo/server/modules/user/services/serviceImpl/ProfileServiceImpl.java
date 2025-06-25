@@ -1,11 +1,18 @@
 package com.archeo.server.modules.user.services.serviceImpl;
 
 import com.archeo.server.modules.common.exceptions.InvalidCredentialsException;
+import com.archeo.server.modules.common.exceptions.UserNotFoundException;
 import com.archeo.server.modules.common.models.UsersCommon;
 import com.archeo.server.modules.common.repositories.UsersCommonRepository;
 import com.archeo.server.modules.user.dtos.OrganizationProfileDTO;
 import com.archeo.server.modules.user.dtos.OwnerProfileDTO;
+import com.archeo.server.modules.user.dtos.UpdateOrganizationProfileRequest;
+import com.archeo.server.modules.user.dtos.UpdateOwnerProfileRequest;
+import com.archeo.server.modules.user.mapper.OrgProfileMapper;
+import com.archeo.server.modules.user.mapper.OwnerProfileMapper;
+import com.archeo.server.modules.user.models.Organization;
 import com.archeo.server.modules.user.models.Owner;
+import com.archeo.server.modules.user.repositories.OrganizationRepo;
 import com.archeo.server.modules.user.repositories.OwnerRepo;
 import com.archeo.server.modules.user.services.ProfileService;
 import lombok.RequiredArgsConstructor;
@@ -19,17 +26,12 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final UsersCommonRepository usersCommonRepository;
     private final OwnerRepo ownerRepo;
+    private final OwnerProfileMapper ownerMapper;
+    private final OrgProfileMapper organizationMapper;
+    private final OrganizationRepo organizationRepo;
 
 
-    @Override
-    public OrganizationProfileDTO getOrganizationProfile() {
-        return null;
-    }
 
-    @Override
-    public OrganizationProfileDTO updateOrganizationProfile() {
-        return null;
-    }
 
     @Override
     public OwnerProfileDTO getOwnerProfile(UsersCommon user) {
@@ -40,20 +42,50 @@ public class ProfileServiceImpl implements ProfileService {
 
         OwnerProfileDTO ownerProfile=new OwnerProfileDTO();
 
-        ownerProfile.setUsername(user.getUsername());
-        ownerProfile.setEmail(user.getEmail());
+//        ownerProfile.setUsername(user.getUsername());
+//        ownerProfile.setEmail(user.getEmail());
 
-        ownerProfile.setFullName(existingOwner.getFullName());
-        ownerProfile.setDob(existingOwner.getDob());
-        ownerProfile.setPhoneNumber(existingOwner.getPhoneNumber());
-        ownerProfile.setDob(existingOwner.getDob());
-        ownerProfile.setAddress(ownerProfile.getAddress());
-        ownerProfile.setAvatarUrl(ownerProfile.getAvatarUrl());
+        ownerMapper.getOwnerDTOFromOwner(existingOwner, ownerProfile);
+
         return ownerProfile;
     }
 
     @Override
-    public OwnerProfileDTO updateOwnerProfile() {
-        return null;
+    public void updateOwnerProfile(String userEmail, UpdateOwnerProfileRequest updateOwnerProfile) {
+
+//        Optional<UsersCommon> userToUpdate= Optional.ofNullable(usersCommonRepository.findByEmail(userEmail)
+//                .orElseThrow(() -> new UserNotFoundException("User not found")));
+
+        Owner ownerToUpdate= (Owner) ownerRepo.findByUserEmail(userEmail)
+                .orElseThrow(()-> new UserNotFoundException("User not found"));
+
+        ownerMapper.updateOwnerFromDto(updateOwnerProfile, ownerToUpdate);
+
+        ownerRepo.save(ownerToUpdate);
+
+
     }
+
+    @Override
+    public OrganizationProfileDTO getOrganizationProfile(String email) {
+
+        Organization existingOrg = organizationRepo.findByUserEmail(email)
+                .orElseThrow(()-> new UserNotFoundException("User not found"));
+
+        OrganizationProfileDTO organizationProfileDTO=new OrganizationProfileDTO();
+        organizationMapper.getOrgDtoFromOrganization(existingOrg, organizationProfileDTO);
+
+        return  organizationProfileDTO;
+    }
+
+    @Override
+    public void updateOrganizationProfile(UpdateOrganizationProfileRequest updateOrganizationProfileRequest, String orgEmail) {
+
+        Organization orgToUpdate = organizationRepo.findByUserEmail(orgEmail)
+                .orElseThrow(()-> new UserNotFoundException("User not found"));
+
+        organizationMapper.updateOrgFromUpdateOrgRequest(updateOrganizationProfileRequest, orgToUpdate);
+        organizationRepo.save(orgToUpdate);
+    }
+
 }

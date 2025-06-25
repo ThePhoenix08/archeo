@@ -5,11 +5,13 @@ import com.archeo.server.modules.auth.dtos.AuthResponse;
 import com.archeo.server.modules.auth.dtos.LoginRequest;
 import com.archeo.server.modules.auth.dtos.OrganizationRegisterRequest;
 import com.archeo.server.modules.auth.dtos.OwnerRegisterRequest;
+import com.archeo.server.modules.auth.mapper.OrganizationMapper;
+import com.archeo.server.modules.auth.mapper.OwnerMapper;
+import com.archeo.server.modules.auth.mapper.UsersCommonMapper;
 import com.archeo.server.modules.auth.repositories.SessionRepo;
 import com.archeo.server.modules.auth.services.AuthLogsService;
 import com.archeo.server.modules.auth.services.AuthService;
 import com.archeo.server.modules.auth.services.SessionService;
-import com.archeo.server.modules.common.enums.USER_ROLE;
 import com.archeo.server.modules.common.exceptions.ResourceNotFoundException;
 import com.archeo.server.modules.common.exceptions.UserAlreadyExistsException;
 import com.archeo.server.modules.common.models.UsersCommon;
@@ -40,6 +42,9 @@ public class AuthServiceImpl implements AuthService {
     private final UsersCommonRepository usersCommonRepository;
     private final OwnerRepo ownerRepo;
     private final OrganizationRepo organizationRepo;
+    private final OwnerMapper ownerMapper;
+    private final OrganizationMapper organizationMapper;
+    private final UsersCommonMapper usersCommonMapper;
 
 
     @Override
@@ -51,16 +56,15 @@ public class AuthServiceImpl implements AuthService {
             throw new UserAlreadyExistsException("User already exists");
         }
 
+
         UsersCommon newUser=new UsersCommon();
-        newUser.setUsername(request.getUsername());
-        newUser.setEmail(request.getEmail());
-        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
-        newUser.setUserRole(USER_ROLE.ROLE_OWNER);
+        usersCommonMapper.ownerToUsersCommon(request, newUser);
+
         UsersCommon savedUser=usersCommonRepository.save(newUser);
 
         Owner newOwner=new Owner();
-        newOwner.setFullName(request.getFullName());
-        newOwner.setDob(request.getDob());
+        ownerMapper.mapOwnerRegisterRequestToOwner(request, newOwner);
+
         newOwner.setUser(savedUser);
         ownerRepo.save(newOwner);
 
@@ -113,23 +117,15 @@ public class AuthServiceImpl implements AuthService {
         }
 
         UsersCommon user = new UsersCommon();
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setUserRole(USER_ROLE.ROLE_ISSUER); //
+
+        usersCommonMapper.organizationToUsersCommon(request, user);
+
         UsersCommon savedUser = usersCommonRepository.save(user);
 
         Organization organization = new Organization();
+
+        organizationMapper.mapOrganizationRegisterRequestToOrganization(request, organization);
         organization.setUser(savedUser);
-        organization.setOrganizationName(request.getOrganizationName());
-        organization.setOrganizationType(request.getOrganizationType());
-        organization.setOrganizationDomains(request.getOrganizationDomains());
-        organization.setContactName(request.getContactName());
-        organization.setContactEmail(request.getContactEmail());
-        organization.setContactPhone(request.getContactPhone());
-        organization.setIdentityProof(request.getIdentityProof());
-        organization.setWebUrl(request.getWebUrl());
-        organization.setAddress(request.getAddress());
         organizationRepo.save(organization);
 
         Map<String, Object> claims = Map.of("role", savedUser.getUserRole().name());

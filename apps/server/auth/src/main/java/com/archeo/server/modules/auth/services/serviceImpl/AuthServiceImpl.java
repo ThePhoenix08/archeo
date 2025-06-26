@@ -20,7 +20,9 @@ import com.archeo.server.modules.user.models.Organization;
 import com.archeo.server.modules.user.models.Owner;
 import com.archeo.server.modules.user.repositories.OrganizationRepo;
 import com.archeo.server.modules.user.repositories.OwnerRepo;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,7 +51,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public AuthResponse registerOwner(OwnerRegisterRequest request, HttpServletRequest servletRequest) {
+    public AuthResponse registerOwner(OwnerRegisterRequest request,
+                                      HttpServletRequest servletRequest,
+                                      HttpServletResponse response) {
 
         Optional<UsersCommon> existingUser=userRepository.findByEmail(request.getEmail());
         if(existingUser.isPresent()){
@@ -72,12 +76,29 @@ public class AuthServiceImpl implements AuthService {
         String accessToken = jwtProvider.generateAccessToken(claims, savedUser.getEmail());
         String refreshToken = jwtProvider.generateRefreshToken(savedUser.getEmail());
 
+
+        System.out.println("Access token for registered owner:"+request.getEmail()+"==>"+accessToken);
+        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setSecure(true);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge(15 * 60);
+
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(3 * 24 * 60 * 60);
+        sessionService.saveSession(savedUser, refreshToken, servletRequest);
+        authLogsService.log(savedUser, refreshToken, servletRequest);
+
+
+        response.addCookie(accessTokenCookie);
+        response.addCookie(refreshTokenCookie);
         sessionService.saveSession(savedUser, refreshToken, servletRequest);
         authLogsService.log(savedUser, refreshToken, servletRequest);
 
         return AuthResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
                 .userRole(newUser.getUserRole().name())
                 .build();
 
@@ -85,7 +106,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse login(LoginRequest loginRequest, HttpServletRequest servletRequest) {
+    public AuthResponse login(LoginRequest loginRequest,
+                              HttpServletRequest servletRequest,
+                              HttpServletResponse response) {
 
         UsersCommon user=userRepository.findByEmail(loginRequest.getEmail())
                 .or(()-> userRepository.findByUsername(loginRequest.getUsername()))
@@ -98,18 +121,38 @@ public class AuthServiceImpl implements AuthService {
         String accessToken = jwtProvider.generateAccessToken(claims, user.getEmail());
         String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
 
+        System.out.println("Access token for logged in user:"+loginRequest.getEmail()+"==>"+accessToken);
+
+        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setSecure(true);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge(15 * 60);
+
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(3 * 24 * 60 * 60);
+        sessionService.saveSession(user, refreshToken, servletRequest);
+        authLogsService.log(user, refreshToken, servletRequest);
+
+
+        response.addCookie(accessTokenCookie);
+        response.addCookie(refreshTokenCookie);
+
         sessionService.saveSession(user, refreshToken, servletRequest);
         authLogsService.log(user, refreshToken, servletRequest);
 
         return AuthResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
                 .userRole(user.getUserRole().name())
                 .build();
     }
 
 
-    public AuthResponse registerOrganization(OrganizationRegisterRequest request, HttpServletRequest servletRequest) {
+    public AuthResponse registerOrganization(OrganizationRegisterRequest request,
+                                             HttpServletRequest servletRequest,
+                                             HttpServletResponse response) {
 
         Optional<UsersCommon> existingUser = usersCommonRepository.findByEmail(request.getEmail());
         if (existingUser.isPresent()) {
@@ -132,14 +175,30 @@ public class AuthServiceImpl implements AuthService {
         String accessToken = jwtProvider.generateAccessToken(claims, savedUser.getEmail());
         String refreshToken = jwtProvider.generateRefreshToken(savedUser.getEmail());
 
+        System.out.println("Access token for registered organization:"+request.getEmail()+"==>"+accessToken);
+
+        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setSecure(true);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge(15 * 60);
+
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(3 * 24 * 60 * 60);
         sessionService.saveSession(savedUser, refreshToken, servletRequest);
         authLogsService.log(savedUser, refreshToken, servletRequest);
 
+
+        response.addCookie(accessTokenCookie);
+        response.addCookie(refreshTokenCookie);
+
         return AuthResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
                 .userRole(savedUser.getUserRole().name())
                 .build();
+
     }
 
     @Override

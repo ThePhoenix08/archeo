@@ -3,7 +3,7 @@ import { ROLES } from "@/shared/constants/roles.constant.js";
 
 const EMAIL_REGEX =
 	/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
-const ALPHA_NUMERIC_REGEX = /^[A-Za-z0-9\s]{2,100}$/;
+const ALPHA_NUMERIC_REGEX = /^[A-Za-z0-9\s_-]{2,100}$/;
 const OTP_REGEX = /^\d{6}$/;
 const ALPHA_REGEX = /^[A-Za-z\s]{2,100}$/;
 
@@ -247,8 +247,8 @@ export const registerFieldsForOrg = {
 			validation: {
 				onlyAlphanumeric: true,
 				noConsecutiveSpaces: true,
-				noLeadingTrailingSpaces: true
-			}
+				noLeadingTrailingSpaces: true,
+			},
 		},
 		orgtype: {
 			name: "orgtype",
@@ -264,7 +264,7 @@ export const registerFieldsForOrg = {
 			label: "Official Email ID",
 			required: true,
 			initialValue: "email@example.com",
-			maxLength: 254
+			maxLength: 254,
 		},
 		password: {
 			name: "password",
@@ -277,8 +277,8 @@ export const registerFieldsForOrg = {
 			maxLength: 128,
 			validation: {
 				noConsecutiveSpaces: true,
-				noLeadingTrailingSpaces: true
-			}
+				noLeadingTrailingSpaces: true,
+			},
 		},
 	},
 	"Contact Info": {
@@ -288,7 +288,7 @@ export const registerFieldsForOrg = {
 			label: "Organization Website",
 			required: false,
 			initialValue: "https://www.example.com",
-			maxLength: 2048
+			maxLength: 2048,
 		},
 		address: {
 			name: "address",
@@ -311,8 +311,8 @@ export const registerFieldsForOrg = {
 			validation: {
 				onlyAlphabets: true,
 				noConsecutiveSpaces: true,
-				noLeadingTrailingSpaces: true
-			}
+				noLeadingTrailingSpaces: true,
+			},
 		},
 		designation: {
 			name: "designation",
@@ -325,8 +325,8 @@ export const registerFieldsForOrg = {
 			validation: {
 				allowedSpecialChars: ".,&()-/",
 				noConsecutiveSpaces: true,
-				noLeadingTrailingSpaces: true
-			}
+				noLeadingTrailingSpaces: true,
+			},
 		},
 		phonenumber: {
 			name: "phonenumber",
@@ -345,6 +345,5 @@ export const registerFieldsForOrg = {
 			options: PROOF_TYPES,
 			initialValue: PROOF_TYPES.CIN,
 		},
-
 	},
 };

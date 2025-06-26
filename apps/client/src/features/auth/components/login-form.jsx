@@ -5,15 +5,14 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useNavigate } from "react-router";
 import { useParams } from "react-router";
 import { LogIn, Mail, CircleUserRound, LockKeyhole } from "lucide-react";
-import { toast, Bounce } from "react-toastify";
-
 import { getLoginFieldsForRole } from "@/features/auth/constants/getFieldsForRole.constant.js";
 import { useUserAuthFlow } from "@/features/auth/flows/userAuth.flow.js";
 
 export function LoginForm({ className, ...props }) {
+	let { role } = useParams();
+	const { flow } = useUserAuthFlow();
 	const [loginType, setLoginType] = useState("email"); // "email" or "username"
 	const [formdata, setFormdata] = useState({
 		username: "",
@@ -25,10 +24,6 @@ export function LoginForm({ className, ...props }) {
 		email: "",
 		password: "",
 	});
-	const navigate = useNavigate();
-	const { flow } = useUserAuthFlow();
-
-	let { role } = useParams();
 
 	// Validation function
 	const validateField = (fieldName, value) => {

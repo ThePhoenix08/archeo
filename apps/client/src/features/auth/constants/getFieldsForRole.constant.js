@@ -3,13 +3,9 @@ import { ROLES } from "@/shared/constants/roles.constant.js";
 
 const EMAIL_REGEX =
 	/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
-const URL_REGEX =
-	/^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
-const ALPHA_NUMERIC_REGEX = /^[A-Za-z0-9\s_-]{2,100}$/;
+const ALPHA_NUMERIC_REGEX = /^[A-Za-z0-9\s]{2,100}$/;
 const OTP_REGEX = /^\d{6}$/;
 const ALPHA_REGEX = /^[A-Za-z\s]{2,100}$/;
-const IND_PHONE_NUMBER_REGEX = /^(\+91[\-\s]?)?[0]?(91)?[6789]\d{9}$/;
-const FILENAME_REGEX = /^[a-zA-Z0-9_.-]+$/;
 
 function validatePasswordDetailed(password) {
 	const errors = [];
@@ -246,7 +242,13 @@ export const registerFieldsForOrg = {
 			label: "Organization Name",
 			required: true,
 			initialValue: "",
-			regex: ALPHA_NUMERIC_REGEX,
+			minLength: 2,
+			maxLength: 100,
+			validation: {
+				onlyAlphanumeric: true,
+				noConsecutiveSpaces: true,
+				noLeadingTrailingSpaces: true
+			}
 		},
 		orgtype: {
 			name: "orgtype",
@@ -256,23 +258,37 @@ export const registerFieldsForOrg = {
 			initialValue: ORG_TYPES.COM,
 			options: ORG_TYPES,
 		},
-	},
-	"Contact Info": {
 		email: {
 			name: "email",
 			type: "email",
 			label: "Official Email ID",
 			required: true,
 			initialValue: "email@example.com",
-			regex: EMAIL_REGEX,
+			maxLength: 254
 		},
+		password: {
+			name: "password",
+			type: "password",
+			label: "Organization Password",
+			required: true,
+			initialValue: "",
+			checker: validatePasswordDetailed,
+			minLength: 8,
+			maxLength: 128,
+			validation: {
+				noConsecutiveSpaces: true,
+				noLeadingTrailingSpaces: true
+			}
+		},
+	},
+	"Contact Info": {
 		website: {
 			name: "website",
 			type: "url",
 			label: "Organization Website",
 			required: false,
 			initialValue: "https://www.example.com",
-			regex: URL_REGEX,
+			maxLength: 2048
 		},
 		address: {
 			name: "address",
@@ -281,7 +297,6 @@ export const registerFieldsForOrg = {
 			required: false,
 			initialValue: [],
 			lineCount: 3,
-			regex: ALPHA_REGEX,
 		},
 	},
 	"Contact Person": {
@@ -291,7 +306,13 @@ export const registerFieldsForOrg = {
 			label: "Contact Person Name",
 			required: true,
 			initialValue: "",
-			regex: ALPHA_REGEX,
+			minLength: 2,
+			maxLength: 50,
+			validation: {
+				onlyAlphabets: true,
+				noConsecutiveSpaces: true,
+				noLeadingTrailingSpaces: true
+			}
 		},
 		designation: {
 			name: "designation",
@@ -299,7 +320,13 @@ export const registerFieldsForOrg = {
 			label: "Designation",
 			required: true,
 			initialValue: "",
-			regex: ALPHA_NUMERIC_REGEX,
+			minLength: 2,
+			maxLength: 100,
+			validation: {
+				allowedSpecialChars: ".,&()-/",
+				noConsecutiveSpaces: true,
+				noLeadingTrailingSpaces: true
+			}
 		},
 		phonenumber: {
 			name: "phonenumber",
@@ -307,7 +334,6 @@ export const registerFieldsForOrg = {
 			label: "Official Contact Number",
 			required: true,
 			initialValue: "",
-			regex: IND_PHONE_NUMBER_REGEX,
 		},
 	},
 	"Verification": {
@@ -319,5 +345,6 @@ export const registerFieldsForOrg = {
 			options: PROOF_TYPES,
 			initialValue: PROOF_TYPES.CIN,
 		},
+
 	},
 };

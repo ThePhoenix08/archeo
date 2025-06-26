@@ -52,7 +52,7 @@ export default function URLInput({
 						required={required}
 						name={name}
 						value={value}
-						onChange={handleInputChange}
+						onChange={(e) => handleInputChange(name, e.target.value)}
 					/>
 					<div className="absolute inset-y-0 right-0 flex items-center pr-3">
 						{getValidationIcon()}

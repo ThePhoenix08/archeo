@@ -3,18 +3,20 @@ import FormStage from "@/features/auth/components/FormStage.jsx";
 import FormStepper from "@/features/auth/components/FormStepper.jsx";
 import { registerFieldsForOrg } from "@/features/auth/constants/getFieldsForRole.constant.js";
 import { cn } from "@/lib/utils.js";
-import { Building2, FolderLock } from "lucide-react";
+import { Building2, FolderLock, LoaderCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { validateFullAddress } from "@/features/auth/components/utils/address.utils.js";
 import { Button } from "@/components/ui/button.jsx";
 import { useOrgAuthFlow } from "@/features/auth/flows/orgAuth.flow.js";
 import { useParams } from "react-router";
+import { ValidationChecks } from "@/features/auth/components/utils/register.validator.js";
+import { FEATURE_PREVIEWS } from "@/features/auth/constants/featurePreview.constant.js";
 
 const formStages = Object.keys(registerFieldsForOrg);
 const FORMDATA_BLUEPRINT = {
 	orgname: "",
 	orgtype: "",
-	email: registerFieldsForOrg["Contact Info"].email.initialValue,
+	email: registerFieldsForOrg["Basic Info"].email.initialValue,
 	website: registerFieldsForOrg["Contact Info"].website.initialValue,
 	address: [],
 	contactname: "",
@@ -34,37 +36,6 @@ const SUBMIT_CHECKLIST_BLUEPRINT = {
 	EmailVerified: false,
 };
 
-const FEATURE_PREVIEWS = [
-	{
-		title: "Document Templates",
-		description:
-			"Create reusable, customizable templates with dynamic data injection for certificates, transcripts, and official documents.",
-		icon: "📄",
-		illustration: "/placeholder.svg?height=200&width=300",
-	},
-	{
-		title: "Digital Signatures",
-		description:
-			"Tamper-proof signing system ensures document authenticity and legal validity with cryptographic verification.",
-		icon: "✍️",
-		illustration: "/placeholder.svg?height=200&width=300",
-	},
-	{
-		title: "Blockchain Verification",
-		description:
-			"On-chain registry entries provide immutable proof of document issuance and validation for ultimate security.",
-		icon: "⛓️",
-		illustration: "/placeholder.svg?height=200&width=300",
-	},
-	{
-		title: "Role-Based Access Control",
-		description:
-			"Fine-grained permission settings with view-only, download, and time-bound link controls for secure document sharing.",
-		icon: "🔐",
-		illustration: "/placeholder.svg?height=200&width=300",
-	},
-];
-
 function RegisterOrgPage() {
 	const [currentStage, setCurrentStage] = useState(0);
 	const [formData, setFormData] = useState(FORMDATA_BLUEPRINT);
@@ -76,6 +47,7 @@ function RegisterOrgPage() {
 	const currentStageFields = registerFieldsForOrg[currentStageName];
 	const { role } = useParams();
 	const { flow } = useOrgAuthFlow({ role });
+	const [isLoading, setIsLoading] = useState(false);
 
 	// handlers
 	const handleFieldChange = (fieldName, value) => {
@@ -87,9 +59,167 @@ function RegisterOrgPage() {
 		}
 	};
 
+	// DEBUG ONLY
+	useEffect(() => {
+		console.log(formData);
+	}, [formData]);
+
+	// Main validation function
+	const validateStage = () => {
+		const stageErrors = {};
+
+		Object.values(currentStageFields).forEach((field) => {
+			const value = formData[field.name];
+			const fieldName = field.name;
+
+			// Special handling for address fields
+			if (field.type === "address") {
+				const addressValidation = validateFullAddress(value, field.required);
+				if (!addressValidation.isValid) {
+					stageErrors[fieldName] = addressValidation.error;
+				}
+				return;
+			}
+
+			// Run all applicable validation checks
+			const errors = [];
+
+			// Run validation checks in order
+			const checks = [
+				ValidationChecks.required,
+				ValidationChecks.fileRequired,
+				ValidationChecks.emailFormat,
+				ValidationChecks.urlFormat,
+				ValidationChecks.phoneFormat,
+				ValidationChecks.validOption,
+				ValidationChecks.fileType,
+				ValidationChecks.fileName,
+				ValidationChecks.fileSize,
+				ValidationChecks.documentIntegrity,
+				ValidationChecks.minLength,
+				ValidationChecks.maxLength,
+				ValidationChecks.onlyAlphabets,
+				ValidationChecks.onlyAlphanumeric,
+				ValidationChecks.allowedSpecialChars,
+				ValidationChecks.noConsecutiveSpaces,
+				ValidationChecks.noLeadingTrailingSpaces,
+				ValidationChecks.customChecker,
+			];
+
+			checks.forEach((check) => {
+				const error = check(value, field);
+				if (error) {
+					errors.push(error);
+				}
+			});
+
+			// Sort errors by priority and take the highest priority one
+			if (errors.length > 0) {
+				errors.sort((a, b) => a.priority - b.priority);
+				stageErrors[fieldName] = errors[0].message;
+			}
+		});
+
+		setErrors(stageErrors);
+		const isValid = Object.keys(stageErrors).length === 0;
+
+		setSubmitCheckList((prev) => ({
+			...prev,
+			[formStages[currentStage]]: isValid,
+		}));
+
+		return isValid;
+	};
+
+	// Helper function to validate file immediately on upload
+	const validateFileUpload = (file, field) => {
+		const errors = [];
+
+		// Create a temporary validation context
+		const fileValidationChecks = [
+			ValidationChecks.fileType,
+			ValidationChecks.fileName,
+			ValidationChecks.fileSize,
+			ValidationChecks.documentIntegrity,
+		];
+
+		fileValidationChecks.forEach((check) => {
+			const error = check(null, field, file);
+			if (error) {
+				errors.push(error);
+			}
+		});
+
+		// Sort by priority and return the most important error
+		if (errors.length > 0) {
+			errors.sort((a, b) => a.priority - b.priority);
+			return { isValid: false, error: errors[0].message };
+		}
+
+		return { isValid: true, error: null };
+	};
+
+	// Enhanced file upload handler with immediate validation
 	const handleFileUploadChange = (files) => {
 		if (files && files.length > 0 && files[0].file) {
 			const file = files[0].file;
+
+			// Get the proof document field for validation
+			const proofDocumentField = {
+				type: "file",
+				label: "Proof Document",
+				validation: {
+					allowedFileTypes: [
+						"application/pdf",
+						"application/msword",
+						"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+						"application/vnd.ms-excel",
+						"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+						"text/plain",
+						"application/rtf",
+					],
+					allowedExtensions: [
+						"pdf",
+						"doc",
+						"docx",
+						"xls",
+						"xlsx",
+						"txt",
+						"rtf",
+					],
+					maxFileSize: 10 * 1024 * 1024, // 10MB
+					minFileSize: 1024, // 1KB
+				},
+			};
+
+			// Validate file immediately
+			const validation = validateFileUpload(file, proofDocumentField);
+
+			if (!validation.isValid) {
+				// Set error and don't update form data
+				setErrors((prev) => ({
+					...prev,
+					proofDocument: validation.error,
+				}));
+
+				// Clear file data
+				setFormData((prev) => ({
+					...prev,
+					fileUpload: null,
+					prooffilename: "",
+					prooffiletype: "",
+				}));
+
+				return;
+			}
+
+			// Clear any previous errors and update form data
+			setErrors((prev) => {
+				const newErrors = { ...prev };
+				delete newErrors.proofDocument;
+				return newErrors;
+			});
+
 			setFormData((prev) => ({
 				...prev,
 				fileUpload: file,
@@ -97,46 +227,21 @@ function RegisterOrgPage() {
 				prooffiletype: file.type ?? "",
 			}));
 		} else {
+			// Clear file data when no file is selected
 			setFormData((prev) => ({
 				...prev,
 				prooffilename: "",
 				prooffiletype: "",
 				fileUpload: null,
 			}));
+
+			// Clear file-related errors
+			setErrors((prev) => {
+				const newErrors = { ...prev };
+				delete newErrors.proofDocument;
+				return newErrors;
+			});
 		}
-	};
-
-	useEffect(() => {
-		console.log(formData);
-	}, [formData]);
-
-	const validateStage = () => {
-		const stageErrors = {};
-
-		Object.values(currentStageFields).forEach((field) => {
-			const value = formData[field.name];
-
-			if (field.name === "address") {
-				const addressValidation = validateFullAddress(value, field.required);
-				if (!addressValidation.isValid) {
-					stageErrors[field.name] = addressValidation.error;
-				}
-			} else {
-				if (field.required && (!value || !value === "")) {
-					stageErrors[field.name] = `${field.label} is required.`;
-				} else if (value && field.regex && !field.regex.test(value)) {
-					stageErrors[field.name] =
-						`Please enter a valid ${field.label.toLowerCase()}`;
-				}
-			}
-		});
-		setErrors(stageErrors);
-		const isValid = Object.keys(stageErrors).length === 0;
-		setSubmitCheckList((prev) => ({
-			...prev,
-			[formStages[currentStage]]: isValid,
-		}));
-		return isValid;
 	};
 
 	const handleNext = () => {
@@ -157,7 +262,11 @@ function RegisterOrgPage() {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		if (!validateStage()) return;
+		setIsLoading(true);
+		if (!validateStage()) {
+			setIsLoading(false);
+			return;
+		}
 
 		const form = new FormData();
 		form.append("orgname", formData.orgname);
@@ -175,8 +284,10 @@ function RegisterOrgPage() {
 
 		try {
 			const response = await flow("register", form);
+			setIsLoading(false);
 			console.log("Form Submitted Successfully:", response);
 		} catch (err) {
+			setIsLoading(false);
 			console.error("Form Submission Error:", err);
 		}
 	};
@@ -185,30 +296,37 @@ function RegisterOrgPage() {
 	const isFirstStage = currentStage === 0;
 
 	return (
-		<div className="flex min-h-screen items-stretch justify-items-stretch">
+		<div className="flex h-screen items-stretch justify-items-stretch overflow-hidden">
 			<div className="left min-h-screen w-1/2">
 				{/* Feature Previews */}
 				<div className="blocks h-full w-full bg-accent-foreground">
-					<div className="flex h-full flex-col p-8">
-						<div className="mb-8 flex items-center gap-2">
-							<div className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-								<FolderLock className="size-5" />
+					<div
+						className="relative grid h-full w-full place-items-center bg-muted bg-cover bg-center"
+						style={{
+							backgroundImage:
+								"url('https://res.cloudinary.com/ddzcbt9uh/image/upload/v1750655002/Full_Color_Image_in_ai-img-gen_com_a_warehouse_szqpom.jpg')",
+						}}
+					>
+						<div className="flex h-full flex-col p-8">
+							<div className="mb-8 flex items-center gap-2">
+								<div className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
+									<FolderLock className="size-5" />
+								</div>
+								<span className="text-2xl font-bold text-white">Archeo</span>
 							</div>
-							<span className="text-2xl font-bold text-white">Archeo</span>
-						</div>
-
-						<div className="flex flex-1 items-center justify-center">
-							<FeaturePreview
-								features={FEATURE_PREVIEWS}
-								currentIndex={currentStage}
-							/>
+							<div className="flex flex-1 items-center justify-center rounded-md border border-gray-100/10 bg-gray-100/10 bg-clip-padding p-4 backdrop-blur-xl backdrop-filter">
+								<FeaturePreview
+									features={FEATURE_PREVIEWS}
+									currentIndex={currentStage}
+								/>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 
 			{/* Right Side - Registration Form */}
-			<div className="blocks w-1/2">
+			<div className="blocks w-1/2 overflow-y-scroll">
 				<div className="flex h-full flex-col gap-4 p-6 md:p-10">
 					<div className="flex justify-center gap-2 md:justify-start">
 						<a href="#" className="flex items-center gap-2 font-medium">
@@ -237,6 +355,7 @@ function RegisterOrgPage() {
 								submitCheckList={submitCheckList}
 								handleFileUploadChange={handleFileUploadChange}
 								setCurrentStage={setCurrentStage}
+								isLoading={isLoading}
 							/>
 						</div>
 					</div>
@@ -265,6 +384,7 @@ const RegisterOrgForm = ({
 	submitCheckList,
 	setCurrentStage,
 	handleFileUploadChange,
+	isLoading,
 }) => {
 	return (
 		<form
@@ -323,7 +443,12 @@ const RegisterOrgForm = ({
 				)}
 
 				{isLastStage ? (
-					<Button type="submit" className="flex-1 cursor-pointer bg-primary">
+					<Button
+						type="submit"
+						className="flex-1 cursor-pointer bg-primary"
+						disabled={isLoading}
+					>
+						{isLoading && <LoaderCircle className="animate-spin" />}
 						Complete Registration
 					</Button>
 				) : (

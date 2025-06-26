@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import {
 	Stepper,
 	StepperIndicator,
@@ -12,13 +12,13 @@ import {
 export default function FormStepper({ currentStep, setCurrentStep, steps }) {
 	const [isLoading, setIsLoading] = useState(false);
 
-	const handleNextStep = () => {
-		setIsLoading(true);
-		setTimeout(() => {
-			setCurrentStep((prev) => prev + 1);
-			setIsLoading(false);
-		}, 1000);
-	};
+	// const handleNextStep = () => {
+	// 	setIsLoading(true);
+	// 	setTimeout(() => {
+	// 		setCurrentStep((prev) => prev + 1);
+	// 		setIsLoading(false);
+	// 	}, 1000);
+	// };
 
 	return (
 		<div className="mx-auto max-w-xl space-y-8 text-center">
@@ -33,7 +33,7 @@ export default function FormStepper({ currentStep, setCurrentStep, steps }) {
 						<StepperTrigger asChild>
 							<StepperIndicator />
 						</StepperTrigger>
-						{step < steps.length && <StepperSeparator />}
+						{step.index < steps.length && <StepperSeparator />}
 					</StepperItem>
 				))}
 			</Stepper>

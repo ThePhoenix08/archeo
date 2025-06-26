@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const FeaturePreview = ({ features, currentIndex }) => {
+const FeaturePreview = ({ features, currentIndex = 0 }) => {
 	const [activeFeature, setActiveFeature] = useState(0);
 
 	// Auto-rotate features every 5 seconds, but sync with form stage
@@ -31,31 +31,31 @@ const FeaturePreview = ({ features, currentIndex }) => {
 	const currentFeature = features[activeFeature];
 
 	return (
-		<div className="mx-auto max-w-lg text-white">
+		<div className="mx-auto flex max-w-lg flex-col items-center text-white">
 			<div className="mb-8 text-center">
-				<div className="mb-4 text-6xl">{currentFeature.icon}</div>
+				<div className="mb-4 text-4xl">{currentFeature.icon}</div>
 				<h2 className="mb-4 text-3xl font-bold">{currentFeature.title}</h2>
-				<p className="text-lg leading-relaxed text-white/80">
+				<p className="text-md leading-relaxed text-white/80">
 					{currentFeature.description}
 				</p>
 			</div>
 
 			{/* Feature Illustration */}
-			<div className="mb-8 overflow-hidden rounded-lg bg-white/10 backdrop-blur-sm">
+			<div className="mb-8 h-80 w-fit overflow-hidden rounded-lg bg-white/10 backdrop-blur-sm">
 				<img
 					src={currentFeature.illustration || "/placeholder.svg"}
 					alt={currentFeature.title}
-					className="h-48 w-full object-cover"
+					className="h-full w-full object-contain"
 				/>
 			</div>
 
 			{/* Navigation */}
-			<div className="flex items-center justify-between">
+			<div className="flex items-center justify-between gap-4">
 				<Button
 					variant="ghost"
 					size="sm"
 					onClick={handlePrevious}
-					className="text-white hover:bg-white/10"
+					className="text-white hover:bg-white/50"
 				>
 					<ChevronLeft className="mr-1 h-4 w-4" />
 					Previous
@@ -78,7 +78,7 @@ const FeaturePreview = ({ features, currentIndex }) => {
 					variant="ghost"
 					size="sm"
 					onClick={handleNext}
-					className="text-white hover:bg-white/10"
+					className="text-white hover:bg-white/50"
 				>
 					Next
 					<ChevronRight className="ml-1 h-4 w-4" />

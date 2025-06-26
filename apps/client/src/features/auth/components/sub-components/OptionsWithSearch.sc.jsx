@@ -81,6 +81,7 @@ export default function OptionsWithSearch({
 												setSearchValue(currentValue);
 												setOpen(false);
 											}}
+											className={value === option && "border-2 border-primary"}
 										>
 											{option}
 											{value === option && (

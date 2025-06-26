@@ -9,9 +9,11 @@ import PasswordInput from "@/features/auth/components/sub-components/password-in
 import { Button } from "@/components/ui/button.jsx";
 import FullNameInput from "@/features/auth/components/sub-components/fullname-input.sc.jsx";
 import DateOfBirthInput from "@/features/auth/components/sub-components/dob-input.sc.jsx";
-import EmailInput from "@/features/auth/components/sub-components/EmailInput.sc.jsx";
 import { ENVS } from "@/shared/constants/env.constant.js";
 import { SquareUser } from "lucide-react";
+import EmailWithVerifyInput from "@/features/auth/components/EmailWithVerifyInput.jsx";
+import FeaturePreview from "@/features/auth/components/FeaturePreview.jsx";
+import { FEATURE_PREVIEWS } from "@/features/auth/constants/featurePreview.constant.js";
 
 const FORMDATA_BLUEPRINT = {
 	username: "",
@@ -124,9 +126,21 @@ function RegisterUserPage() {
 	};
 
 	return (
-		<div className="flex min-h-screen w-full items-stretch justify-items-stretch">
-			<div className="blocks w-1/2 bg-accent-foreground">k</div>
-			<div className="blocks w-1/2">
+		<div className="flex h-screen w-full items-stretch justify-items-stretch overflow-hidden">
+			<div className="blocks grid w-1/2 place-items-center">
+				<div
+					className="relative grid h-full w-full place-items-center bg-muted bg-cover bg-center"
+					style={{
+						backgroundImage:
+							"url('https://res.cloudinary.com/ddzcbt9uh/image/upload/v1750654987/download_ywbzp8.jpg')",
+					}}
+				>
+					<div className="flex flex-1 items-center justify-center rounded-md border border-gray-100/10 bg-gray-100/10 bg-clip-padding p-8 backdrop-blur-xl backdrop-filter">
+						<FeaturePreview features={FEATURE_PREVIEWS} />
+					</div>
+				</div>
+			</div>
+			<div className="blocks w-1/2 overflow-y-scroll">
 				<div className="flex flex-col gap-4 p-6 md:p-10">
 					<div className="flex justify-center gap-2 md:justify-start">
 						<a href="#" className="flex items-center gap-2 font-medium">
@@ -137,7 +151,7 @@ function RegisterUserPage() {
 						</a>
 					</div>
 					<div className="flex flex-1 items-center justify-center">
-						<div className="w-full max-w-xs">
+						<div className="w-full max-w-md">
 							<RegisterForm
 								handleSubmit={handleSubmit}
 								handleFieldChange={handleFieldChange}
@@ -199,7 +213,7 @@ const RegisterForm = ({
 
 				{/* Email Field */}
 				<div className="grid gap-3">
-					<EmailInput
+					<EmailWithVerifyInput
 						fieldDetails={registerFieldsForUser.email}
 						handleFieldChange={handleFieldChange}
 						value={formData.email}

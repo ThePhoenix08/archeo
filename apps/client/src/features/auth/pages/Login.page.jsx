@@ -7,37 +7,7 @@ import ErrorPage from "@/shared/routing/Error.page.jsx";
 import { FolderLock } from "lucide-react";
 import { LoginForm } from "@/features/auth/components/login-form.jsx";
 import FeaturePreview from "@/features/auth/components/FeaturePreview.jsx";
-
-const FEATURE_PREVIEWS = [
-	{
-		title: "Document Templates",
-		description:
-			"Create reusable, customizable templates with dynamic data injection for certificates, transcripts, and official documents.",
-		icon: "📄",
-		illustration: "/placeholder.svg?height=200&width=300",
-	},
-	{
-		title: "Digital Signatures",
-		description:
-			"Tamper-proof signing system ensures document authenticity and legal validity with cryptographic verification.",
-		icon: "✍️",
-		illustration: "/placeholder.svg?height=200&width=300",
-	},
-	{
-		title: "Blockchain Verification",
-		description:
-			"On-chain registry entries provide immutable proof of document issuance and validation for ultimate security.",
-		icon: "⛓️",
-		illustration: "/placeholder.svg?height=200&width=300",
-	},
-	{
-		title: "Role-Based Access Control",
-		description:
-			"Fine-grained permission settings with view-only, download, and time-bound link controls for secure document sharing.",
-		icon: "🔐",
-		illustration: "/placeholder.svg?height=200&width=300",
-	},
-];
+import { FEATURE_PREVIEWS } from "@/features/auth/constants/featurePreview.constant.js";
 
 function LoginPage() {
 	const [currentStage, setCurrentStage] = useState(0);
@@ -72,7 +42,7 @@ function LoginPage() {
 		}
 	};
 	return (
-		<div className="grid min-h-svh w-full lg:grid-cols-2">
+		<div className="grid h-svh w-full overflow-hidden lg:grid-cols-2">
 			<div
 				className="relative hidden bg-muted bg-cover bg-center lg:block"
 				style={{ backgroundImage: "url('/assets/login.png')" }}

@@ -1,4 +1,3 @@
-import EmailInput from "@/features/auth/components/sub-components/EmailInput.sc.jsx";
 import NameInputWithIcon from "@/features/auth/components/sub-components/name-with-input-icon.sc.jsx";
 import { BriefcaseBusiness, Contact, Landmark, Phone } from "lucide-react";
 import OptionsWithSearch from "@/features/auth/components/sub-components/OptionsWithSearch.sc.jsx";
@@ -6,6 +5,8 @@ import URLInput from "@/features/auth/components/sub-components/url-input.sc.jsx
 import PhoneNumberInput from "@/features/auth/components/sub-components/PhoneNumberInput.sc.jsx";
 import AddressInput from "@/features/auth/components/sub-components/address-input.sc.jsx";
 import FileInput from "@/features/auth/components/sub-components/FileInput.sc.jsx";
+import EmailWithVerifyInput from "@/features/auth/components/EmailWithVerifyInput.jsx";
+import PasswordInput from "@/features/auth/components/sub-components/password-input.sc.jsx";
 
 const FormStage = ({
 	currentStageName,
@@ -48,6 +49,8 @@ const FormStage = ({
 						icon={<BriefcaseBusiness size={16} aria-hidden="true" />}
 					/>
 				);
+			case "password":
+				return <PasswordInput key={field.name} {...commonProps} />;
 			case "phonenumber":
 				return <PhoneNumberInput key={field.name} {...commonProps} />;
 			case "prooftype":
@@ -67,7 +70,7 @@ const FormStage = ({
 			case "website":
 				return <URLInput key={field.name} {...commonProps} />;
 			case "email":
-				return <EmailInput key={field.name} {...commonProps} />;
+				return <EmailWithVerifyInput key={field.name} {...commonProps} />;
 			default:
 				return null;
 		}
@@ -91,6 +94,9 @@ const FormStage = ({
 					<div className="grid gap-3">
 						<FileInput handleFileUploadChange={handleFileUploadChange} />
 					</div>
+					{errors.proofDocument && (
+						<p className="text-sm text-destructive">{errors.proofDocument}</p>
+					)}
 				</>
 			)}
 		</div>

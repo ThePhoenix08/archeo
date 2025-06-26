@@ -19,6 +19,14 @@ export const authApi = apiSlice.injectEndpoints({
 			})
 		}),
 
+		verifyEmailOTP: builder.mutation({
+			query: ({ email, otp }) => ({
+				url: "/auth/verifyEmailOTP",
+				method: "POST",
+				body: { email, otp },
+			}),
+		}),
+
 		register: builder.mutation({
 			query: (userData) => ({
 				url: "/auth/registerUser",
@@ -56,5 +64,6 @@ export const {
 	useRegisterOrganizationMutation,
 	useLogoutMutation,
 	useGetCurrentUserQuery,
-	useVerifyEmailMutation
+	useVerifyEmailMutation,
+	useVerifyEmailOTPMutation,
 } = authApi;

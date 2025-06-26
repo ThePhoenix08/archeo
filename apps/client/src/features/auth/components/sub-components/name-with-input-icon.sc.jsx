@@ -19,7 +19,7 @@ export default function NameInputWithIcon({
 					id={id}
 					className="peer pe-9"
 					placeholder={initialValue}
-					type="email"
+					type="text"
 					required={required}
 					name={name}
 					value={value}

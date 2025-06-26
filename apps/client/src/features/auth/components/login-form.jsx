@@ -75,7 +75,6 @@ export function LoginForm({ className, ...props }) {
 		// Validate all fields before submission
 		const newErrors = {};
 		newErrors[loginType] = validateField(loginType, formdata[loginType]);
-		newErrors.password = validateField("password", formdata.password);
 
 		// Check for empty required fields
 		if (!formdata[loginType]) {
@@ -215,13 +214,8 @@ export function LoginForm({ className, ...props }) {
 						name={getLoginFieldsForRole[role][2].name}
 						placeholder="************"
 						type={getLoginFieldsForRole[role][2].type}
-						value={formdata[getLoginFieldsForRole[role][2].name]}
-						onChange={(e) =>
-							handleInputChange(
-								getLoginFieldsForRole[role][2].name,
-								e.target.value
-							)
-						}
+						value={formdata.password}
+						onChange={(e) => handleInputChange("password", e.target.value)}
 						className={
 							errors.password ? "border-red-500 focus:border-red-500" : ""
 						}

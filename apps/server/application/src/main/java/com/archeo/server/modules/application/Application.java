@@ -24,7 +24,7 @@ import java.util.Arrays;
 		"com.archeo.server.modules.encryption",
 		"com.archeo.server.modules.processing",
 		"com.archeo.server.modules.template",
-		"com.archeo.server.modules.verification",
+		"com.archeo.server.modules.verification"
 
 
 })

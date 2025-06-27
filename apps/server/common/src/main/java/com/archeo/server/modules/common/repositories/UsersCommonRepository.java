@@ -11,4 +11,7 @@ public interface UsersCommonRepository extends JpaRepository<UsersCommon, Long> 
 
     Optional<UsersCommon> findByEmail(String email);
     Optional<UsersCommon> findByUsername(String username);
+
+    boolean existsByEmail(String email);
+    boolean existsByUsername(String username);
 }

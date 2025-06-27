@@ -12,8 +12,9 @@ import com.archeo.server.modules.auth.repositories.SessionRepo;
 import com.archeo.server.modules.auth.services.AuthLogsService;
 import com.archeo.server.modules.auth.services.AuthService;
 import com.archeo.server.modules.auth.services.SessionService;
-import com.archeo.server.modules.common.exceptions.ResourceNotFoundException;
+import com.archeo.server.modules.common.exceptions.InvalidCredentialsException;
 import com.archeo.server.modules.common.exceptions.UserAlreadyExistsException;
+import com.archeo.server.modules.common.exceptions.UserNotFoundException;
 import com.archeo.server.modules.common.models.UsersCommon;
 import com.archeo.server.modules.common.repositories.UsersCommonRepository;
 import com.archeo.server.modules.user.models.Organization;
@@ -25,7 +26,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -37,7 +38,6 @@ public class AuthServiceImpl implements AuthService {
 
     private final UsersCommonRepository userRepository;
     private final JwtProvider jwtProvider;
-    private final PasswordEncoder passwordEncoder;
     private final SessionRepo sessionRepo;
     private final AuthLogsService authLogsService;
     private final SessionService sessionService;
@@ -47,6 +47,7 @@ public class AuthServiceImpl implements AuthService {
     private final OwnerMapper ownerMapper;
     private final OrganizationMapper organizationMapper;
     private final UsersCommonMapper usersCommonMapper;
+    private final BCryptPasswordEncoder passwordEncoder;
 
 
     @Override
@@ -55,13 +56,11 @@ public class AuthServiceImpl implements AuthService {
                                       HttpServletRequest servletRequest,
                                       HttpServletResponse response) {
 
-        Optional<UsersCommon> existingUser=userRepository.findByEmail(request.getEmail());
-        if(existingUser.isPresent()){
-            throw new UserAlreadyExistsException("User already exists");
-        }
+
 
 
         UsersCommon newUser=new UsersCommon();
+        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
         usersCommonMapper.ownerToUsersCommon(request, newUser);
 
         UsersCommon savedUser=usersCommonRepository.save(newUser);
@@ -99,9 +98,8 @@ public class AuthServiceImpl implements AuthService {
         authLogsService.log(savedUser, refreshToken, servletRequest);
 
         return AuthResponse.builder()
-                .userRole(newUser.getUserRole().name())
+                .userRole(savedUser.getUserRole())
                 .build();
-
 
     }
 
@@ -110,11 +108,18 @@ public class AuthServiceImpl implements AuthService {
                               HttpServletRequest servletRequest,
                               HttpServletResponse response) {
 
+        if ((loginRequest.getEmail() == null || loginRequest.getEmail().isBlank()) &&
+                (loginRequest.getUsername() == null || loginRequest.getUsername().isBlank())) {
+            throw new InvalidCredentialsException("Email or username must be provided");
+        }
+
         UsersCommon user=userRepository.findByEmail(loginRequest.getEmail())
                 .or(()-> userRepository.findByUsername(loginRequest.getUsername()))
-                .orElseThrow(()->new ResourceNotFoundException("Invalid credentials"));
+                .orElseThrow(()->new UserNotFoundException("Invalid credentials"));
 
-        if(!loginRequest.getPassword().equals(passwordEncoder.encode(user.getPassword())));
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            throw new InvalidCredentialsException("Incorrect password");
+        }
 
         Map<String, Object> claims = Map.of("authorities", user.getUserRole().name());
 
@@ -144,8 +149,9 @@ public class AuthServiceImpl implements AuthService {
         sessionService.saveSession(user, refreshToken, servletRequest);
         authLogsService.log(user, refreshToken, servletRequest);
 
+
         return AuthResponse.builder()
-                .userRole(user.getUserRole().name())
+                .userRole(user.getUserRole())
                 .build();
     }
 
@@ -160,6 +166,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         UsersCommon user = new UsersCommon();
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         usersCommonMapper.organizationToUsersCommon(request, user);
 
@@ -195,15 +202,15 @@ public class AuthServiceImpl implements AuthService {
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
 
+
         return AuthResponse.builder()
-                .userRole(savedUser.getUserRole().name())
+                .userRole(savedUser.getUserRole())
                 .build();
 
     }
 
     @Override
-    public String logout(String token) {
-        return "Logout successful";
+    public void logout(String token) {
     }
 
 

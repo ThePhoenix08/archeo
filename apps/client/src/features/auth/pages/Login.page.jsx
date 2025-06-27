@@ -6,22 +6,28 @@ import EnhancedLoginLeftSection from "@/features/auth/components/EnhancedLoginLe
 function LoginPage() {
 	return (
 		<div className="grid h-svh w-full overflow-hidden lg:grid-cols-2">
-			<EnhancedLoginLeftSection />
 			<div className="flex flex-col gap-4 p-6 md:p-6">
-				<div className="flex justify-center gap-2 md:justify-start">
-					<a href="/" className="flex items-center gap-2 font-medium">
-						<div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-							<FolderLock className="size-4" />
-						</div>
-						Archeo
-					</a>
-				</div>
+				{/* Logo section with enhanced styling */}
+				<a href="/" className="relative z-10 mb-8 flex items-center gap-3">
+					<div className="flex size-8 items-center justify-center rounded-md bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg">
+						<FolderLock className="size-6" />
+					</div>
+					<div className="flex flex-col">
+						<span className="bg-gradient-to-r from-blue-600 to-purple-700 bg-clip-text text-xl font-bold text-transparent">
+							Archeo
+						</span>
+						<span className="text-xs font-medium text-blue-500/80">
+							Document Management
+						</span>
+					</div>
+				</a>
 				<div className="flex flex-1 items-center justify-center">
 					<div className="w-full max-w-xs">
 						<LoginForm />
 					</div>
 				</div>
 			</div>
+			<EnhancedLoginLeftSection />
 		</div>
 	);
 }

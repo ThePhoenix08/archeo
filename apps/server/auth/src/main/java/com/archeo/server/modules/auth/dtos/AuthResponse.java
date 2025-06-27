@@ -1,5 +1,6 @@
 package com.archeo.server.modules.auth.dtos;
 
+import com.archeo.server.modules.common.enums.USER_ROLE;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,6 @@ public class AuthResponse {
 
 //    private String accessToken;
 //    private String refreshToken;
-    private String userRole;
+    private USER_ROLE userRole;
 
 }

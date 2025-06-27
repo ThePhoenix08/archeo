@@ -7,7 +7,12 @@ import com.archeo.server.modules.auth.dtos.OrganizationRegisterRequest;
 import com.archeo.server.modules.auth.dtos.OwnerRegisterRequest;
 import com.archeo.server.modules.auth.services.AuthService;
 import com.archeo.server.modules.auth.services.IdentityProofStorageService;
+import com.archeo.server.modules.common.dto.ApiResponse;
+import com.archeo.server.modules.common.exceptions.InvalidCredentialsException;
+import com.archeo.server.modules.common.exceptions.UserAlreadyExistsException;
+import com.archeo.server.modules.common.repositories.UsersCommonRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,42 +29,80 @@ public class AuthController {
 
     private final AuthService authService;
     private final IdentityProofStorageService proofStorageService;
+    private final UsersCommonRepository usersCommonRepository;
 
     @PostMapping("/register-owner")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody  OwnerRegisterRequest registerRequest, HttpServletRequest request){
-        AuthResponse response=authService.registerOwner(registerRequest, request);
+    public ResponseEntity<ApiResponse<AuthResponse>> registerOwner(@Valid @RequestBody  OwnerRegisterRequest registerRequest,
+                                                 HttpServletRequest servletRequest,
+                                                 HttpServletResponse servletResponse){
+        if (usersCommonRepository.existsByEmail(registerRequest.getEmail())) {
+            throw new UserAlreadyExistsException("Email already registered.");
+        }
+
+        AuthResponse authResponse=authService.registerOwner(registerRequest, servletRequest, servletResponse);
+        ApiResponse<AuthResponse> response = ApiResponse.<AuthResponse>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .message("Registration successful.")
+                .slug("registration_success")
+                .data(authResponse)
+                .build();
+
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest signinRequest, HttpServletRequest request){
+    public ResponseEntity<ApiResponse<AuthResponse>> login(@RequestBody LoginRequest loginRequest,
+                                              HttpServletRequest servletRequest,
+                                              HttpServletResponse servletResponse){
 
-        AuthResponse response=authService.login(signinRequest, request);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        if(!usersCommonRepository.existsByEmail(loginRequest.getEmail())
+                && !usersCommonRepository.existsByUsername(loginRequest.getUsername())){
+                throw new InvalidCredentialsException("Invalid email or username");
+        }
+
+        AuthResponse authResponse=authService.login(loginRequest, servletRequest,servletResponse);
+        ApiResponse<AuthResponse> response = ApiResponse.<AuthResponse>builder()
+                .statusCode(HttpStatus.FOUND.value())
+                .message("Login successful.")
+                .slug("login_success")
+                .data(authResponse)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.FOUND);
+
+
     }
 
     @PostMapping(value = "/register-organization", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AuthResponse> register(
+    public ResponseEntity<ApiResponse<AuthResponse>> registerOrganization(
             @RequestPart("data") @Valid OrganizationRegisterRequest registerRequest,
             @RequestPart("identityProofFile") MultipartFile identityProofFile,
-            HttpServletRequest servletRequest) {
+            HttpServletRequest servletRequest,
+            HttpServletResponse servletResponse) {
 
-        System.out.println("Org registration");
+        if (usersCommonRepository.existsByEmail(registerRequest.getEmail())) {
+            throw new UserAlreadyExistsException("Email already registered.");
+        }
 
-        String filePath=proofStorageService.uploadProof(identityProofFile);
-        registerRequest.setIdentityProof(filePath);
-        AuthResponse response = authService.registerOrganization(registerRequest, servletRequest);
+        AuthResponse authResponse=authService.registerOrganization(registerRequest, servletRequest, servletResponse);
+        ApiResponse<AuthResponse> response = ApiResponse.<AuthResponse>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .message("Registration successful.")
+                .slug("registration_success")
+                .data(authResponse)
+                .build();
+
         return new ResponseEntity<>(response, HttpStatus.CREATED);
 
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader){
-        String token=authHeader.replace("Bearer ", "");
-        String response=authService.logout(token);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-
-    }
+//    @PostMapping("/logout")
+//    public ResponseEntity<ApiResponse<String>> logout(@RequestHeader("Authorization") String authHeader){
+//        String token=authHeader.replace("Bearer ", "");
+//        String response=authService.logout(token);
+//        return new ResponseEntity<>(response, HttpStatus.OK);
+//
+//    }
 
 
 

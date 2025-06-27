@@ -17,5 +17,5 @@ public interface AuthService {
 
     AuthResponse registerOrganization(OrganizationRegisterRequest registerRequest, HttpServletRequest servletRequest,HttpServletResponse response);
 
-    String logout(String token);
+    void logout(String token);
 }

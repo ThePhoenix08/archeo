@@ -16,7 +16,7 @@ public interface UsersCommonMapper{
     @Mappings({
             @Mapping(target = "email", source = "email"),
             @Mapping(target = "username", source = "username"),
-            @Mapping(target = "password", source = "password"),
+            @Mapping(target = "password", ignore = true),
             @Mapping(target = "userRole", constant = "ROLE_OWNER"),
     })
     void ownerToUsersCommon(OwnerRegisterRequest owner,
@@ -25,7 +25,7 @@ public interface UsersCommonMapper{
     @Mappings({
             @Mapping(target = "email", source = "email"),
             @Mapping(target = "username", source = "username"),
-            @Mapping(target = "password", source = "password"),
+            @Mapping(target = "password", ignore = true),
             @Mapping(target = "userRole", constant = "ROLE_ISSUER"),
     })
     void organizationToUsersCommon(OrganizationRegisterRequest organization,

@@ -13,7 +13,7 @@ const EnhancedLoginLeftSection = () => {
 			stats: "50% faster filing",
 		},
 		{
-			icon: <Shield className="h-16 w-16 text-[#490cf1]" />,
+			icon: <Shield className="h-16 w-16 text-[#6e3ef3]" />,
 			title: "Enterprise Security",
 			description:
 				"Bank-level encryption, role-based access control, and comprehensive audit trails for compliance.",

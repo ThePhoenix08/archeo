@@ -119,7 +119,7 @@
 	}
 }
 
- /* Global scrollbar styling */
+/* Global scrollbar styling */
 @layer base {
 	/* Light mode scrollbar */
 	::-webkit-scrollbar {
@@ -127,8 +127,7 @@
 	}
 
 	::-webkit-scrollbar-track {
-		background: #a6e1fa;
-		@apply rounded-lg;
+		background: transparent;
 	}
 
 	::-webkit-scrollbar-thumb {
@@ -137,7 +136,7 @@
 	}
 
 	::-webkit-scrollbar-thumb:hover {
-		background: #0a2472;
+		background: #0787dc;
 	}
 
 	/* Dark mode scrollbar */
@@ -156,11 +155,11 @@
 	/* Firefox support */
 	* {
 		scrollbar-width: thin;
-		scrollbar-color: #0e6ba8 #a6e1fa;
+		scrollbar-color: #037ed0 transparent;
 	}
 
 	.dark * {
 		scrollbar-width: thin;
 		scrollbar-color: rgb(107 114 128) rgb(55 65 81);
 	}
-}		
+}

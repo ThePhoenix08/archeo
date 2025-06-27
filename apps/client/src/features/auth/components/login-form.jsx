@@ -5,15 +5,14 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useNavigate } from "react-router";
 import { useParams } from "react-router";
 import { LogIn, Mail, CircleUserRound, LockKeyhole } from "lucide-react";
-import { toast, Bounce } from "react-toastify";
-
 import { getLoginFieldsForRole } from "@/features/auth/constants/getFieldsForRole.constant.js";
 import { useUserAuthFlow } from "@/features/auth/flows/userAuth.flow.js";
 
 export function LoginForm({ className, ...props }) {
+	let { role } = useParams();
+	const { flow } = useUserAuthFlow();
 	const [loginType, setLoginType] = useState("email"); // "email" or "username"
 	const [formdata, setFormdata] = useState({
 		username: "",
@@ -25,10 +24,6 @@ export function LoginForm({ className, ...props }) {
 		email: "",
 		password: "",
 	});
-	const navigate = useNavigate();
-	const { flow } = useUserAuthFlow();
-
-	let { role } = useParams();
 
 	// Validation function
 	const validateField = (fieldName, value) => {
@@ -80,7 +75,6 @@ export function LoginForm({ className, ...props }) {
 		// Validate all fields before submission
 		const newErrors = {};
 		newErrors[loginType] = validateField(loginType, formdata[loginType]);
-		newErrors.password = validateField("password", formdata.password);
 
 		// Check for empty required fields
 		if (!formdata[loginType]) {
@@ -220,13 +214,8 @@ export function LoginForm({ className, ...props }) {
 						name={getLoginFieldsForRole[role][2].name}
 						placeholder="************"
 						type={getLoginFieldsForRole[role][2].type}
-						value={formdata[getLoginFieldsForRole[role][2].name]}
-						onChange={(e) =>
-							handleInputChange(
-								getLoginFieldsForRole[role][2].name,
-								e.target.value
-							)
-						}
+						value={formdata.password}
+						onChange={(e) => handleInputChange("password", e.target.value)}
 						className={
 							errors.password ? "border-red-500 focus:border-red-500" : ""
 						}

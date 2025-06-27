@@ -25,7 +25,7 @@
 │   │   ├── public/
 │   │   │   └── assets/
 │   │   │       ├── .gitkeep
-│   │   │       └── login.png
+│   │   │       └── login.jpeg
 │   │   ├── src/
 │   │   │   ├── App.css
 │   │   │   ├── App.jsx
@@ -42,6 +42,7 @@
 │   │   │   │       ├── label.jsx
 │   │   │   │       ├── popover.jsx
 │   │   │   │       ├── select-native.jsx
+│   │   │   │       ├── separator.jsx
 │   │   │   │       ├── skeleton.jsx
 │   │   │   │       └── stepper.jsx
 │   │   │   ├── features/
@@ -64,13 +65,14 @@
 │   │   │   │   │   ├── actions/
 │   │   │   │   │   │   └── authApi.action.js
 │   │   │   │   │   ├── components/
+│   │   │   │   │   │   ├── EmailWithVerifyInput.jsx
+│   │   │   │   │   │   ├── EnhancedLoginLeftSection.jsx
 │   │   │   │   │   │   ├── FeaturePreview.jsx
 │   │   │   │   │   │   ├── FeatureStepper.jsx
 │   │   │   │   │   │   ├── FormStage.jsx
 │   │   │   │   │   │   ├── FormStepper.jsx
 │   │   │   │   │   │   ├── login-form.jsx
 │   │   │   │   │   │   ├── sub-components/
-│   │   │   │   │   │   │   ├── EmailInput.sc.jsx
 │   │   │   │   │   │   │   ├── FileInput.sc.jsx
 │   │   │   │   │   │   │   ├── OTPInputDouble.sc.jsx
 │   │   │   │   │   │   │   ├── OptionsWithSearch.sc.jsx
@@ -80,14 +82,39 @@
 │   │   │   │   │   │   │   ├── fullname-input.sc.jsx
 │   │   │   │   │   │   │   ├── link-preview.sc.jsx
 │   │   │   │   │   │   │   ├── name-with-input-icon.sc.jsx
+│   │   │   │   │   │   │   ├── otp-modal.sc.jsx
 │   │   │   │   │   │   │   ├── password-input.sc.jsx
+│   │   │   │   │   │   │   ├── register/
+│   │   │   │   │   │   │   │   ├── CustomCalender.sc.jsx
+│   │   │   │   │   │   │   │   ├── CustomLabel.sc.jsx
+│   │   │   │   │   │   │   │   ├── OTP-input-double.sc.jsx
+│   │   │   │   │   │   │   │   ├── date-of-birth-input.sc.jsx
+│   │   │   │   │   │   │   │   ├── email-input-with-verification.sc.jsx
+│   │   │   │   │   │   │   │   ├── file-input.sc.jsx
+│   │   │   │   │   │   │   │   ├── form-input.sc.jsx
+│   │   │   │   │   │   │   │   ├── form-nav-btns.sc.jsx
+│   │   │   │   │   │   │   │   ├── password-input-with-validation.sc.jsx
+│   │   │   │   │   │   │   │   ├── password-validation.sc.jsx
+│   │   │   │   │   │   │   │   ├── phone-number-input.sc.jsx
+│   │   │   │   │   │   │   │   ├── progress-indicator.sc.jsx
+│   │   │   │   │   │   │   │   ├── register-header.sc.jsx
+│   │   │   │   │   │   │   │   ├── select-with-search.sc.jsx
+│   │   │   │   │   │   │   │   ├── step-content.sc.jsx
+│   │   │   │   │   │   │   │   ├── step-form.sc.jsx
+│   │   │   │   │   │   │   │   ├── text-input-with-character-limit.sc.jsx
+│   │   │   │   │   │   │   │   ├── text-input-with-icon.sc.jsx
+│   │   │   │   │   │   │   │   ├── three-line-address-input-with-preview.sc.jsx
+│   │   │   │   │   │   │   │   └── url-input-with-link-preview-.sc.jsx
 │   │   │   │   │   │   │   ├── url-input.sc.jsx
 │   │   │   │   │   │   │   └── username-input.sc.jsx
 │   │   │   │   │   │   └── utils/
 │   │   │   │   │   │       ├── ProtectedRoute.wrapper.jsx
 │   │   │   │   │   │       ├── RouteGuard.jsx
-│   │   │   │   │   │       └── address.utils.js
+│   │   │   │   │   │       ├── address.utils.js
+│   │   │   │   │   │       ├── register.validator.js
+│   │   │   │   │   │       └── useMultiStepForm.hook.js
 │   │   │   │   │   ├── constants/
+│   │   │   │   │   │   ├── featurePreview.constant.js
 │   │   │   │   │   │   └── getFieldsForRole.constant.js
 │   │   │   │   │   ├── flows/
 │   │   │   │   │   │   ├── accountRecovery.flow.js
@@ -98,7 +125,8 @@
 │   │   │   │   │   │   ├── Login.page.jsx
 │   │   │   │   │   │   ├── Register.page.jsx
 │   │   │   │   │   │   ├── RegisterOrg.page.jsx
-│   │   │   │   │   │   └── RegisterUser.page.jsx
+│   │   │   │   │   │   ├── RegisterUser.page.jsx
+│   │   │   │   │   │   └── RegisterUser1.page.jsx
 │   │   │   │   │   └── reducer/
 │   │   │   │   │       └── authSlice.reducer.js
 │   │   │   │   ├── dashboard/
@@ -125,7 +153,8 @@
 │   │   │   │       └── Verification.page.jsx
 │   │   │   ├── hooks/
 │   │   │   │   ├── use-character-limit.js
-│   │   │   │   └── use-file-upload.js
+│   │   │   │   ├── use-file-upload.js
+│   │   │   │   └── use-link-preview.js
 │   │   │   ├── index.css
 │   │   │   ├── lib/
 │   │   │   │   └── utils.js
@@ -209,6 +238,10 @@
 │       │       │   │                       │   ├── LoginRequest.java
 │       │       │   │                       │   ├── OrganizationRegisterRequest.java
 │       │       │   │                       │   └── OwnerRegisterRequest.java
+│       │       │   │                       ├── mapper/
+│       │       │   │                       │   ├── OrganizationMapper.java
+│       │       │   │                       │   ├── OwnerMapper.java
+│       │       │   │                       │   └── UsersCommonMapper.java
 │       │       │   │                       ├── models/
 │       │       │   │                       │   ├── AuthLogs.java
 │       │       │   │                       │   ├── LinkPreviewResponse.java
@@ -288,7 +321,8 @@
 │       │       │   │                       │   ├── GlobalExceptionHandler.java
 │       │       │   │                       │   ├── InvalidCredentialsException.java
 │       │       │   │                       │   ├── ResourceNotFoundException.java
-│       │       │   │                       │   └── UserAlreadyExistsException.java
+│       │       │   │                       │   ├── UserAlreadyExistsException.java
+│       │       │   │                       │   └── UserNotFoundException.java
 │       │       │   │                       ├── models/
 │       │       │   │                       │   ├── Permission.java
 │       │       │   │                       │   └── UsersCommon.java
@@ -443,22 +477,39 @@
 │       │       │   │               └── modules/
 │       │       │   │                   └── user/
 │       │       │   │                       ├── config/
-│       │       │   │                       │   └── SecurityConfig.java
+│       │       │   │                       │   ├── EmbeddedRedisConfig.java
+│       │       │   │                       │   └── MailConfig.java
 │       │       │   │                       ├── controllers/
-│       │       │   │                       │   └── ProfileController.java
+│       │       │   │                       │   ├── OtpController.java
+│       │       │   │                       │   ├── ProfileController.java
+│       │       │   │                       │   └── SettingsController.java
 │       │       │   │                       ├── dtos/
+│       │       │   │                       │   ├── EmailRequest.java
 │       │       │   │                       │   ├── OrganizationProfileDTO.java
-│       │       │   │                       │   └── OwnerProfileDTO.java
+│       │       │   │                       │   ├── OwnerProfileDTO.java
+│       │       │   │                       │   ├── SettingsDTO.java
+│       │       │   │                       │   ├── UpdateOrganizationProfileRequest.java
+│       │       │   │                       │   └── UpdateOwnerProfileRequest.java
 │       │       │   │                       ├── enums/
+│       │       │   │                       │   ├── NotificationType.java
+│       │       │   │                       │   ├── ThemePreference.java
 │       │       │   │                       │   └── VERIFICATION_STATUS.java
+│       │       │   │                       ├── mapper/
+│       │       │   │                       │   ├── OrgProfileMapper.java
+│       │       │   │                       │   └── OwnerProfileMapper.java
 │       │       │   │                       ├── models/
 │       │       │   │                       │   ├── Organization.java
-│       │       │   │                       │   └── Owner.java
+│       │       │   │                       │   ├── Owner.java
+│       │       │   │                       │   ├── Settings.java
+│       │       │   │                       │   └── UserNotification.java
 │       │       │   │                       ├── repositories/
 │       │       │   │                       │   ├── OrganizationRepo.java
-│       │       │   │                       │   └── OwnerRepo.java
+│       │       │   │                       │   ├── OwnerRepo.java
+│       │       │   │                       │   └── SettingsRepo.java
 │       │       │   │                       └── services/
+│       │       │   │                           ├── OtpService.java
 │       │       │   │                           ├── ProfileService.java
+│       │       │   │                           ├── SettingsService.java
 │       │       │   │                           └── serviceImpl/
 │       │       │   │                               └── ProfileServiceImpl.java
 │       │       │   └── resources/
@@ -513,4 +564,4 @@
 └── tests/
     └── .gitkeep
 
-275 directories, 239 files
+278 directories, 287 files

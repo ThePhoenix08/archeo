@@ -32,7 +32,8 @@ import NotFoundPage from "@/shared/routing/NotFound.page";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ModernSignupForm from "@/features/auth/pages/RegisterUser2.page.jsx";
+import ModernSignupForm from "@/features/auth/pages/RegisterUser.page.jsx";
+import RegisterUserPage from "@/features/auth/pages/RegisterUser1.page.jsx";
 
 function App() {
 	return (
@@ -156,7 +157,7 @@ function App() {
 				<Route path="verify/:qr_url" element={<VerificationPage />} />
 
 				{/* TEST ONLY ROUTE */}
-				<Route path="test/:role?" element={<ModernSignupForm />} />
+				<Route path="test/:role?" element={<RegisterUserPage />} />
 
 				<Route path="*" element={<NotFoundPage />} />
 			</Routes>

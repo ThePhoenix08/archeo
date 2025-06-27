@@ -7,6 +7,7 @@ import com.archeo.server.modules.auth.dtos.OrganizationRegisterRequest;
 import com.archeo.server.modules.auth.dtos.OwnerRegisterRequest;
 import com.archeo.server.modules.auth.services.AuthService;
 import com.archeo.server.modules.auth.services.IdentityProofStorageService;
+import com.archeo.server.modules.auth.services.SessionService;
 import com.archeo.server.modules.common.dto.ApiResponse;
 import com.archeo.server.modules.common.exceptions.InvalidCredentialsException;
 import com.archeo.server.modules.common.exceptions.UserAlreadyExistsException;
@@ -21,6 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -30,6 +34,7 @@ public class AuthController {
     private final AuthService authService;
     private final IdentityProofStorageService proofStorageService;
     private final UsersCommonRepository usersCommonRepository;
+    private final SessionService sessionService;
 
     @PostMapping("/register-owner")
     public ResponseEntity<ApiResponse<AuthResponse>> registerOwner(@Valid @RequestBody  OwnerRegisterRequest registerRequest,
@@ -61,6 +66,11 @@ public class AuthController {
         }
 
         AuthResponse authResponse=authService.login(loginRequest, servletRequest,servletResponse);
+
+
+
+
+
         ApiResponse<AuthResponse> response = ApiResponse.<AuthResponse>builder()
                 .statusCode(HttpStatus.FOUND.value())
                 .message("Login successful.")
@@ -68,7 +78,7 @@ public class AuthController {
                 .data(authResponse)
                 .build();
 
-        return new ResponseEntity<>(response, HttpStatus.FOUND);
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
 
     }
@@ -96,13 +106,42 @@ public class AuthController {
 
     }
 
-//    @PostMapping("/logout")
-//    public ResponseEntity<ApiResponse<String>> logout(@RequestHeader("Authorization") String authHeader){
-//        String token=authHeader.replace("Bearer ", "");
-//        String response=authService.logout(token);
-//        return new ResponseEntity<>(response, HttpStatus.OK);
-//
-//    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<String>> logout(HttpServletRequest servletRequest){
+
+        String sessionIdStr=sessionService.extractSessionId(servletRequest);
+
+        if(sessionIdStr==null){
+            ApiResponse<String> errorResponse=ApiResponse.<String>builder()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .message("Session id is missing")
+                    .slug("session_error")
+                    .data(null)
+                    .build();
+
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+
+        UUID sessionId= UUID.fromString(sessionIdStr);
+        sessionService.deleteSession(sessionId);
+
+        ApiResponse<String> successResponse = ApiResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Logged out successfully.")
+                .slug("logout_success")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(successResponse, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/refreshToken")
+    public ResponseEntity<?> refresh(HttpServletRequest servletRequest, HttpServletResponse servletResponse){
+        authService.refreshAccessTokenFromCookie(servletRequest, servletResponse);
+        return ResponseEntity.ok(Map.of("message", "Access token refreshed successfully"));
+    }
 
 
 

@@ -8,11 +8,11 @@ import com.archeo.server.modules.auth.dtos.OwnerRegisterRequest;
 import com.archeo.server.modules.auth.mapper.OrganizationMapper;
 import com.archeo.server.modules.auth.mapper.OwnerMapper;
 import com.archeo.server.modules.auth.mapper.UsersCommonMapper;
-import com.archeo.server.modules.auth.repositories.SessionRepo;
 import com.archeo.server.modules.auth.services.AuthLogsService;
 import com.archeo.server.modules.auth.services.AuthService;
 import com.archeo.server.modules.auth.services.SessionService;
 import com.archeo.server.modules.common.exceptions.InvalidCredentialsException;
+import com.archeo.server.modules.common.exceptions.InvalidTokenException;
 import com.archeo.server.modules.common.exceptions.UserAlreadyExistsException;
 import com.archeo.server.modules.common.exceptions.UserNotFoundException;
 import com.archeo.server.modules.common.models.UsersCommon;
@@ -38,7 +38,6 @@ public class AuthServiceImpl implements AuthService {
 
     private final UsersCommonRepository userRepository;
     private final JwtProvider jwtProvider;
-    private final SessionRepo sessionRepo;
     private final AuthLogsService authLogsService;
     private final SessionService sessionService;
     private final UsersCommonRepository usersCommonRepository;
@@ -139,12 +138,12 @@ public class AuthServiceImpl implements AuthService {
         refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setMaxAge(3 * 24 * 60 * 60);
-        sessionService.saveSession(user, refreshToken, servletRequest);
-        authLogsService.log(user, refreshToken, servletRequest);
+
 
 
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
+
 
         sessionService.saveSession(user, refreshToken, servletRequest);
         authLogsService.log(user, refreshToken, servletRequest);
@@ -209,12 +208,43 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
+
+
     @Override
-    public void logout(String token) {
+    public void refreshAccessTokenFromCookie(HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+
+        Cookie[] cookies= servletRequest.getCookies();
+        String refreshToken=null;
+
+        if(cookies!=null){
+            for(Cookie cookie:cookies){
+                if("refreshToken".equals(cookie.getName())){
+                    refreshToken= cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if(refreshToken==null){
+            throw new InvalidTokenException("Refresh token is not found in cookies");
+        }
+
+        String email= jwtProvider.extractUsername(refreshToken);
+
+        UsersCommon user=userRepository.findByEmail(email)
+                .orElseThrow(()->new UserNotFoundException("User not found"));
+
+        Map<String , Object> claims=Map.of("authorities", user.getUserRole().name());
+        String newAccessToken= jwtProvider.generateAccessToken(claims, email);
+
+        Cookie accessTokenCookie=new Cookie("accessToken", newAccessToken);
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setSecure(true);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge(15*60);
+        servletResponse.addCookie(accessTokenCookie);
+
     }
-
-
-
 
 
 }

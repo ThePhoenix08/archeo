@@ -18,4 +18,6 @@ public interface AuthService {
     AuthResponse registerOrganization(OrganizationRegisterRequest registerRequest, HttpServletRequest servletRequest,HttpServletResponse response);
 
     void logout(String token);
+
+    void refreshAccessTokenFromCookie(HttpServletRequest servletRequest, HttpServletResponse servletResponse);
 }

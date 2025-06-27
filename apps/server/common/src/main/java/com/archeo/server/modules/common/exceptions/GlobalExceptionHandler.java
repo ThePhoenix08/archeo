@@ -29,10 +29,17 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "unauthorized", ex.getMessage());
     }
 
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ApiResponse<Object>> handleInvalidToken(Exception ex) {
+        return buildResponse(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "invalid_token", ex.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Object>> handleGenericException(Exception ex) {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "server_error", ex.getMessage());
     }
+
+
 
     private ResponseEntity<ApiResponse<Object>> buildResponse(HttpStatus status, String errorType, String slug, String message) {
         ApiResponse<Object> response = ApiResponse.builder()

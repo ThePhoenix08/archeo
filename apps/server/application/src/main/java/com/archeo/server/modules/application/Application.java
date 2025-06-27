@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -28,8 +29,9 @@ import java.util.Arrays;
 
 
 })
-@EnableJpaRepositories(basePackages = "com.archeo")    // Picks up all repositories
-@EntityScan(basePackages = "com.archeo")               // Scans for @Entity classes
+@EnableRedisRepositories(basePackages = "com.archeo.server.modules.auth.repositories")
+@EnableJpaRepositories(basePackages = "com.archeo")
+@EntityScan(basePackages = "com.archeo")
 public class Application {
 
 	public static void main(String[] args) {

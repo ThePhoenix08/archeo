@@ -1,3 +1,5 @@
+import { ROUTES } from "@/shared/routing/routes.constant.js";
+
 export const REGISTRATION_STEPS = Object.freeze({
   BASIC_CREDENTIALS: 'basic_credentials',
 	AGENT_TYPE: 'agent_type',
@@ -5,6 +7,11 @@ export const REGISTRATION_STEPS = Object.freeze({
 	ROLE_SELECTION: 'role_selection'
 });
 
-export const STEP_TO_ROUTES_MAP = Object.freeze({
-	
-})
+export const REGISTRATION_STEPS_LIST = Object.values(REGISTRATION_STEPS);
+
+export const REGISTER_STEP_TO_ROUTES_MAP = Object.freeze({
+	[REGISTRATION_STEPS.BASIC_CREDENTIALS]: ROUTES.REGISTER_BASIC_CREDS,
+	[REGISTRATION_STEPS.AGENT_TYPE]: ROUTES.REGISTER_AGENT_TYPE,
+	[REGISTRATION_STEPS.AGENT_DETAILS]: ROUTES.REGISTER_AGENT_DETAILS,
+	[REGISTRATION_STEPS.ROLE_SELECTION]: ROUTES.REGISTER_SELECT_ROLES,
+});

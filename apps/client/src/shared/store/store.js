@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { apiSlice } from "@/shared/reducer/apiSlice.reducer";
+// eslint-disable-next-line boundaries/element-types
 import authReducer from "@/features/auth/reducer/authSlice.reducer";
 import {
 	persistStore,
@@ -12,6 +13,7 @@ import {
 	REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
+import { ENVS } from "@/shared/constants/env.constant.js";
 
 const persistConfig = {
 	key: "root",
@@ -33,7 +35,7 @@ export const store = configureStore({
 				ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
 			},
 		}).concat(apiSlice.middleware),
-	devTools: process.env.NODE_ENV !== "production", // ✅ enables DevTools only in development
+	devTools: ENVS.DEV_MODE, // ✅ enables DevTools only in development
 });
 
 export const persistor = persistStore(store);

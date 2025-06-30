@@ -3,8 +3,15 @@ export const ROUTES = {
   HOME: '/',
   ABOUT: '/about',
   LOGIN: '/login',
-  REGISTER: '/register',
+  REGISTER_BASIC_CREDS: '/register',
+  REGISTER_AGENT_TYPE: '/register/select-agent-type',
+  REGISTER_AGENT_DETAILS: '/register/details-form',
+  REGISTER_SELECT_ROLES: '/register/select-roles',
+
+  // Dynamic routes
+  VERIFY_QR: (qrUrl) => `/verify/${qrUrl}`,
   
+  // protectedRoutes
   // App routes 
   DASHBOARD: '/app',
   
@@ -31,7 +38,4 @@ export const ROUTES = {
   API_USAGE: '/app/api/usage',
   API_CONFIG: '/app/api/config',
   API_REQUESTS: '/app/api/requests',
-  
-  // Dynamic routes
-  VERIFY_QR: (qrUrl) => `/verify/${qrUrl}`,
 };

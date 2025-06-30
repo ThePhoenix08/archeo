@@ -1,4 +1,4 @@
-import { useRegisterMutation } from "@/features/auth/actions/authApi.action.js";
+import { useRegisterAgentMutation } from "@/features/auth/actions/authApi.action.js";
 import { setCredentials } from "@/features/auth/reducer/authSlice.reducer.js";
 import { ROUTES } from "@/shared/routing/routes.constant.js";
 import { useDispatch } from "react-redux";
@@ -11,7 +11,7 @@ export const useUserAuthFlow = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [login, loginResult] = useLoginMutation();
-	const [register, registerResult] = useRegisterMutation();
+	const [register, registerResult] = useRegisterAgentMutation();
 
 	//👉🏻loginResult or registerResult contains the following properties:
 	// isLoading: true while the mutation is in progress.

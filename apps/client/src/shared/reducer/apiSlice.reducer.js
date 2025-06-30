@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { setCredentials, logout } from "@/features/auth/reducer/authSlice.reducer.js";
+import { setCredentials, clearCredentials } from "@/features/auth/reducer/authSlice.reducer.js";
 import { ENVS } from "@/shared/constants/env.constant.js";
 
 const baseQuery = fetchBaseQuery({
@@ -40,7 +40,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 			api.dispatch(setCredentials({ accessToken, user }));
 			result = await baseQuery(args, api, extraOptions);
 		} else {
-			api.dispatch(logout());
+			api.dispatch(clearCredentials());
 			if (typeof window !== "undefined") {
 				window.location.href = "/login";
 			}
@@ -122,5 +122,6 @@ export const apiSlice = createApi({
 	refetchOnMountOrArgChange: 30,
 	refetchOnFocus: true,
 	refetchOnReconnect: true,
+	// eslint-disable-next-line no-unused-vars
 	endpoints: (builder) => ({}), // Individual endpoints will be injected in feature slices
 });

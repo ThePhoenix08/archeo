@@ -17,7 +17,7 @@ import {
 
 import {
 	useVerifyEmailMutation,
-	useVerifyEmailOTPMutation,
+	useVerifyOTPMutation,
 } from "@/features/auth/actions/authApi.action.js";
 
 import {
@@ -56,7 +56,7 @@ export default function EmailWithVerifyInput({
 	const [verifyEmail, { isLoading: isVerifyingEmail }] =
 		useVerifyEmailMutation();
 	const [verifyEmailOTP, { isLoading: isVerifyingOTP }] =
-		useVerifyEmailOTPMutation();
+		useVerifyOTPMutation();
 
 	// Refs
 	const fullEmail = `${localPart}${domainPart}`;

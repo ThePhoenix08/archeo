@@ -6,7 +6,7 @@
   "javascript.preferences.importModuleSpecifier": "non-relative",
   "javascript.preferences.importModuleSpecifierEnding": "js",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "javascript.updateImportsOnFileMove.enabled": "always",
   "material-icon-theme.folders.theme": "specific",
   "material-icon-theme.activeIconPack": "react_redux",

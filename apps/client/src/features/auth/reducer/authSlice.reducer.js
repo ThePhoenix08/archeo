@@ -1,16 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-/* utils */
-function getTokenExpiry(token, type) {
-	try {
-		const payload = JSON.parse(atob(token.split('.')[1]));
-		return payload.exp * 1000;
-	} catch (error) {
-		console.warn(`Could not decode ${type} token expiry`);
-		console.log('Error decoding token: ', error);
-	}
-}
-
 const initialState = {
 	agentType: null,
 	agentId: null,
@@ -18,11 +7,10 @@ const initialState = {
 	emailVerifyId: null,
 	user: null,
 	isAuthenticated: false,
-	accesstokenExpiry: null,
-	refreshTokenExpiry: null,
 	isLoading: false,
 	isRefreshing: false,
 	error: null,
+	accessToken: null,
 };
 
 const authSlice = createSlice({
@@ -30,23 +18,17 @@ const authSlice = createSlice({
 	initialState,
 	reducers: {
 		setCredentials: (state, action) => {
-			const { accessToken, refreshToken, ...userData } = action.payload;
-			state.user = { ...userData, accessToken, refreshToken }
+			const { accessToken, ...userData } = action.payload;
+			state.user = { ...userData, accessToken }
 			state.isAuthenticated = true;
 			state.error = null;
-
-			if (accessToken) state.accesstokenExpiry = getTokenExpiry(accessToken, "access");
-			if (refreshToken) state.refreshTokenExpiry = getTokenExpiry(refreshToken, "refresh");
+			state.accessToken = accessToken;
 		},
 		updateTokens: (state, action) => {
-			const { accessToken, refreshToken } = action.payload;
+			const { accessToken } = action.payload;
 			if (state.user) {
 				state.user.accessToken = accessToken;
-				if (refreshToken) state.user.refreshToken = refreshToken;
 			}
-
-			if (accessToken) state.accesstokenExpiry = getTokenExpiry(accessToken, "access");
-			if (refreshToken) state.refreshTokenExpiry = getTokenExpiry(refreshToken, "refresh");
 		}
 	},
 
@@ -109,22 +91,3 @@ export const selectIsRefreshing = (state) => state.auth.isRefreshing;
 
 // Token selectors
 export const selectAccessToken = (state) => state.auth.user?.accessToken;
-export const selectRefreshToken = (state) => state.auth.user?.refreshToken;
-export const selectTokenExpiry = (state) => state.auth.tokenExpiry;
-export const selectRefreshTokenExpiry = (state) => state.auth.refreshTokenExpiry;
-
-// Computed selectors
-export const selectIsTokenExpired = (state) => {
-	const expiry = selectTokenExpiry(state);
-	return expiry ? Date.now() >= expiry : false;
-};
-
-export const selectIsRefreshTokenExpired = (state) => {
-	const expiry = selectRefreshTokenExpiry(state);
-	return expiry ? Date.now() >= expiry : false;
-};
-
-export const selectTokenExpiresIn = (state) => {
-	const expiry = selectTokenExpiry(state);
-	return expiry ? Math.max(0, expiry - Date.now()) : 0;
-};

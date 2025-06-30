@@ -4,3 +4,7 @@ export const REGISTRATION_STEPS = Object.freeze({
 	AGENT_DETAILS: 'agent_details',
 	ROLE_SELECTION: 'role_selection'
 });
+
+export const STEP_TO_ROUTES_MAP = Object.freeze({
+	
+})

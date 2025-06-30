@@ -1,7 +1,7 @@
 import { useLoginMutation, useRegisterMutation } from "@/features/auth/actions/authApi.action.js";
-import { REGISTRATION_STEPS } from "@/features/auth/flows/flow.constant.js";
+import { REGISTER_STEP_TO_ROUTES_MAP, REGISTRATION_STEPS, REGISTRATION_STEPS_LIST } from "@/features/auth/flows/flow.constant.js";
 import { ROLES } from "@/shared/constants/roles.constant.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 
@@ -92,7 +92,7 @@ const FINAL_REGISTER_DATA_BLUEPRINT = {
 // const [rolesSelection, setRolesSelection] = useState([ROLES.USER]);
 
 export const useRegisterFlow = () => {
-  const [currentAuthStep, setAuthStep] = useState(0);
+  const [currentRegisterStep, setRegisterStep] = useState(0);
   const [basicCredentials, setBasicCredentials] = useState(BASIC_CREDENTIALS_BLUEPRINT);
   const [finalFormData, setFinalFormData] = useState(FINAL_REGISTER_DATA_BLUEPRINT);
 
@@ -100,7 +100,14 @@ export const useRegisterFlow = () => {
   const dispatch = useDispatch();
   const [register, registerResult] = useRegisterMutation();
 
-  const basicCredsFlow = () => {
+	const nextStep = () => setRegisterStep((prev) => Math.min(prev + 1, REGISTRATION_STEPS_LIST.length + 1));
+	useEffect(() => {
+		navigate(REGISTER_STEP_TO_ROUTES_MAP[REGISTRATION_STEPS_LIST[currentRegisterStep]]);
+	}, [currentRegisterStep, navigate]);
 
+	
+
+  const basicCredsFlow = () => {
+		
   }
 }

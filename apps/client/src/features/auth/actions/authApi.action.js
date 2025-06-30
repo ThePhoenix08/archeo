@@ -1,4 +1,11 @@
 import { apiSlice } from "@/shared/reducer/slice.barrel";
+import {
+	setCredentials,
+	clearCredentials,
+	setAgent,
+	setLoading,
+	setError
+} from "@/features/auth/reducer/authSlice.reducer.js";
 
 export const authApi = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
@@ -9,67 +16,240 @@ export const authApi = apiSlice.injectEndpoints({
 				method: "POST",
 				body: agentData,
 			}),
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				dispatch(setLoading(true));
+				try {
+					const { data } = await queryFulfilled;
+					if (data.agentId) {
+						dispatch(setAgent({
+							agentId: data.agentId,
+							agentType: data.agentType,
+							email: data.email,
+							emailVerifyId: data.emailVerifyId
+						}))
+					}
+				} catch (error) {
+					dispatch(setError({ message: "Registration failed!", error }));
+				} finally {
+					dispatch(setLoading(false));
+				}
+			},
+			invalidatesTags: ['agent']
 		}),
 		registerIndividual: builder.mutation({
 			query: (individualData) => ({
 				url: "/auth/register/user",
 				method: "POST",
-				body: individualData,
+				body: { ...individualData, agentType: 'individual' },
 			}),
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				dispatch(setLoading(true));
+				try {
+					await queryFulfilled();
+				} catch (error) {
+					dispatch(setError({ error, message: "Registration failed!" }));
+				} finally {
+					dispatch(setLoading(false));
+				}
+			},
+			invalidatesTags: ['user']
 		}),
 		registerOrganization: builder.mutation({
 			query: (orgData) => ({
 				url: "/auth/register/user",
 				method: "POST",
-				body: orgData,
+				body: { ...orgData, userType: 'organization' },
 			}),
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				dispatch(setLoading(true));
+				try {
+					await queryFulfilled;
+				} catch (error) {
+					dispatch(setError(error.error?.data?.message || 'Registration failed'));
+				} finally {
+					dispatch(setLoading(false));
+				}
+			},
+			invalidatesTags: ['User', 'Organization'],
 		}),
-		
-		// VERIFY EMAIL
+
+		// EMAIL VERIFICATION
 		verifyEmail: builder.mutation({
-      query: (email) => ({
-        url: "/verify-email",
-        method: "POST",
-        body: { email },
-      }),
-		}),
-		verifyOTP: builder.mutation({
-			query: ({email, otp}) => ({
-				url: "/verify-otp",
-        method: "POST",
-        body: { email, otp },
+			query: (email) => ({
+				url: "/auth/verify-email",
+				method: "POST",
+				body: { email },
 			}),
+			// No cache needed for verification endpoints
+			keepUnusedDataFor: 0,
 		}),
-			
+
+		verifyOTP: builder.mutation({
+			query: ({ email, otp }) => ({
+				url: "/auth/verify-otp",
+				method: "POST",
+				body: { email, otp },
+			}),
+			keepUnusedDataFor: 0,
+		}),
+
+		// LOGIN
 		login: builder.mutation({
 			query: (authCredentials) => ({
 				url: "/auth/login",
 				method: "POST",
 				body: authCredentials,
 			}),
-			invalidatesTags: ["Auth"],
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				dispatch(setLoading(true));
+				try {
+					const { data } = await queryFulfilled;
+					dispatch(setCredentials(data));
+				} catch (error) {
+					dispatch(setError(error.error?.data?.message || 'Login failed'));
+				} finally {
+					dispatch(setLoading(false));
+				}
+			},
+			invalidatesTags: ['Auth', 'CurrentUser'],
 		}),
+
+		// LOGOUT
 		logout: builder.mutation({
 			query: () => ({
 				url: "/auth/logout",
 				method: "POST",
 			}),
-			invalidatesTags: ["Auth"],
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				try {
+					await queryFulfilled;
+					dispatch(clearCredentials());
+				} catch (error) {
+					// Even if logout fails on server, clear local state
+					console.error("Logout failed: ", error);
+					dispatch(clearCredentials());
+				}
+			},
+			invalidatesTags: ['Auth', 'CurrentUser', 'UserProfile'],
 		}),
 
+		// GET CURRENT USER
 		getCurrentUser: builder.query({
 			query: () => "/auth/current-user",
-			providesTags: ["Auth"],
+			providesTags: ['CurrentUser'],
+			// Transform response to ensure consistency
+			transformResponse: (response) => {
+				// Ensure we have all required fields
+				return {
+					id: response.id,
+					email: response.email,
+					role: response.role,
+					profile: response.profile,
+					...response
+				};
+			},
+			// Keep user data cached for 5 minutes
+			keepUnusedDataFor: 300,
+		}),
+
+		// UPDATE USER PROFILE
+		updateProfile: builder.mutation({
+			query: (profileData) => ({
+				url: "/auth/profile",
+				method: "PATCH",
+				body: profileData,
+			}),
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				try {
+					const { data } = await queryFulfilled;
+					// Optimistically update the current user data
+					dispatch(apiSlice.util.updateQueryData('getCurrentUser', undefined, (draft) => {
+						Object.assign(draft, data);
+					}));
+				} catch (error) {
+					dispatch(setError(error.error?.data?.message || 'Profile update failed'));
+				}
+			},
+			invalidatesTags: ['CurrentUser', 'UserProfile'],
+		}),
+
+		// CHANGE PASSWORD
+		changePassword: builder.mutation({
+			query: ({ currentPassword, newPassword }) => ({
+				url: "/auth/change-password",
+				method: "POST",
+				body: { currentPassword, newPassword },
+			}),
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				try {
+					await queryFulfilled;
+					// Password changed successfully, could show success message
+				} catch (error) {
+					dispatch(setError(error.error?.data?.message || 'Password change failed'));
+				}
+			},
+		}),
+
+		// FORGOT PASSWORD
+		forgotPassword: builder.mutation({
+			query: (email) => ({
+				url: "/auth/forgot-password",
+				method: "POST",
+				body: { email },
+			}),
+			keepUnusedDataFor: 0,
+		}),
+
+		// RESET PASSWORD
+		resetPassword: builder.mutation({
+			query: ({ token, newPassword }) => ({
+				url: "/auth/reset-password",
+				method: "POST",
+				body: { token, newPassword },
+			}),
+			keepUnusedDataFor: 0,
+		}),
+
+		// CHECK EMAIL AVAILABILITY
+		checkEmailAvailability: builder.query({
+			query: (email) => `/auth/check-email?email=${encodeURIComponent(email)}`,
+			// Don't cache email checks
+			keepUnusedDataFor: 0,
 		}),
 	}),
 });
 
 export const {
-	useLoginMutation,
-	useRegisterMutation,
+	// Registration hooks
+	useRegisterAgentMutation,
+	useRegisterIndividualMutation,
 	useRegisterOrganizationMutation,
-	useLogoutMutation,
-	useGetCurrentUserQuery,
+
+	// Email verification hooks
 	useVerifyEmailMutation,
-	useVerifyEmailOTPMutation,
+	useVerifyOTPMutation,
+
+	// Authentication hooks
+	useLoginMutation,
+	useLogoutMutation,
+
+	// User management hooks
+	useGetCurrentUserQuery,
+	useUpdateProfileMutation,
+	useChangePasswordMutation,
+
+	// Password recovery hooks
+	useForgotPasswordMutation,
+	useResetPasswordMutation,
+
+	// Utility hooks
+	useCheckEmailAvailabilityQuery,
+} = authApi;
+
+export const {
+	endpoints: {
+		getCurrentUser,
+		logout,
+		login,
+	}
 } = authApi;

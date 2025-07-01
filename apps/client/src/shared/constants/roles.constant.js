@@ -10,14 +10,12 @@ export const isValidAgentType = (agentType) => AGENT_TYPES_LIST.includes(agentTy
 
 // ROLE
 export const ROLES = Object.freeze({
+	AGENT: 'agent',
   USER: 'user',
 	OWNER: 'owner',
-
 	ISSUER: 'issuer',
-	
   VERIFIER: 'verifier',
 	VERIFIER_API_CONSUMER: 'verifier api consumer',
-	
 	ADMIN: 'admin',
 });
 

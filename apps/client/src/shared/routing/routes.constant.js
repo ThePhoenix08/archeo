@@ -2,6 +2,7 @@ export const ROUTES = {
   // Public routes
   HOME: '/',
   ABOUT: '/about',
+  
   LOGIN: '/login',
   REGISTER_BASIC_CREDS: '/register',
   REGISTER_AGENT_TYPE: '/register/select-agent-type',

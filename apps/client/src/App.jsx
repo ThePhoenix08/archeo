@@ -26,14 +26,16 @@ import TemplatePage from "@/features/template/Template.page";
 import TemplateLayout from "@/features/template/TemplateLayout";
 import VerificationPage from "@/features/verify/verification.page";
 import AppLayout from "@/shared/layout/AppLayout";
-import { ROLES } from "@/shared/constants/roles.constant";
 import { RouteGuard } from "@/features/auth/components/utils/RouteGuard";
 import NotFoundPage from "@/shared/routing/NotFound.page";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ModernSignupForm from "@/features/auth/pages/RegisterUser.page.jsx";
 import RegisterUserPage from "@/features/auth/pages/RegisterUser1.page.jsx";
+import BasicCredsPage from "@/features/auth/pages/BasicCreds.page.jsx";
+import AgentTypePage from "@/features/auth/pages/AgentType.page.jsx";
+import SelectRolesPage from "@/features/auth/pages/SelectRoles.page.jsx";
+import AgentDetailsFormPage from "@/features/auth/pages/AgentDetailsForm.page.jsx";
 
 function App() {
 	return (
@@ -44,7 +46,12 @@ function App() {
 
 				<Route element={<AuthLayout />}>
 					<Route path="login/:role?" element={<LoginPage />} />
-					<Route path="register/:role?" element={<RegisterPage />} />
+					<Route path="register/:role?" element={<RegisterPage />}>
+						{/* <Route index element={<BasicCredsPage />} />
+						<Route path="select-agent-type" element={<AgentTypePage />} />
+						<Route path="details-form" element={<AgentDetailsFormPage />} />
+						<Route path="select-roles" element={<SelectRolesPage />} /> */}
+					</Route>
 				</Route>
 
 				<Route path="app" element={<AppLayout />}>
@@ -54,12 +61,7 @@ function App() {
 						{/* templatesList only for issuer */}
 						<Route
 							path="templates"
-							element={
-								<RouteGuard
-									allowedRoles={[ROLES.ISSUER]}
-									routeComponent={<TemplatesListPage />}
-								/>
-							}
+							element={<RouteGuard routeComponent={<TemplatesListPage />} />}
 						/>
 						<Route path="documents" element={<DocumentsListPage />} />
 					</Route>
@@ -78,78 +80,38 @@ function App() {
 					{/* complete template section only for issuers */}
 					<Route
 						path="template"
-						element={
-							<RouteGuard
-								allowedRoles={[ROLES.ISSUER]}
-								routeComponent={<TemplateLayout />}
-							/>
-						}
+						element={<RouteGuard routeComponent={<TemplateLayout />} />}
 					>
 						<Route
 							path=":templateId/view?"
-							element={
-								<RouteGuard
-									allowedRoles={[ROLES.ISSUER]}
-									routeComponent={<TemplatePage />}
-								/>
-							}
+							element={<RouteGuard routeComponent={<TemplatePage />} />}
 						/>
 						<Route
 							path=":templateId/edit"
-							element={
-								<RouteGuard
-									allowedRoles={[ROLES.ISSUER]}
-									routeComponent={<EditTemplatePage />}
-								/>
-							}
+							element={<RouteGuard routeComponent={<EditTemplatePage />} />}
 						/>
 					</Route>
 
 					{/* complete api section only for verifiers */}
 					<Route
 						path="api"
-						element={
-							<RouteGuard
-								allowedRoles={[ROLES.VERIFIER]}
-								routeComponent={<APILayout />}
-							/>
-						}
+						element={<RouteGuard routeComponent={<APILayout />} />}
 					>
 						<Route
 							index
-							element={
-								<RouteGuard
-									allowedRoles={[ROLES.VERIFIER]}
-									routeComponent={<AnalyticsPage />}
-								/>
-							}
+							element={<RouteGuard routeComponent={<AnalyticsPage />} />}
 						/>
 						<Route
 							path="usage"
-							element={
-								<RouteGuard
-									allowedRoles={[ROLES.VERIFIER]}
-									routeComponent={<UsagePage />}
-								/>
-							}
+							element={<RouteGuard routeComponent={<UsagePage />} />}
 						/>
 						<Route
 							path="config"
-							element={
-								<RouteGuard
-									allowedRoles={[ROLES.VERIFIER]}
-									routeComponent={<ConfigPage />}
-								/>
-							}
+							element={<RouteGuard routeComponent={<ConfigPage />} />}
 						/>
 						<Route
 							path="requests"
-							element={
-								<RouteGuard
-									allowedRoles={[ROLES.VERIFIER]}
-									routeComponent={<RequestsPage />}
-								/>
-							}
+							element={<RouteGuard routeComponent={<RequestsPage />} />}
 						/>
 					</Route>
 				</Route>

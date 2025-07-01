@@ -26,3 +26,6 @@ export const ROLES_LIST = Object.freeze(Object.values(ROLES));
 export const isValidRole = (role) => ROLES_LIST.includes(role);
 
 // PERMISSION
+const PERMISSIONS = Object.freeze({
+	
+})

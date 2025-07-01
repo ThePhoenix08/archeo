@@ -1,3 +1,4 @@
+import { ENVS } from "@/shared/constants/env.constant.js";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -11,6 +12,7 @@ const initialState = {
 	isRefreshing: false,
 	error: null,
 	accessToken: null,
+	tokenExpiryEstimate: null,
 };
 
 const authSlice = createSlice({
@@ -23,11 +25,13 @@ const authSlice = createSlice({
 			state.isAuthenticated = true;
 			state.error = null;
 			state.accessToken = accessToken;
+			state.tokenExpiryEstimate = Date.now() + ENVS.ACCESS_TOKEN_EXPIRY;
 		},
 		updateTokens: (state, action) => {
 			const { accessToken } = action.payload;
 			if (state.user) {
 				state.user.accessToken = accessToken;
+				state.tokenExpiryEstimate = Date.now() + ENVS.ACCESS_TOKEN_EXPIRY;
 			}
 		}
 	},
@@ -90,4 +94,5 @@ export const selectAuthError = (state) => state.auth.error;
 export const selectIsRefreshing = (state) => state.auth.isRefreshing;
 
 // Token selectors
-export const selectAccessToken = (state) => state.auth.user?.accessToken;
+export const selectAccessToken = (state) => state.auth.accessToken;
+export const selecttokenExpiryEstimate = (state) => state.auth.tokenExpiryEstimate;

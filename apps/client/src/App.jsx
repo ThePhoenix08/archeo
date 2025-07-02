@@ -47,7 +47,7 @@ function App() {
 					<Route path="register">
 						<Route index element={<BasicCredsPage />} />
 						<Route path="select-agent-type" element={<AgentTypePage />} />
-						<Route path="details-form" element={<AgentDetailsFormPage />} />
+						<Route path="details-form/:agentType?" element={<AgentDetailsFormPage />} />
 						<Route path="select-roles" element={<SelectRolesPage />} />
 					</Route>
 				</Route>

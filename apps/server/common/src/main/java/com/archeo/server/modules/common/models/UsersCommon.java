@@ -27,9 +27,7 @@ public class UsersCommon {
     @Column(name = "password_hash", nullable = false, length = 255)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private USER_ROLE userRole = USER_ROLE.ROLE_OWNER;
+
 
 
 

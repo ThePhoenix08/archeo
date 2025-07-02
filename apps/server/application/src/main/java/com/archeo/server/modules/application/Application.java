@@ -1,6 +1,8 @@
 package com.archeo.server.modules.application;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -13,6 +15,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 @SpringBootApplication(scanBasePackages = {
@@ -39,6 +43,16 @@ public class Application {
 		application.addInitializers(new DotenvInitializer());
 		application.run(args);
 	}
+
+	@Autowired
+	DataSource dataSource;
+
+	@PostConstruct
+	public void testConnection() throws SQLException {
+		System.out.println("=====================================================================================================================");
+		System.out.println(">>> Connecting to: " + dataSource.getConnection().getMetaData().getURL());
+	}
+
 
 	public static class DotenvInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 		@Override

@@ -1,5 +1,6 @@
 package com.archeo.server.modules.user.controllers;
 
+import com.archeo.server.modules.common.dto.ApiResponse;
 import com.archeo.server.modules.user.dtos.EmailRequest;
 import com.archeo.server.modules.user.services.OtpService;
 import jakarta.validation.Valid;
@@ -16,21 +17,39 @@ public class OtpController {
     private final OtpService otpService;
 
     @PostMapping("/send")
-    public ResponseEntity<String> sendOtp(@RequestBody @Valid EmailRequest emailRequest){
+    public ResponseEntity<ApiResponse<String>> sendOtp(@RequestBody @Valid EmailRequest emailRequest) {
         otpService.sendOtp(emailRequest.getEmail());
-        return ResponseEntity.ok("OTP sent successfully to "+emailRequest.getEmail());
+
+        ApiResponse<String> response = ApiResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("OTP sent successfully")
+                .data("OTP sent to: " + emailRequest.getEmail())
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<String> verifyOtp(@RequestParam("otp") String otp,
-                                            @RequestParam("email") String email){
+    public ResponseEntity<ApiResponse<String>> verifyOtp(@RequestParam("otp") String otp,
+                                                         @RequestParam("email") String email) {
+
         String message = otpService.verifyOtp(otp, email);
 
-        if (message.equals("Otp verified successfully")) {
-            return ResponseEntity.ok(message);
+        if ("Otp verified successfully".equals(message)) {
+            ApiResponse<String> response = ApiResponse.<String>builder()
+                    .statusCode(HttpStatus.OK.value())
+                    .message(message)
+                    .data("Verified email: " + email)
+                    .build();
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .message("OTP verification failed")
+                    .errorType("INVALID_OTP")
+                    .data(message)
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
-
 }

@@ -1,5 +1,6 @@
 package com.archeo.server.modules.user.controllers;
 
+import com.archeo.server.modules.common.dto.ApiResponse;
 import com.archeo.server.modules.common.models.UsersCommon;
 import com.archeo.server.modules.common.repositories.UsersCommonRepository;
 import com.archeo.server.modules.user.dtos.OrganizationProfileDTO;
@@ -21,71 +22,100 @@ import java.security.Principal;
 @RequestMapping("/api/profile")
 public class ProfileController {
 
-
     private final UsersCommonRepository usersCommonRepository;
     private final ProfileService profileService;
 
-    @GetMapping ("/getOwner")
-    public ResponseEntity<OwnerProfileDTO> getOwnerProfile() {
-
-        String email= SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println("Email:"+email);
-
-        UsersCommon user= usersCommonRepository.findByEmail(email)
+    @GetMapping("/getOwner")
+    public ResponseEntity<ApiResponse<OwnerProfileDTO>> getOwnerProfile() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        UsersCommon user = usersCommonRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        OwnerProfileDTO profileDTO=profileService.getOwnerProfile(user);
-        return new ResponseEntity<>(profileDTO, HttpStatus.FOUND);
-
+        OwnerProfileDTO profileDTO = profileService.getOwnerProfile(user);
+        return ResponseEntity.ok(
+                ApiResponse.<OwnerProfileDTO>builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Owner profile fetched successfully")
+                        .data(profileDTO)
+                        .build()
+        );
     }
 
     @PutMapping("/updateOwner")
-    public ResponseEntity<String> updateOwnerProfile(
+    public ResponseEntity<ApiResponse<String>> updateOwnerProfile(
             @Valid @RequestBody UpdateOwnerProfileRequest updateOwnerProfile,
             Principal principal) {
 
         if (principal == null) {
-            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    ApiResponse.<String>builder()
+                            .statusCode(HttpStatus.UNAUTHORIZED.value())
+                            .message("Unauthorized")
+                            .errorType("AUTH_ERROR")
+                            .build()
+            );
         }
 
         String userEmail = principal.getName();
         profileService.updateOwnerProfile(userEmail, updateOwnerProfile);
-        return new ResponseEntity<>("Owner Profile updated successfully", HttpStatus.OK);
+
+        return ResponseEntity.ok(
+                ApiResponse.<String>builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Owner profile updated successfully")
+                        .data("Updated profile for: " + userEmail)
+                        .build()
+        );
     }
 
-    @GetMapping ("/getOrganization")
-    public ResponseEntity<OrganizationProfileDTO> getOrganizationProfile(Principal principal) {
-
+    @GetMapping("/getOrganization")
+    public ResponseEntity<ApiResponse<OrganizationProfileDTO>> getOrganizationProfile(Principal principal) {
         if (principal == null) {
-            return new ResponseEntity<>( HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    ApiResponse.<OrganizationProfileDTO>builder()
+                            .statusCode(HttpStatus.UNAUTHORIZED.value())
+                            .message("Unauthorized")
+                            .errorType("AUTH_ERROR")
+                            .build()
+            );
         }
 
         String orgEmail = principal.getName();
+        OrganizationProfileDTO profileDTO = profileService.getOrganizationProfile(orgEmail);
 
-
-        OrganizationProfileDTO profileDTO=profileService.getOrganizationProfile(orgEmail);
-        return new ResponseEntity<>(profileDTO, HttpStatus.FOUND);
-
+        return ResponseEntity.ok(
+                ApiResponse.<OrganizationProfileDTO>builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Organization profile fetched successfully")
+                        .data(profileDTO)
+                        .build()
+        );
     }
 
-    @PutMapping ("/updateOrganization")
-    public ResponseEntity<String> updateOrganizationProfile(
-            @Valid @RequestBody UpdateOrganizationProfileRequest updateOrganizationProfileRequest,
+    @PutMapping("/updateOrganization")
+    public ResponseEntity<ApiResponse<String>> updateOrganizationProfile(
+            @Valid @RequestBody UpdateOrganizationProfileRequest updateRequest,
             Principal principal) {
 
         if (principal == null) {
-            return new ResponseEntity<>( HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    ApiResponse.<String>builder()
+                            .statusCode(HttpStatus.UNAUTHORIZED.value())
+                            .message("Unauthorized")
+                            .errorType("AUTH_ERROR")
+                            .build()
+            );
         }
 
         String orgEmail = principal.getName();
+        profileService.updateOrganizationProfile(updateRequest, orgEmail);
 
-
-        profileService.updateOrganizationProfile(updateOrganizationProfileRequest,orgEmail);
-        return new ResponseEntity<>("Organization Profile updated successfully", HttpStatus.OK);
-
+        return ResponseEntity.ok(
+                ApiResponse.<String>builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Organization profile updated successfully")
+                        .data("Updated profile for: " + orgEmail)
+                        .build()
+        );
     }
-
-
-
 }
-

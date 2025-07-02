@@ -1,5 +1,5 @@
-import { authApi } from "@/features/auth/actions/authApi.action.js";
-import { clearCredentials, updateTokens } from "@/features/auth/reducer/authSlice.reducer.js";
+import { authApi } from "@/features/auth/state/redux-apis/auth.api.js";
+import { clearCredentials, updateTokens } from "@/features/auth/state/slices/auth.slice.js";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query";
 
 export const refreshApi = createApi({

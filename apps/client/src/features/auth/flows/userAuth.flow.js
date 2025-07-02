@@ -1,9 +1,9 @@
-import { useRegisterAgentMutation } from "@/features/auth/actions/authApi.action.js";
-import { setCredentials } from "@/features/auth/reducer/authSlice.reducer.js";
-import { ROUTES } from "@/shared/routing/routes.constant.js";
+import { useRegisterAgentMutation } from "@/features/auth/state/redux-apis/auth.api.js";
+import { setCredentials } from "@/features/auth/state/slices/auth.slice.js";
+import { ROUTES } from "@/shared/constants/routes.constant.js";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { useLoginMutation } from "@/features/auth/actions/authApi.action.js";
+import { useLoginMutation } from "@/features/auth/state/redux-apis/auth.api.js";
 import { toast, Bounce } from "react-toastify";
 
 // custom hook

@@ -1,4 +1,4 @@
-import { ROUTES } from "@/shared/routing/routes.constant.js";
+import { ROUTES } from "@/shared/constants/routes.constant.js";
 
 export const REGISTRATION_STEPS = Object.freeze({
   BASIC_CREDENTIALS: 'basic_credentials',

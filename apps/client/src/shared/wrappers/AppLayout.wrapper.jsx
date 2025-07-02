@@ -1,5 +1,5 @@
-import { selectIsAuthenticated } from "@/features/auth/reducer/authSlice.reducer.js";
-import { useTokenRefresh } from "@/hooks/use-token-refresh.js";
+import { selectIsAuthenticated } from "@/features/auth/state/slices/auth.slice.js";
+import { useTokenRefresh } from "@/hooks/use-token-refresh.hook.js";
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router";
 

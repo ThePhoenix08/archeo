@@ -1,7 +1,7 @@
 import { Navigate, useLocation } from "react-router";
-import { ROUTES } from "@/shared/routing/routes.constant";
-import AccessDeniedPage from "@/shared/routing/AccessDenied.page";
-import ErrorPage from "@/shared/routing/Error.page.jsx";
+import { ROUTES } from "@/shared/constants/routes.constant";
+import AccessDeniedPage from "@/shared/pages/AccessDenied.page";
+import ErrorPage from "@/shared/pages/Error.page.jsx";
 import { ROLES } from "@/shared/constants/roles.constant.js";
 
 /**

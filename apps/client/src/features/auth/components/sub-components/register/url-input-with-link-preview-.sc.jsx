@@ -1,5 +1,5 @@
 "use client";
-import { useLinkPreview } from "@/hooks/use-link-preview.js";
+import { useLinkPreview } from "@/hooks/use-link-preview.hook.js";
 import { ExternalLink, Globe } from "lucide-react";
 
 const URLInputWithLinkPreview = ({

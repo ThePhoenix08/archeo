@@ -1,5 +1,5 @@
 import { ENVS } from "@/shared/constants/env.constant";
-import { ROUTES } from "@/shared/routing/routes.constant";
+import { ROUTES } from "@/shared/constants/routes.constant";
 import { Link } from "react-router";
 
 /**

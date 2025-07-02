@@ -5,11 +5,11 @@ import { registerFieldsForOrg } from "@/features/auth/constants/getFieldsForRole
 import { cn } from "@/lib/utils.js";
 import { Building2, FolderLock, LoaderCircle } from "lucide-react";
 import { useEffect, useState } from "react";
-import { validateFullAddress } from "@/features/auth/components/utils/address.utils.js";
+import { validateFullAddress } from "@/features/auth/utils/address.utils.js";
 import { Button } from "@/components/ui/button.jsx";
 import { useOrgAuthFlow } from "@/features/auth/flows/orgAuth.flow.js";
 import { useParams } from "react-router";
-import { ValidationChecks } from "@/features/auth/components/utils/register.validator.js";
+import { ValidationChecks } from "@/features/auth/validators/register.validator.js";
 import { FEATURE_PREVIEWS } from "@/features/auth/constants/featurePreview.constant.js";
 
 const formStages = Object.keys(registerFieldsForOrg);

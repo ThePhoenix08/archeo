@@ -5,7 +5,7 @@ import {
 	setAgent,
 	setLoading,
 	setError
-} from "@/features/auth/reducer/authSlice.reducer.js";
+} from "@/features/auth/state/slices/auth.slice.js";
 
 export const authApi = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({

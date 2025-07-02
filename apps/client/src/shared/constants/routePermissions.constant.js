@@ -1,5 +1,5 @@
 import { ROLES } from "@/shared/constants/roles.constant";
-import { ROUTES } from "@/shared/routing/routes.constant";
+import { ROUTES } from "@/shared/constants/routes.constant";
 
 // Route permissions - maps routes to allowed roles
 export const ROUTE_PERMISSIONS = Object.freeze({

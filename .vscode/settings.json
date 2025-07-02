@@ -67,6 +67,21 @@
       "color": "deep-orange-500"
     },
     {
+      "name": "react-hook-js",
+      "base": "javascript",
+      "color": "deep-purple-400"
+    },
+    {
+      "name": "constant-js",
+      "base": "javascript",
+      "color": "blue-gray-500" 
+    },
+    {
+      "name": "barrel-js",
+      "base": "lib",
+      "color": "brown-500" 
+    },
+    {
       "name": "util-js",
       "base": "javascript",
       "color": "green-500"
@@ -155,6 +170,16 @@
       "name": "flow-ts",
       "base": "tree",
       "color": "green-500"
+    },
+    {
+      "name": "api-js",
+      "base": "redux-action",
+      "color": "teal-500"
+    },
+    {
+      "name": "slice-js",
+      "base": "redux-action",
+      "color": "lime-500"
     }
   ],
   "material-icon-theme.files.associations": {
@@ -172,6 +197,11 @@
     "*.flow.ts": "flow-ts",
     "*.js": "util-js",
     "*.ts": "util-ts",
+    "*.api.js": "api-js",
+    "*.slice.js": "slice-js",
+    "*.hook.js": "react-hook-js",
+    "*.constant.js": "constant-js",
+    "*.barrel.js": "barrel-js",
     "*.middleware.js": "middleware-js",
     "*.middleware.ts": "middleware-ts",
     "*.model.js": "model-js",
@@ -266,6 +296,24 @@
       "color": "green-500",
       "lightColor": "amber-500",
       "folderNames": ["flows"]
+    },
+    {
+      "name": "folder-redux-api",
+      "base": "folder-redux-reducer",
+      "color": "teal-500",
+      "folderNames": ["redux-apis"]
+    },
+    {
+      "name": "folder-redux-slice",
+      "base": "folder-redux-reducer",
+      "color": "lime-500",
+      "folderNames": ["slices"]
+    },
+    {
+      "name": "folder-redux-state",
+      "base": "folder-redux-reducer",
+      "color": "purple-500",
+      "folderNames": ["state"]
     }
   ],
   "java.compile.nullAnalysis.mode": "automatic",

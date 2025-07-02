@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router";
-import { ROUTES } from "@/shared/routing/routes.constant";
+import { ROUTES } from "@/shared/constants/routes.constant";
 
 function AuthLayout() {
 	const auth = false;

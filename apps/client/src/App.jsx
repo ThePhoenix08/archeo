@@ -10,7 +10,7 @@ import AnalyticsPage from "@/features/api/pages/Analytics.page";
 import ConfigPage from "@/features/api/pages/Config.page";
 import RequestsPage from "@/features/api/pages/Requests.page";
 import UsagePage from "@/features/api/pages/Usage.page";
-import AuthLayout from "@/features/auth/AuthLayout";
+import AuthLayout from "@/features/auth/wrappers/AuthLayout.wrapper";
 import LoginPage from "@/features/auth/pages/Login.page";
 import RegisterPage from "@/features/auth/pages/Register.page";
 import DashboardPage from "@/features/dashboard/Dashboard.page";
@@ -25,9 +25,9 @@ import EditTemplatePage from "@/features/template/EditTemplate.page";
 import TemplatePage from "@/features/template/Template.page";
 import TemplateLayout from "@/features/template/TemplateLayout";
 import VerificationPage from "@/features/verify/verification.page";
-import AppLayout from "@/shared/layout/AppLayout";
-import { RouteGuard } from "@/features/auth/components/utils/RouteGuard";
-import NotFoundPage from "@/shared/routing/NotFound.page";
+import AppLayout from "@/shared/wrappers/AppLayout.wrapper";
+import { RouteGuard } from "@/features/auth/wrappers/RouteGuard.wrapper";
+import NotFoundPage from "@/shared/pages/NotFound.page";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -46,11 +46,11 @@ function App() {
 
 				<Route element={<AuthLayout />}>
 					<Route path="login/:role?" element={<LoginPage />} />
-					<Route path="register/:role?" element={<RegisterPage />}>
-						{/* <Route index element={<BasicCredsPage />} />
+					<Route path="register">
+						<Route index element={<BasicCredsPage />} />
 						<Route path="select-agent-type" element={<AgentTypePage />} />
 						<Route path="details-form" element={<AgentDetailsFormPage />} />
-						<Route path="select-roles" element={<SelectRolesPage />} /> */}
+						<Route path="select-roles" element={<SelectRolesPage />} />
 					</Route>
 				</Route>
 
@@ -119,7 +119,7 @@ function App() {
 				<Route path="verify/:qr_url" element={<VerificationPage />} />
 
 				{/* TEST ONLY ROUTE */}
-				<Route path="test/:role?" element={<RegisterUserPage />} />
+				<Route path="test/:role?" element={<RegisterPage />} />
 
 				<Route path="*" element={<NotFoundPage />} />
 			</Routes>

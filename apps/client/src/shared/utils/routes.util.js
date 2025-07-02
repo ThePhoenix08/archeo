@@ -1,4 +1,4 @@
-import { ROUTE_PERMISSIONS } from "@/shared/routing/routes.constant";
+import { ROUTE_PERMISSIONS } from "@/shared/constants/routes.constant";
 
 // Utils for permission checking
 export const hasRouteAccess = (route, userRole) => {

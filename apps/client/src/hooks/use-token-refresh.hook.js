@@ -1,6 +1,6 @@
 // React hook for automatic token refresh
-import { refreshApi } from '@/features/auth/actions/refreshApi.action.js';
-import { selectIsAuthenticated, selectIsRefreshing, selecttokenExpiryEstimate } from '@/features/auth/reducer/authSlice.reducer.js';
+import { refreshApi } from '@/features/auth/state/redux-apis/refresh.api.js';
+import { selectIsAuthenticated, selectIsRefreshing, selecttokenExpiryEstimate } from '@/features/auth/state/slices/auth.slice.js';
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 

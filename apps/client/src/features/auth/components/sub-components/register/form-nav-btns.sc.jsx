@@ -31,7 +31,7 @@ const NextButton = ({
 			<button
 				onClick={onClick}
 				disabled={disabled}
-				className={`${baseClasses} bg-green-600 px-8 py-6 text-lg font-medium text-white hover:bg-green-700 hover:shadow-xl`}
+				className={`${baseClasses} cursor-pointer bg-blue-600 px-8 py-6 text-lg font-medium text-white hover:bg-blue-700 hover:shadow-xl`}
 				style={{
 					clipPath:
 						"polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px))",
@@ -46,7 +46,7 @@ const NextButton = ({
 		<button
 			onClick={onClick}
 			disabled={disabled}
-			className={`${baseClasses} flex h-16 w-16 items-center justify-center rounded-full bg-green-600 hover:bg-green-700 hover:shadow-xl`}
+			className={`${baseClasses} flex h-16 cursor-pointer w-16 items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 hover:shadow-xl`}
 			style={{
 				clipPath:
 					"polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))",
@@ -62,7 +62,7 @@ const SubmitButton = ({ onClick, disabled }) => {
 		<button
 			onClick={onClick}
 			disabled={disabled}
-			className={`focus:shadow-outline rounded bg-blue-600 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none ${
+			className={`focus:shadow-outline rounded cursor-pointer bg-blue-600 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none ${
 				disabled ? "cursor-not-allowed opacity-50" : ""
 			}`}
 		>

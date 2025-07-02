@@ -1,28 +1,205 @@
-import FeaturePreview from "@/features/auth/components/FeaturePreview.jsx";
-import FormStage from "@/features/auth/components/FormStage.jsx";
-import FormStepper from "@/features/auth/components/FormStepper.jsx";
-import { registerFieldsForOrg } from "@/features/auth/constants/getFieldsForRole.constant.js";
-import { cn } from "@/lib/utils.js";
-import { Building2, FolderLock, LoaderCircle } from "lucide-react";
-import { useEffect, useState } from "react";
-import { validateFullAddress } from "@/features/auth/components/utils/address.utils.js";
-import { Button } from "@/components/ui/button.jsx";
-import { useOrgAuthFlow } from "@/features/auth/flows/orgAuth.flow.js";
-import { useParams } from "react-router";
-import { ValidationChecks } from "@/features/auth/components/utils/register.validator.js";
-import { FEATURE_PREVIEWS } from "@/features/auth/constants/featurePreview.constant.js";
+import React from "react";
+import { useMultiStepOrganizationForm } from "@/features/auth/components/utils/useMultiStepOrganizationForm.hook.js";
+import OrganizationStepForm from "@/features/auth/components/sub-components/register/organization-step-form.sc.jsx";
 
-const formStages = Object.keys(registerFieldsForOrg);
+import {
+	Building,
+	Globe,
+	User,
+	Shield,
+	Mail,
+	Phone,
+	MapPin,
+	FileText,
+	QrCode,
+	BookOpenText,
+	Contact,
+	UserRound,
+} from "lucide-react";
+
+// Organization form categories with their respective fields
+const organizationCategories = [
+	{
+		category: "Basic Info",
+		icon: <BookOpenText size={18} />,
+		title: "Tell us about your organization",
+		description: "Basic information about your organization",
+		checklistKey: "BasicInfoStageCompleted",
+		fields: [
+			{
+				field: "orgname",
+				label: "What's your organization name?",
+				placeholder: "Enter organization name",
+				description: "The official name of your organization",
+				customData: {
+					icon: <Building />,
+					text: "Organization Name",
+					name: "orgname",
+					required: true,
+					maxLength: 100,
+					minLength: 2,
+				},
+			},
+			{
+				field: "orgtype",
+				label: "What type of organization is this?",
+				placeholder: "Select organization type",
+				description:
+					"Choose the category that best describes your organization",
+				customData: {
+					icon: <Building />,
+					text: "Organization Type",
+					name: "orgtype",
+					required: true,
+					options: [
+						{ value: "private", label: "Private Company" },
+						{ value: "public", label: "Public Company" },
+						{ value: "nonprofit", label: "Non-Profit Organization" },
+						{ value: "government", label: "Government Entity" },
+						{ value: "educational", label: "Educational Institution" },
+						{ value: "healthcare", label: "Healthcare Organization" },
+						{ value: "other", label: "Other" },
+					],
+				},
+			},
+		],
+	},
+	{
+		category: "Contact Info",
+		icon: <Contact size={18} />,
+		title: "Where can we find you?",
+		description: "Contact and location information",
+		checklistKey: "ContactInfoStageCompleted",
+		fields: [
+			{
+				field: "website",
+				label: "What's your organization's website?",
+				placeholder: "https://yourorganization.com",
+				description: "Your official website URL (optional)",
+				customData: {
+					icon: <Globe />,
+					text: "Website",
+					name: "website",
+					required: false,
+				},
+			},
+			{
+				field: "address",
+				label: "Where is your organization located?",
+				placeholder: "Enter your complete address",
+				description:
+					"Full address including street, city, state, and postal code",
+				customData: {
+					icon: <MapPin />,
+					text: "Address",
+					name: "address",
+					required: true,
+				},
+			},
+		],
+	},
+	{
+		category: "Contact Person",
+		icon: <UserRound size={18} />,
+		title: "Who should we contact?",
+		description: "Primary contact person details",
+		checklistKey: "ContactPersonStageCompleted",
+		fields: [
+			{
+				field: "contactname",
+				label: "What's the contact person's name?",
+				placeholder: "Enter full name",
+				description: "Full name of the primary contact person",
+				customData: {
+					icon: <User />,
+					text: "Contact Name",
+					name: "contactname",
+					required: true,
+					maxLength: 50,
+					minLength: 2,
+				},
+			},
+			{
+				field: "designation",
+				label: "What's their designation?",
+				placeholder: "Enter job title or position",
+				description: "Job title or position in the organization",
+				customData: {
+					icon: <User />,
+					text: "Designation",
+					name: "designation",
+					required: true,
+					maxLength: 50,
+				},
+			},
+			{
+				field: "phonenumber",
+				label: "What's their phone number?",
+				placeholder: "Enter phone number",
+				description: "Primary contact phone number",
+				customData: {
+					icon: <Phone />,
+					text: "Phone Number",
+					name: "phonenumber",
+					required: true,
+				},
+			},
+		],
+	},
+	{
+		category: "Verification",
+		icon: <QrCode size={18} />,
+		title: "Verify your organization",
+		description: "Upload documents to verify your organization",
+		checklistKey: "VerificationStageCompleted",
+		fields: [
+			{
+				field: "prooftype",
+				label: "What type of proof document?",
+				placeholder: "Select document type",
+				description: "Choose the type of verification document",
+				customData: {
+					icon: <Shield />,
+					text: "Proof Type",
+					name: "prooftype",
+					required: true,
+					options: [
+						{ value: "registration", label: "Registration Certificate" },
+						{ value: "incorporation", label: "Certificate of Incorporation" },
+						{ value: "license", label: "Business License" },
+						{ value: "tax", label: "Tax Registration" },
+						{ value: "other", label: "Other Government Document" },
+					],
+				},
+			},
+			{
+				field: "prooffilename",
+				label: "Upload your verification document",
+				placeholder: "Choose file to upload",
+				description: "Upload a clear copy of your verification document",
+				customData: {
+					icon: <FileText />,
+					text: "Verification Document",
+					name: "prooffilename",
+					required: true,
+					fileTypes: [".pdf", ".jpg", ".jpeg", ".png"],
+					maxSize: "5MB",
+				},
+			},
+		],
+	},
+];
+
 const FORMDATA_BLUEPRINT = {
 	orgname: "",
 	orgtype: "",
-	email: registerFieldsForOrg["Basic Info"].email.initialValue,
-	website: registerFieldsForOrg["Contact Info"].website.initialValue,
+	email: "",
+	website: "",
 	address: [],
 	contactname: "",
 	designation: "",
 	phonenumber: "",
-	prooftype: registerFieldsForOrg["Verification"].prooftype.initialValue,
+	prooftype: "",
 	prooffilename: "",
 	prooffiletype: "",
 };
@@ -37,328 +214,120 @@ const SUBMIT_CHECKLIST_BLUEPRINT = {
 };
 
 function RegisterOrgPage() {
-	const [currentStage, setCurrentStage] = useState(0);
-	const [formData, setFormData] = useState(FORMDATA_BLUEPRINT);
-	const [errors, setErrors] = useState(FORMDATA_BLUEPRINT);
-	const [submitCheckList, setSubmitCheckList] = useState(
+	const {
+		currentCategory,
+		direction,
+		formData,
+		checklist,
+		handleInputChange,
+		handleNext,
+		handleBack,
+		handleKeyPress,
+		areAllCategoryFieldsValid,
+		isCurrentCategoryCompleted,
+		totalCategories,
+		currentCategoryData,
+		handleCategoryChange,
+		handleSubmit: submitForm,
+		progress,
+		isLastCategory,
+	} = useMultiStepOrganizationForm(
+		organizationCategories,
+		FORMDATA_BLUEPRINT,
 		SUBMIT_CHECKLIST_BLUEPRINT
 	);
-	const currentStageName = formStages[currentStage];
-	const currentStageFields = registerFieldsForOrg[currentStageName];
-	const { role } = useParams();
-	const { flow } = useOrgAuthFlow({ role });
-	const [isLoading, setIsLoading] = useState(false);
 
-	// handlers
-	const handleFieldChange = (fieldName, value) => {
-		setFormData((prev) => ({ ...prev, [fieldName]: value }));
+	// const { role } = useParams();
 
-		// reset error message
-		if (errors[fieldName]) {
-			setErrors((prev) => ({ ...prev, [fieldName]: "" }));
-		}
+	const handleSubmit = () => {
+		console.log("Organization Registration Data:", formData);
+		console.log("Completion Checklist:", checklist);
+		alert("Organization registered successfully!");
+		// Add your submission logic here
 	};
 
-	// DEBUG ONLY
-	useEffect(() => {
-		console.log(formData);
-	}, [formData]);
-
-	// Main validation function
-	const validateStage = () => {
-		const stageErrors = {};
-
-		Object.values(currentStageFields).forEach((field) => {
-			const value = formData[field.name];
-			const fieldName = field.name;
-
-			// Special handling for address fields
-			if (field.type === "address") {
-				const addressValidation = validateFullAddress(value, field.required);
-				if (!addressValidation.isValid) {
-					stageErrors[fieldName] = addressValidation.error;
-				}
-				return;
-			}
-
-			// Run all applicable validation checks
-			const errors = [];
-
-			// Run validation checks in order
-			const checks = [
-				ValidationChecks.required,
-				ValidationChecks.fileRequired,
-				ValidationChecks.emailFormat,
-				ValidationChecks.urlFormat,
-				ValidationChecks.phoneFormat,
-				ValidationChecks.validOption,
-				ValidationChecks.fileType,
-				ValidationChecks.fileName,
-				ValidationChecks.fileSize,
-				ValidationChecks.documentIntegrity,
-				ValidationChecks.minLength,
-				ValidationChecks.maxLength,
-				ValidationChecks.onlyAlphabets,
-				ValidationChecks.onlyAlphanumeric,
-				ValidationChecks.allowedSpecialChars,
-				ValidationChecks.noConsecutiveSpaces,
-				ValidationChecks.noLeadingTrailingSpaces,
-				ValidationChecks.customChecker,
-			];
-
-			checks.forEach((check) => {
-				const error = check(value, field);
-				if (error) {
-					errors.push(error);
-				}
-			});
-
-			// Sort errors by priority and take the highest priority one
-			if (errors.length > 0) {
-				errors.sort((a, b) => a.priority - b.priority);
-				stageErrors[fieldName] = errors[0].message;
-			}
-		});
-
-		setErrors(stageErrors);
-		const isValid = Object.keys(stageErrors).length === 0;
-
-		setSubmitCheckList((prev) => ({
-			...prev,
-			[formStages[currentStage]]: isValid,
-		}));
-
-		return isValid;
-	};
-
-	// Helper function to validate file immediately on upload
-	const validateFileUpload = (file, field) => {
-		const errors = [];
-
-		// Create a temporary validation context
-		const fileValidationChecks = [
-			ValidationChecks.fileType,
-			ValidationChecks.fileName,
-			ValidationChecks.fileSize,
-			ValidationChecks.documentIntegrity,
-		];
-
-		fileValidationChecks.forEach((check) => {
-			const error = check(null, field, file);
-			if (error) {
-				errors.push(error);
-			}
-		});
-
-		// Sort by priority and return the most important error
-		if (errors.length > 0) {
-			errors.sort((a, b) => a.priority - b.priority);
-			return { isValid: false, error: errors[0].message };
-		}
-
-		return { isValid: true, error: null };
-	};
-
-	// Enhanced file upload handler with immediate validation
-	const handleFileUploadChange = (files) => {
-		if (files && files.length > 0 && files[0].file) {
-			const file = files[0].file;
-
-			// Get the proof document field for validation
-			const proofDocumentField = {
-				type: "file",
-				label: "Proof Document",
-				validation: {
-					allowedFileTypes: [
-						"application/pdf",
-						"application/msword",
-						"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-						"application/vnd.ms-excel",
-						"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-						"text/plain",
-						"application/rtf",
-					],
-					allowedExtensions: [
-						"pdf",
-						"doc",
-						"docx",
-						"xls",
-						"xlsx",
-						"txt",
-						"rtf",
-					],
-					maxFileSize: 10 * 1024 * 1024, // 10MB
-					minFileSize: 1024, // 1KB
-				},
-			};
-
-			// Validate file immediately
-			const validation = validateFileUpload(file, proofDocumentField);
-
-			if (!validation.isValid) {
-				// Set error and don't update form data
-				setErrors((prev) => ({
-					...prev,
-					proofDocument: validation.error,
-				}));
-
-				// Clear file data
-				setFormData((prev) => ({
-					...prev,
-					fileUpload: null,
-					prooffilename: "",
-					prooffiletype: "",
-				}));
-
-				return;
-			}
-
-			// Clear any previous errors and update form data
-			setErrors((prev) => {
-				const newErrors = { ...prev };
-				delete newErrors.proofDocument;
-				return newErrors;
-			});
-
-			setFormData((prev) => ({
-				...prev,
-				fileUpload: file,
-				prooffilename: file.name ?? "",
-				prooffiletype: file.type ?? "",
-			}));
-		} else {
-			// Clear file data when no file is selected
-			setFormData((prev) => ({
-				...prev,
-				prooffilename: "",
-				prooffiletype: "",
-				fileUpload: null,
-			}));
-
-			// Clear file-related errors
-			setErrors((prev) => {
-				const newErrors = { ...prev };
-				delete newErrors.proofDocument;
-				return newErrors;
-			});
+	const handleFormKeyPress = (e) => {
+		const shouldSubmit = handleKeyPress(e);
+		if (shouldSubmit) {
+			handleSubmit();
 		}
 	};
-
-	const handleNext = () => {
-		if (validateStage()) {
-			// checks if data is valid
-			if (currentStage < formStages.length - 1) {
-				// checks if its not the last stage
-				setCurrentStage((prev) => prev + 1);
-			}
-		}
-	};
-
-	const handlePrevious = () => {
-		if (currentStage > 0) {
-			setCurrentStage((prev) => prev - 1);
-		}
-	};
-
-	const handleSubmit = async (e) => {
-		e.preventDefault();
-		setIsLoading(true);
-		if (!validateStage()) {
-			setIsLoading(false);
-			return;
-		}
-
-		const form = new FormData();
-		form.append("orgname", formData.orgname);
-		form.append("orgtype", formData.orgtype);
-		form.append("email", formData.email);
-		form.append("website", formData.website);
-		form.append("contactname", formData.contactname);
-		form.append("designation", formData.designation);
-		form.append("phonenumber", formData.phonenumber);
-		form.append("prooftype", formData.prooftype);
-		form.append("prooffilename", formData.prooffilename);
-		form.append("prooffiletype", formData.prooffiletype);
-		form.append("file", formData.fileUpload);
-		form.append("address", JSON.stringify(formData.address));
-
-		try {
-			const response = await flow("register", form);
-			setIsLoading(false);
-			console.log("Form Submitted Successfully:", response);
-		} catch (err) {
-			setIsLoading(false);
-			console.error("Form Submission Error:", err);
-		}
-	};
-
-	const isLastStage = currentStage === formStages.length - 1;
-	const isFirstStage = currentStage === 0;
 
 	return (
-		<div className="flex h-screen items-stretch justify-items-stretch overflow-hidden">
-			<div className="left min-h-screen w-1/2">
-				{/* Feature Previews */}
-				<div className="blocks h-full w-full bg-accent-foreground">
-					<div
-						className="relative grid h-full w-full place-items-center bg-muted bg-cover bg-center"
-						style={{
-							backgroundImage:
-								"url('https://res.cloudinary.com/ddzcbt9uh/image/upload/v1750655002/Full_Color_Image_in_ai-img-gen_com_a_warehouse_szqpom.jpg')",
-						}}
-					>
-						<div className="flex h-full flex-col p-8">
-							<div className="mb-8 flex items-center gap-2">
-								<div className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-									<FolderLock className="size-5" />
-								</div>
-								<span className="text-2xl font-bold text-white">Archeo</span>
-							</div>
-							<div className="flex flex-1 items-center justify-center rounded-md border border-gray-100/10 bg-gray-100/10 bg-clip-padding p-4 backdrop-blur-xl backdrop-filter">
-								<FeaturePreview
-									features={FEATURE_PREVIEWS}
-									currentIndex={currentStage}
-								/>
-							</div>
+		<div className="relative min-h-screen">
+			{/* Main Content */}
+			<div className="mx-auto max-w-4xl px-6 py-12">
+				{/* Back button and navigation */}
+				<div className="heading my-4 flex items-center gap-4">
+					{/* <NavigationButtons.BackButton
+						onClick={handleBack}
+						show={currentCategory > 0}
+					/> */}
+					{/* <span className="text-2xl text-gray-600">{" | "}</span> */}
+					{/* <div className="text-gray-600">
+						Already have an account?{" "}
+						<Link
+							to={ROUTES.LOGIN}
+							className="ml-2 font-medium text-blue-600 hover:text-blue-700 hover:underline"
+						>
+							Sign in
+						</Link>
+					</div> */}
+				</div>
+
+				{/* Progress indicator */}
+				<div className="mb-8">
+					<div className="mb-4 flex items-center justify-between">
+						<h2 className="text-lg font-semibold text-gray-800">
+							{currentCategoryData.title}
+						</h2>
+						<div className="text-sm text-gray-500">
+							Step {currentCategory + 1} of {totalCategories}
 						</div>
+					</div>
+
+					{/* Overall progress */}
+					<div className="mb-4 h-2 w-full rounded-full bg-gray-200">
+						<div
+							className="h-2 rounded-full bg-blue-600 transition-all duration-300"
+							style={{ width: `${progress.overall}%` }}
+						/>
+					</div>
+
+					{/* Category navigation dots */}
+					<div className="flex justify-center space-x-2">
+						{organizationCategories.map((category, index) => (
+							<button
+								key={category.category}
+								onClick={() => handleCategoryChange(index)}
+								className={`h-3 w-5 rounded-full transition-all duration-200 ${
+									index === currentCategory
+										? "bg-blue-600"
+										: checklist[category.checklistKey]
+											? "bg-blue-400"
+											: "bg-gray-300"
+								}`}
+								title={category.category}
+							/>
+						))}
 					</div>
 				</div>
-			</div>
 
-			{/* Right Side - Registration Form */}
-			<div className="blocks w-1/2 overflow-y-scroll">
-				<div className="flex h-full flex-col gap-4 p-6 md:p-10">
-					<div className="flex justify-center gap-2 md:justify-start">
-						<a href="#" className="flex items-center gap-2 font-medium">
-							<div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-								<FolderLock className="size-4" />
-							</div>
-							Archeo
-						</a>
-					</div>
-
-					<div className="flex flex-1 items-center justify-center">
-						<div className="w-full max-w-md">
-							<RegisterOrgForm
-								currentStage={currentStage}
-								currentStageName={currentStageName}
-								currentStageFields={currentStageFields}
-								formData={formData}
-								errors={errors}
-								handleFieldChange={handleFieldChange}
-								handleNext={handleNext}
-								handlePrevious={handlePrevious}
-								handleSubmit={handleSubmit}
-								isFirstStage={isFirstStage}
-								isLastStage={isLastStage}
-								formStages={formStages}
-								submitCheckList={submitCheckList}
-								handleFileUploadChange={handleFileUploadChange}
-								setCurrentStage={setCurrentStage}
-								isLoading={isLoading}
-							/>
-						</div>
-					</div>
+				{/* Step Form */}
+				<div>
+					<OrganizationStepForm
+						currentCategory={currentCategory}
+						direction={direction}
+						categoryData={currentCategoryData}
+						formData={formData}
+						onInputChange={handleInputChange}
+						onNext={handleNext}
+						onSubmit={handleSubmit}
+						onKeyPress={handleFormKeyPress}
+						isAllFieldsValid={areAllCategoryFieldsValid()}
+						isCategoryCompleted={isCurrentCategoryCompleted()}
+						isLastCategory={isLastCategory}
+					/>
 				</div>
 			</div>
 		</div>
@@ -366,109 +335,3 @@ function RegisterOrgPage() {
 }
 
 export default RegisterOrgPage;
-
-const RegisterOrgForm = ({
-	className,
-	currentStage,
-	currentStageName,
-	currentStageFields,
-	formData,
-	errors,
-	handleFieldChange,
-	handleNext,
-	handlePrevious,
-	handleSubmit,
-	isFirstStage,
-	isLastStage,
-	formStages,
-	submitCheckList,
-	setCurrentStage,
-	handleFileUploadChange,
-	isLoading,
-}) => {
-	return (
-		<form
-			className={cn("flex flex-col gap-6", className)}
-			onSubmit={handleSubmit}
-		>
-			{/* Header */}
-			<div className="flex flex-col items-center gap-2 text-center">
-				<h1 className="text-2xl font-bold">
-					<span className="bg-gradient-to-r from-pink-400 via-purple-800 to-blue-500 bg-clip-text text-transparent">
-						Register
-					</span>{" "}
-					your organization <Building2 className="inline-block text-black/45" />
-				</h1>
-				<p className="text-sm text-balance text-muted-foreground">
-					Complete the registration process to join our secure document platform
-				</p>
-			</div>
-
-			{/* Stepper */}
-			<div className="mb-6">
-				<FormStepper
-					steps={formStages.map((stage, index) => ({
-						title: stage,
-						completed: submitCheckList[stage],
-						index: index,
-					}))}
-					currentStep={currentStage}
-					setCurrentStep={setCurrentStage}
-				/>
-			</div>
-
-			{/* Current Stage Form */}
-			<div className="grid gap-6">
-				<FormStage
-					currentStageName={currentStageName}
-					currentStageFields={currentStageFields}
-					formData={formData}
-					errors={errors}
-					handleFieldChange={handleFieldChange}
-					handleFileUploadChange={handleFileUploadChange}
-				/>
-			</div>
-
-			{/* Navigation Buttons */}
-			<div className="flex gap-4">
-				{!isFirstStage && (
-					<Button
-						type="button"
-						variant="outline"
-						onClick={handlePrevious}
-						className="flex-1"
-					>
-						Previous
-					</Button>
-				)}
-
-				{isLastStage ? (
-					<Button
-						type="submit"
-						className="flex-1 cursor-pointer bg-primary"
-						disabled={isLoading}
-					>
-						{isLoading && <LoaderCircle className="animate-spin" />}
-						Complete Registration
-					</Button>
-				) : (
-					<Button
-						type="button"
-						onClick={handleNext}
-						className="flex-1 cursor-pointer bg-primary"
-					>
-						Next
-					</Button>
-				)}
-			</div>
-
-			{/* Login Link */}
-			<div className="text-center text-sm">
-				Already have an organization account?{" "}
-				<a href="/login/org" className="underline underline-offset-4">
-					Sign in
-				</a>
-			</div>
-		</form>
-	);
-};

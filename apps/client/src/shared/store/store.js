@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { apiSlice } from "@/shared/reducer/apiSlice.reducer";
-import authReducer from "@/features/auth/reducer/authSlice.reducer";
+import authReducer from "@/features/auth/state/slices/auth.slice";
 import {
 	persistStore,
 	persistReducer,
@@ -13,7 +13,7 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
 import { ENVS } from "@/shared/constants/env.constant.js";
-import { refreshApi } from "@/features/auth/actions/refreshApi.action.js";
+import { refreshApi } from "@/features/auth/state/redux-apis/refresh.api.js";
 
 const persistConfig = {
 	key: "root",

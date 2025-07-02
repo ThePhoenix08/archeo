@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { setCredentials, clearCredentials } from "@/features/auth/reducer/authSlice.reducer.js";
+import { setCredentials, clearCredentials } from "@/features/auth/state/slices/auth.slice.js";
 import { ENVS } from "@/shared/constants/env.constant.js";
 
 const baseQuery = fetchBaseQuery({

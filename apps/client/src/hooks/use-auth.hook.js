@@ -1,4 +1,4 @@
-import { selectAuthError, selectAuthLoading, selectCurrentUser, selectIsAuthenticated, selecttokenExpiryEstimate } from "@/features/auth/reducer/authSlice.reducer.js";
+import { selectAuthError, selectAuthLoading, selectCurrentUser, selectIsAuthenticated, selecttokenExpiryEstimate } from "@/features/auth/state/slices/auth.slice.js";
 import { useSelector } from "react-redux";
 
 export const useAuth = () => {

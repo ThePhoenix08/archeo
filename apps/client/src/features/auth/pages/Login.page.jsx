@@ -1,7 +1,7 @@
 "use client";
 import { FolderLock } from "lucide-react";
-import { LoginForm } from "@/features/auth/components/login-form.jsx";
-import EnhancedLoginLeftSection from "@/features/auth/components/EnhancedLoginLeftSection.jsx";
+import { LoginForm } from "@/features/auth/components/login-form.c.jsx";
+import EnhancedLoginLeftSection from "@/features/auth/components/EnhancedLoginLeftSection.c.jsx";
 
 function LoginPage() {
 	return (

@@ -2,8 +2,8 @@ import NavigationButtons from "@/features/auth/components/sub-components/registe
 import ProgressIndicator from "@/features/auth/components/sub-components/register/progress-indicator.sc.jsx";
 import Header from "@/features/auth/components/sub-components/register/register-header.sc.jsx";
 import StepForm from "@/features/auth/components/sub-components/register/step-form.sc.jsx";
-import { useMultiStepForm } from "@/features/auth/components/utils/useMultiStepForm.hook.js";
-import { ROUTES } from "@/shared/routing/routes.constant.js";
+import { useMultiStepForm } from "@/features/auth/hooks/useMultiStepForm.hook.js";
+import { ROUTES } from "@/shared/constants/routes.constant.js";
 import { Cake, LockKeyhole, Mail, User } from "lucide-react";
 import React from "react";
 import { Link } from "react-router";

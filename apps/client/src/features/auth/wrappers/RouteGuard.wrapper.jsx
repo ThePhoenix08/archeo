@@ -1,5 +1,5 @@
-import ProtectedRoute from "@/features/auth/components/utils/ProtectedRoute.wrapper.jsx";
-import { ROUTE_PERMISSIONS } from "@/shared/routing/routes.permissions.js";
+import ProtectedRoute from "@/features/auth/wrappers/ProtectedRoute.wrapper.jsx";
+import { ROUTE_PERMISSIONS } from "@/shared/constants/routePermissions.constant.js";
 
 /**
  * @param {object} props

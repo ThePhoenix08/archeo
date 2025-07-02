@@ -1,5 +1,5 @@
-import { useLoginMutation, useRegisterMutation } from "@/features/auth/actions/authApi.action.js";
-import { REGISTER_STEP_TO_ROUTES_MAP, REGISTRATION_STEPS, REGISTRATION_STEPS_LIST } from "@/features/auth/flows/flow.constant.js";
+import { useLoginMutation, useRegisterMutation } from "@/features/auth/state/redux-apis/auth.api.js";
+import { REGISTER_STEP_TO_ROUTES_MAP, REGISTRATION_STEPS, REGISTRATION_STEPS_LIST } from "@/features/auth/constants/flow.constant.js";
 import { ROLES } from "@/shared/constants/roles.constant.js";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";

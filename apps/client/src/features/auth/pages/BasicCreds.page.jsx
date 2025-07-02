@@ -10,6 +10,7 @@ import {
 	Validators,
 	validatorsNames,
 } from "@/features/auth/validators/form.validator.js";
+import LogoText from "@/components/brand/logoText.sc.jsx";
 
 const FORMDATA_BLUEPRINT = {
 	username: "",
@@ -155,6 +156,7 @@ function BasicCredsPage() {
 
 	return (
 		<div className="relative min-h-screen bg-gray-50">
+			<div className="top-0 left-0 absolute"><LogoText/></div>
 			<div className="mx-auto max-w-2xl px-6 py-12">
 				{/* Header */}
 				<div className="heading my-4 flex items-center justify-center gap-4">

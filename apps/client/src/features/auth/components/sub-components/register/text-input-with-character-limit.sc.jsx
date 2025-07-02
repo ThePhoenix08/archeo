@@ -12,6 +12,8 @@ const TextInputWithCharacterLimit = ({
 	disabled = false,
 	autoFocus = false,
 	customData,
+	buttonConfig = null,
+	handleCheckAvailability,
 }) => {
 	const {
 		maxLength = 100,
@@ -23,6 +25,11 @@ const TextInputWithCharacterLimit = ({
 	} = customData || {};
 	const currentLength = value ? value.length : 0;
 	const isOverLimit = currentLength > maxLength;
+	const {
+		disabled: btnDisabled,
+		text: btnText,
+		icon: ButtonIcon,
+	} = buttonConfig;
 
 	const baseInputClasses = `
     w-full border-2 border-gray-300 bg-white px-8 py-6 pr-20 text-xl 
@@ -56,12 +63,29 @@ const TextInputWithCharacterLimit = ({
 					maxLength={maxLength + 10}
 					minLength={minLength}
 				/>
-				<div
-					className={`absolute top-1/2 right-6 -translate-y-1/2 transform text-sm ${
-						isOverLimit ? "text-red-500" : "text-gray-500"
-					}`}
-				>
-					{currentLength}/{maxLength}
+				<div className="endBox absolute top-1/2 right-6 -translate-y-1/2 transform flex">
+					<div
+						className={`text-sm grid place-items-center px-4 ${
+							isOverLimit ? "text-red-500" : "text-gray-500"
+						}`}
+					>
+						{currentLength}/{maxLength}
+					</div>
+					<button
+						type="button"
+						onClick={handleCheckAvailability}
+						disabled={btnDisabled}
+						className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${buttonConfig.className}`}
+						style={{
+							clipPath:
+								"polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))",
+						}}
+					>
+						<div className="flex items-center space-x-1">
+							<ButtonIcon className="h-4 w-4" />
+							<span>{btnText}</span>
+						</div>
+					</button>
 				</div>
 			</div>
 		</>

@@ -12,6 +12,7 @@ const PasswordInputWithValidation = ({
 	disabled = false,
 	autoFocus = false,
 	customData,
+	onValidationChange,
 }) => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -68,10 +69,19 @@ const PasswordInputWithValidation = ({
 			});
 			setPasswordStrength(0);
 			setPasswordsMatch(false);
+			onValidationChange(false);
 		}
-	}, [password, confirmPassword]);
+	}, [password, confirmPassword, onValidationChange]);
 
 	// const isPasswordValid = Object.values(validation).every(Boolean);
+
+	useEffect(() => {
+		if (passwordsMatch && Object.values(validation).every(Boolean)) {
+			onValidationChange(true);
+		} else {
+			onValidationChange(false);
+		}
+	}, [validation, passwordsMatch, onValidationChange]);
 
 	const getStrengthColor = () => {
 		if (passwordStrength <= 2) return "text-red-600";

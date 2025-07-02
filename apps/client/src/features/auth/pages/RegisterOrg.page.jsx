@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router";
 import { useMultiStepOrganizationForm } from "@/features/auth/components/utils/useMultiStepOrganizationForm.hook.js";
 import OrganizationStepForm from "@/features/auth/components/sub-components/register/organization-step-form.sc.jsx";
+import { ROUTES } from "@/shared/constants/routes.constant.js";
 
 import {
 	Building,
@@ -15,6 +17,8 @@ import {
 	BookOpenText,
 	Contact,
 	UserRound,
+	FolderLock,
+	SquareArrowOutUpRight,
 } from "lucide-react";
 
 // Organization form categories with their respective fields
@@ -52,12 +56,47 @@ const organizationCategories = [
 					name: "orgtype",
 					required: true,
 					options: [
-						{ value: "private", label: "Private Company" },
-						{ value: "public", label: "Public Company" },
-						{ value: "nonprofit", label: "Non-Profit Organization" },
-						{ value: "government", label: "Government Entity" },
-						{ value: "educational", label: "Educational Institution" },
-						{ value: "healthcare", label: "Healthcare Organization" },
+						{ value: "government", label: "Government" },
+						{
+							value: "educational institution",
+							label: "Educational Institution",
+						},
+						{ value: "commercial entity", label: "Commercial Entity" },
+						{
+							value: "non-governmental organization",
+							label: "Non-Governmental Organization",
+						},
+						{
+							value: "hospital / medical institution",
+							label: "Hospital / Medical Institution",
+						},
+						{ value: "financial institution", label: "Financial Institution" },
+						{
+							value: "legal / judicial authority",
+							label: "Legal / Judicial Authority",
+						},
+						{
+							value: "research & development body",
+							label: "Research & Development Body",
+						},
+						{ value: "regulatory authority", label: "Regulatory Authority" },
+						{ value: "military / defense", label: "Military / Defense" },
+						{
+							value: "embassy / diplomatic mission",
+							label: "Embassy / Diplomatic Mission",
+						},
+						{
+							value: "accredited lab / testing facility",
+							label: "Accredited Lab / Testing Facility",
+						},
+						{
+							value: "utility / infrastructure provider",
+							label: "Utility / Infrastructure Provider",
+						},
+						{
+							value: "training & certification body",
+							label: "Training & Certification Body",
+						},
 						{ value: "other", label: "Other" },
 					],
 				},
@@ -164,9 +203,54 @@ const organizationCategories = [
 					name: "prooftype",
 					required: true,
 					options: [
-						{ value: "registration", label: "Registration Certificate" },
-						{ value: "incorporation", label: "Certificate of Incorporation" },
-						{ value: "license", label: "Business License" },
+						{ value: "gst certificate", label: "GST Certificate" },
+						{
+							value: "company incorporation certificate",
+							label: "Company Incorporation Certificate",
+						},
+						{ value: "organization pan card", label: "Organization PAN Card" },
+						{
+							value: "udyam / msme certificate",
+							label: "Udyam / MSME Certificate",
+						},
+						{
+							value: "ngo registration certificate",
+							label: "NGO Registration Certificate",
+						},
+						{
+							value: "government issuance letter",
+							label: "Government Issuance Letter",
+						},
+						{ value: "operational license", label: "Operational License" },
+						{
+							value: "tax registration document",
+							label: "Tax Registration Document",
+						},
+						{
+							value: "mou with government body",
+							label: "MOU with Government Body",
+						},
+						{
+							value: "regulatory registration certificate",
+							label: "Regulatory Registration Certificate",
+						},
+						{ value: "insurance certificate", label: "Insurance Certificate" },
+						{
+							value: "letter of consent / authorization",
+							label: "Letter of Consent / Authorization",
+						},
+						{
+							value: "identity proof of authorized signatory",
+							label: "Identity Proof of Authorized Signatory",
+						},
+						{
+							value: "address proof (utility bill, rent agreement)",
+							label: "Address Proof (Utility Bill, Rent Agreement)",
+						},
+						{
+							value: "business registration number proof",
+							label: "Business Registration Number Proof",
+						},
 						{ value: "tax", label: "Tax Registration" },
 						{ value: "other", label: "Other Government Document" },
 					],
@@ -214,6 +298,7 @@ const SUBMIT_CHECKLIST_BLUEPRINT = {
 };
 
 function RegisterOrgPage() {
+	const navigate = useNavigate();
 	const {
 		currentCategory,
 		direction,
@@ -237,6 +322,12 @@ function RegisterOrgPage() {
 		SUBMIT_CHECKLIST_BLUEPRINT
 	);
 
+	const handlePrevious = () => {
+		if (currentCategory > 0) {
+			handleBack();
+		}
+	};
+
 	// const { role } = useParams();
 
 	const handleSubmit = () => {
@@ -255,16 +346,44 @@ function RegisterOrgPage() {
 
 	return (
 		<div className="relative min-h-screen">
+			{/* Header with Project Name and Quit Button */}
+			<div className="w-full px-6 py-4">
+				<div className="mx-auto flex items-center justify-between">
+					{/* Project Name */}
+					<a href="/" className="relative z-10 flex items-center gap-3">
+						<div className="flex size-8 items-center justify-center rounded-md bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg">
+							<FolderLock className="size-6" />
+						</div>
+						<div className="flex flex-col">
+							<span className="bg-gradient-to-r from-blue-600 to-purple-700 bg-clip-text text-xl font-bold text-transparent">
+								Archeo
+							</span>
+							<span className="text-xs font-medium text-blue-500/80">
+								Document Management
+							</span>
+						</div>
+					</a>
+
+					{/* Quit Button */}
+					<button
+						onClick={() => navigate(ROUTES.HOME)}
+						className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:border-gray-400 hover:bg-gray-50"
+					>
+						Quit
+						<SquareArrowOutUpRight className="size-4" />
+					</button>
+				</div>
+			</div>
 			{/* Main Content */}
-			<div className="mx-auto max-w-4xl px-6 py-12">
+			<div className="mx-auto max-w-4xl">
 				{/* Back button and navigation */}
-				<div className="heading my-4 flex items-center gap-4">
-					{/* <NavigationButtons.BackButton
+				{/* <div className="heading my-4 flex items-center gap-4">
+					<NavigationButtons.BackButton
 						onClick={handleBack}
 						show={currentCategory > 0}
-					/> */}
-					{/* <span className="text-2xl text-gray-600">{" | "}</span> */}
-					{/* <div className="text-gray-600">
+					/>
+					<span className="text-2xl text-gray-600">{" | "}</span>
+					<div className="text-gray-600">
 						Already have an account?{" "}
 						<Link
 							to={ROUTES.LOGIN}
@@ -272,11 +391,11 @@ function RegisterOrgPage() {
 						>
 							Sign in
 						</Link>
-					</div> */}
-				</div>
+					</div>
+				</div> */}
 
 				{/* Progress indicator */}
-				<div className="mb-8">
+				<div>
 					<div className="mb-4 flex items-center justify-between">
 						<h2 className="text-lg font-semibold text-gray-800">
 							{currentCategoryData.title}
@@ -322,11 +441,13 @@ function RegisterOrgPage() {
 						formData={formData}
 						onInputChange={handleInputChange}
 						onNext={handleNext}
+						onBack={handlePrevious}
 						onSubmit={handleSubmit}
 						onKeyPress={handleFormKeyPress}
 						isAllFieldsValid={areAllCategoryFieldsValid()}
 						isCategoryCompleted={isCurrentCategoryCompleted()}
 						isLastCategory={isLastCategory}
+						showBackButton={currentCategory > 0}
 					/>
 				</div>
 			</div>

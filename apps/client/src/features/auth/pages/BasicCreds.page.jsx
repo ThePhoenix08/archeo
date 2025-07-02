@@ -1,22 +1,51 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ROUTES } from "@/shared/constants/routes.constant.js";
 import { User, Mail, LockKeyhole } from "lucide-react";
 import { Link } from "react-router";
 import EmailInputWithOTPVerification from "@/features/auth/components/sub-components/register/email-input-with-verification.sc.jsx";
 import PasswordInputWithValidation from "@/features/auth/components/sub-components/register/password-input-with-validation.sc.jsx";
 import UsernameInputWithAvailability from "@/features/auth/components/sub-components/register/username-input-with-availability.sc.jsx";
+import {
+	Validators,
+	validatorsNames,
+} from "@/features/auth/validators/form.validator.js";
+
+const FORMDATA_BLUEPRINT = {
+	username: "",
+	email: "",
+	password: "",
+};
+
+const FORM_FIELDS_VALIDATION = Object.freeze({
+	username: {
+		required: true,
+		minLength: 2,
+		maxLength: 100,
+		checkers: [validatorsNames.ONLY_ALPHA_NUMERIC],
+	},
+	email: {
+		required: true,
+		type: "email",
+		checkers: [validatorsNames.EMAIL_REGEX],
+	},
+	password: {
+		required: true,
+		minLength: 8,
+		maxLength: 128,
+		checkers: [validatorsNames.PASSWORD_STRONG],
+	},
+});
 
 function BasicCredsPage() {
-	const [formData, setFormData] = useState({
-		username: "",
-		email: "",
-		password: "",
-	});
+	const [formData, setFormData] = useState(FORMDATA_BLUEPRINT);
+	const [errors, setErrors] = useState(FORMDATA_BLUEPRINT);
 
 	const [isUsernameAvailable, setIsUsernameAvailable] = useState(null);
 	const [isEmailVerified, setIsEmailVerified] = useState(false);
 	const [isPasswordValid, setIsPasswordValid] = useState(false);
+
+	const [isSubmitAllowed, setSubmitToAllowed] = useState(false);
 
 	const handleInputChange = (field, value) => {
 		setFormData((prev) => ({
@@ -48,22 +77,81 @@ function BasicCredsPage() {
 		setIsPasswordValid(isValid);
 	};
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		console.log("Basic Credentials Data:", formData);
-		alert("Basic credentials saved successfully!");
+	useEffect(() => {
+		if (Object.values(formData).every(Boolean)) {
+			setSubmitToAllowed(true);
+		} else {
+			setSubmitToAllowed(false);
+		}
+	}, [formData]);
+
+	const validateField = (fieldName, value) => {
+		const { checkers: validators } = FORM_FIELDS_VALIDATION[fieldName] || {};
+
+		if (!validators) {
+			return {
+				isValid: false,
+				errorMessage: `No validators found for field: ${fieldName}`,
+			};
+		}
+
+		for (const validatorName of validators) {
+			const validator = Validators[validatorName];
+
+			if (!validator) {
+				return {
+					isValid: false,
+					errorMessage: `Validator '${validatorName}' not found`,
+				};
+			}
+
+			const options = {};
+			if (FORM_FIELDS_VALIDATION[fieldName].minLength)
+				options.minLength = FORM_FIELDS_VALIDATION[fieldName].minLength;
+			if (FORM_FIELDS_VALIDATION[fieldName].maxLength)
+				options.maxLength = FORM_FIELDS_VALIDATION[fieldName].maxLength;
+
+			const result = validator(fieldName, value, options);
+
+			if (!result.isValid) {
+				return result;
+			}
+		}
+
+		return { isValid: true, errorMessage: null };
 	};
 
-	const isFormValid = () => {
-		return (
-			formData.username &&
-			isUsernameAvailable === true &&
-			formData.email &&
-			isEmailVerified &&
-			formData.password &&
-			isPasswordValid
-		);
+	const getFormValidationResult = () => {
+		const errorsSet = {};
+		const isFormDataValid = Object.entries(formData).every(([key, val]) => {
+			const { isValid, errorMessage } = validateField(key, val);
+			errorsSet[key] = (!isValid && errorMessage) ? errorMessage : null;
+			return isValid;
+		});
+
+		return {
+			isValid:
+				isFormDataValid &&
+				isUsernameAvailable === true &&
+				isEmailVerified &&
+				isPasswordValid,
+			errorsSet,
+		};
 	};
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		const { isValid, errorsSet } = getFormValidationResult();
+		setErrors((prev) => ({ ...prev, ...errorsSet }));
+		if (isValid) {
+			console.log("Basic Credentials Data:", formData);
+			alert("Basic credentials saved successfully!");
+		}
+	};
+
+	useEffect(() => {
+		console.log("Errors:", errors);
+	}, [errors]);
 
 	return (
 		<div className="relative min-h-screen bg-gray-50">
@@ -108,6 +196,9 @@ function BasicCredsPage() {
 								minLength: 2,
 							}}
 						/>
+						{errors.username && (
+							<p className="text-sm text-red-600">{errors.username}</p>
+						)}
 					</div>
 
 					{/* Email Field */}
@@ -124,6 +215,9 @@ function BasicCredsPage() {
 								maxLength: 254,
 							}}
 						/>
+						{errors.email && (
+							<p className="text-sm text-red-600">{errors.email}</p>
+						)}
 					</div>
 
 					{/* Password Field */}
@@ -141,15 +235,18 @@ function BasicCredsPage() {
 								maxLength: 128,
 							}}
 						/>
+						{errors.password && (
+							<p className="text-sm text-red-600">{errors.password}</p>
+						)}
 					</div>
 
 					{/* Submit Button */}
 					<div className="pt-6">
 						<button
 							type="submit"
-							disabled={!isFormValid()}
+							disabled={!isSubmitAllowed}
 							className={`w-full px-8 py-4 text-xl font-medium text-white transition-all duration-200 ${
-								isFormValid()
+								isSubmitAllowed
 									? "bg-blue-600 hover:bg-blue-700"
 									: "cursor-not-allowed bg-gray-400"
 							}`}

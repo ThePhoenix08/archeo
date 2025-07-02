@@ -1,8 +1,15 @@
 
 @import "tailwindcss";
 @import "tw-animate-css";
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
 
 @custom-variant dark (&:is(.dark *));
+
+@theme {
+	--font-nunito-sans: 'Nunito Sans', sans-serif;
+	--default-font-family: var(--font-nunito-sans);
+	--font-display: var(--font-nunito-sans);
+}
 
 @theme inline {
 	--radius-sm: calc(var(--radius) - 4px);

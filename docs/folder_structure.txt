@@ -63,7 +63,8 @@
 │   │   │   │   ├── auth/
 │   │   │   │   │   ├── AuthLayout.jsx
 │   │   │   │   │   ├── actions/
-│   │   │   │   │   │   └── authApi.action.js
+│   │   │   │   │   │   ├── authApi.action.js
+│   │   │   │   │   │   └── refreshApi.action.js
 │   │   │   │   │   ├── components/
 │   │   │   │   │   │   ├── EmailWithVerifyInput.jsx
 │   │   │   │   │   │   ├── EnhancedLoginLeftSection.jsx
@@ -118,7 +119,9 @@
 │   │   │   │   │   │   └── getFieldsForRole.constant.js
 │   │   │   │   │   ├── flows/
 │   │   │   │   │   │   ├── accountRecovery.flow.js
+│   │   │   │   │   │   ├── flow.constant.js
 │   │   │   │   │   │   ├── orgAuth.flow.js
+│   │   │   │   │   │   ├── register.flow.js
 │   │   │   │   │   │   └── userAuth.flow.js
 │   │   │   │   │   ├── pages/
 │   │   │   │   │   │   ├── AccountRecovery.page.jsx
@@ -228,6 +231,7 @@
 │       │       │   │                       │   ├── JwtProvider.java
 │       │       │   │                       │   ├── JwtTokenValidator.java
 │       │       │   │                       │   ├── ROIDeserializer.java
+│       │       │   │                       │   ├── RedisConfig.java
 │       │       │   │                       │   └── RequestLoggingFilter.java
 │       │       │   │                       ├── controllers/
 │       │       │   │                       │   ├── AuthController.java
@@ -244,11 +248,10 @@
 │       │       │   │                       │   └── UsersCommonMapper.java
 │       │       │   │                       ├── models/
 │       │       │   │                       │   ├── AuthLogs.java
-│       │       │   │                       │   ├── LinkPreviewResponse.java
-│       │       │   │                       │   └── Session.java
+│       │       │   │                       │   └── LinkPreviewResponse.java
 │       │       │   │                       ├── repositories/
 │       │       │   │                       │   ├── AuthLogsRepo.java
-│       │       │   │                       │   └── SessionRepo.java
+│       │       │   │                       │   └── SessionRedisRepository.java
 │       │       │   │                       └── services/
 │       │       │   │                           ├── ABACService.java
 │       │       │   │                           ├── AuthLogsService.java
@@ -316,15 +319,19 @@
 │       │       │   │                       ├── dto/
 │       │       │   │                       │   └── ApiResponse.java
 │       │       │   │                       ├── enums/
+│       │       │   │                       │   ├── ErrorType.java
 │       │       │   │                       │   └── USER_ROLE.java
 │       │       │   │                       ├── exceptions/
 │       │       │   │                       │   ├── GlobalExceptionHandler.java
 │       │       │   │                       │   ├── InvalidCredentialsException.java
+│       │       │   │                       │   ├── InvalidTokenException.java
 │       │       │   │                       │   ├── ResourceNotFoundException.java
+│       │       │   │                       │   ├── UnauthorizedAccessException.java
 │       │       │   │                       │   ├── UserAlreadyExistsException.java
 │       │       │   │                       │   └── UserNotFoundException.java
 │       │       │   │                       ├── models/
 │       │       │   │                       │   ├── Permission.java
+│       │       │   │                       │   ├── Session.java
 │       │       │   │                       │   └── UsersCommon.java
 │       │       │   │                       ├── repositories/
 │       │       │   │                       │   ├── PermissionRepo.java
@@ -477,7 +484,6 @@
 │       │       │   │               └── modules/
 │       │       │   │                   └── user/
 │       │       │   │                       ├── config/
-│       │       │   │                       │   ├── EmbeddedRedisConfig.java
 │       │       │   │                       │   └── MailConfig.java
 │       │       │   │                       ├── controllers/
 │       │       │   │                       │   ├── OtpController.java
@@ -564,4 +570,4 @@
 └── tests/
     └── .gitkeep
 
-278 directories, 287 files
+278 directories, 293 files

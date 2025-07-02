@@ -266,20 +266,6 @@ export const registerFieldsForOrg = {
 			initialValue: "email@example.com",
 			maxLength: 254,
 		},
-		password: {
-			name: "password",
-			type: "password",
-			label: "Organization Password",
-			required: true,
-			initialValue: "",
-			checker: validatePasswordDetailed,
-			minLength: 8,
-			maxLength: 128,
-			validation: {
-				noConsecutiveSpaces: true,
-				noLeadingTrailingSpaces: true,
-			},
-		},
 	},
 	"Contact Info": {
 		website: {
@@ -345,5 +331,7 @@ export const registerFieldsForOrg = {
 			options: PROOF_TYPES,
 			initialValue: PROOF_TYPES.CIN,
 		},
+		// prooffilename - Uploaded proof file name
+		// prooffiletype - Uploaded proof file type
 	},
 };

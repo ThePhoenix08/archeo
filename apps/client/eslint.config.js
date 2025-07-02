@@ -75,7 +75,7 @@ export default [
 					rules: [
 						{
 							from: ["shared"],
-							allow: ["shared"],
+							allow: ["shared", "feature"],
 						},
 						{
 							from: ["app"],

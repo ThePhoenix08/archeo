@@ -1,5 +1,5 @@
 // Error Priority Levels (1 = highest priority, 5 = lowest)
-const ERROR_PRIORITY = {
+export const ERROR_PRIORITY = {
   REQUIRED: 1,
   TYPE_FORMAT: 2,
   LENGTH: 3,
@@ -7,7 +7,7 @@ const ERROR_PRIORITY = {
   CUSTOM_LOGIC: 5
 };
 
-// Modular validation checks
+// Comprehensive validation checks (extracted from register.validator.js)
 export const ValidationChecks = {
   // Required validation
   required: (value, field) => {
@@ -164,7 +164,6 @@ export const ValidationChecks = {
   fileRequired: (_, field, file) => {
     if (!field.required || field.type !== 'file') return null;
 
-    // Check if file exists in formData
     const fileExists = file instanceof File;
 
     return !fileExists ? {
@@ -184,7 +183,6 @@ export const ValidationChecks = {
     const fileExtension = file.name.split('.').pop()?.toLowerCase();
     const mimeType = file.type;
 
-    // Check MIME type
     if (allowedTypes.length > 0 && !allowedTypes.includes(mimeType)) {
       return {
         priority: ERROR_PRIORITY.TYPE_FORMAT,
@@ -192,7 +190,6 @@ export const ValidationChecks = {
       };
     }
 
-    // Check file extension
     if (allowedExtensions.length > 0 && !allowedExtensions.includes(fileExtension)) {
       return {
         priority: ERROR_PRIORITY.TYPE_FORMAT,
@@ -206,8 +203,8 @@ export const ValidationChecks = {
   fileSize: (_, field, file) => {
     if (field.type !== 'file' || !file || !(file instanceof File)) return null;
 
-    const maxSize = field.validation?.maxFileSize || 10 * 1024 * 1024; // Default 10MB
-    const minSize = field.validation?.minFileSize || 1024; // Default 1KB
+    const maxSize = field.validation?.maxFileSize || 10 * 1024 * 1024;
+    const minSize = field.validation?.minFileSize || 1024;
 
     if (file.size > maxSize) {
       const maxSizeMB = Math.round(maxSize / (1024 * 1024));
@@ -232,7 +229,6 @@ export const ValidationChecks = {
 
     const fileName = file.name;
 
-    // Check for valid filename characters
     // eslint-disable-next-line no-control-regex
     const invalidChars = /[<>:"/\\|?*\x00-\x1f]/;
     if (invalidChars.test(fileName)) {
@@ -242,7 +238,6 @@ export const ValidationChecks = {
       };
     }
 
-    // Check filename length
     if (fileName.length > 255) {
       return {
         priority: ERROR_PRIORITY.LENGTH,
@@ -250,7 +245,6 @@ export const ValidationChecks = {
       };
     }
 
-    // Check for suspicious extensions
     const suspiciousExtensions = ['exe', 'bat', 'cmd', 'scr', 'pif', 'vbs', 'js', 'jar'];
     const fileExtension = fileName.split('.').pop()?.toLowerCase();
 
@@ -270,7 +264,6 @@ export const ValidationChecks = {
     const fileName = file.name.toLowerCase();
     const fileExtension = fileName.split('.').pop();
 
-    // Basic integrity checks
     if (file.size === 0) {
       return {
         priority: ERROR_PRIORITY.TYPE_FORMAT,
@@ -278,7 +271,6 @@ export const ValidationChecks = {
       };
     }
 
-    // Check if file extension matches MIME type for common document types
     const mimeExtensionMap = {
       'application/pdf': ['pdf'],
       'application/msword': ['doc'],
@@ -299,4 +291,19 @@ export const ValidationChecks = {
 
     return null;
   },
+
+  // Address validation (for complex address objects)
+  addressValidation: (value, field, addressValidator) => {
+    if (field.type !== 'address' || !addressValidator) return null;
+
+    const addressValidation = addressValidator(value, field.required);
+    if (!addressValidation.isValid) {
+      return {
+        priority: ERROR_PRIORITY.REQUIRED,
+        message: addressValidation.error
+      };
+    }
+
+    return null;
+  }
 };

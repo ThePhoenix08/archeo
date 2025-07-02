@@ -13,7 +13,7 @@ const EnhancedLoginLeftSection = () => {
 			stats: "50% faster filing",
 		},
 		{
-			icon: <Shield className="h-16 w-16 text-green-400" />,
+			icon: <Shield className="h-16 w-16 text-[#6e3ef3]" />,
 			title: "Enterprise Security",
 			description:
 				"Bank-level encryption, role-based access control, and comprehensive audit trails for compliance.",
@@ -37,7 +37,7 @@ const EnhancedLoginLeftSection = () => {
 
 	return (
 		<div
-			className="relative hidden bg-muted bg-cover bg-center lg:block"
+			className="relative m-2 hidden overflow-hidden rounded-xl bg-muted bg-cover bg-center lg:block"
 			style={{ backgroundImage: "url('/assets/login.jpeg')" }}
 		>
 			{/* Enhanced overlay with gradient */}
@@ -47,21 +47,6 @@ const EnhancedLoginLeftSection = () => {
 					<div className="absolute top-20 left-20 h-32 w-32 animate-pulse rounded-full bg-blue-500/10 blur-xl"></div>
 					<div className="absolute right-16 bottom-32 h-24 w-24 animate-pulse rounded-full bg-purple-500/10 blur-lg delay-1000"></div>
 					<div className="absolute top-1/2 left-1/3 h-16 w-16 animate-pulse rounded-full bg-green-500/10 blur-md delay-2000"></div>
-				</div>
-
-				{/* Logo section with enhanced styling */}
-				<div className="relative z-10 mb-8 flex items-center gap-3">
-					<div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg">
-						<FolderLock className="size-6" />
-					</div>
-					<div className="flex flex-col">
-						<span className="bg-gradient-to-r from-white to-blue-200 bg-clip-text text-3xl font-bold text-transparent">
-							Archeo
-						</span>
-						<span className="text-sm font-medium text-blue-200/80">
-							Document Management
-						</span>
-					</div>
 				</div>
 
 				{/* Enhanced feature preview section */}
@@ -120,7 +105,7 @@ const EnhancedLoginLeftSection = () => {
 							<div className="text-sm font-medium text-blue-200/80">Uptime</div>
 						</div>
 						<div className="space-y-2">
-							<div className="bg-gradient-to-r from-green-400 to-green-300 bg-clip-text text-3xl font-bold text-transparent">
+							<div className="bg-gradient-to-r from-[#490cf1] to-[#9297f4] bg-clip-text text-3xl font-bold text-transparent">
 								10M+
 							</div>
 							<div className="text-sm font-medium text-blue-200/80">

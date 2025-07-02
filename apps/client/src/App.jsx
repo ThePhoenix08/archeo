@@ -12,7 +12,6 @@ import RequestsPage from "@/features/api/pages/Requests.page";
 import UsagePage from "@/features/api/pages/Usage.page";
 import AuthLayout from "@/features/auth/wrappers/AuthLayout.wrapper";
 import LoginPage from "@/features/auth/pages/Login.page";
-import RegisterPage from "@/features/auth/pages/Register.page";
 import DashboardPage from "@/features/dashboard/Dashboard.page";
 import DocumentPage from "@/features/document/Document.page";
 import DocumentLayout from "@/features/document/DocumentLayout";
@@ -31,7 +30,6 @@ import NotFoundPage from "@/shared/pages/NotFound.page";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import RegisterUserPage from "@/features/auth/pages/RegisterUser1.page.jsx";
 import BasicCredsPage from "@/features/auth/pages/BasicCreds.page.jsx";
 import AgentTypePage from "@/features/auth/pages/AgentType.page.jsx";
 import SelectRolesPage from "@/features/auth/pages/SelectRoles.page.jsx";
@@ -119,7 +117,7 @@ function App() {
 				<Route path="verify/:qr_url" element={<VerificationPage />} />
 
 				{/* TEST ONLY ROUTE */}
-				<Route path="test/:role?" element={<RegisterPage />} />
+				{/* <Route path="test/:role?" element={<RegisterPage />} /> */}
 
 				<Route path="*" element={<NotFoundPage />} />
 			</Routes>

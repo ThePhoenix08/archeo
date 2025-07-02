@@ -8,6 +8,7 @@ import com.archeo.server.modules.auth.dtos.OwnerRegisterRequest;
 import com.archeo.server.modules.auth.services.AuthService;
 import com.archeo.server.modules.auth.services.IdentityProofStorageService;
 import com.archeo.server.modules.auth.services.SessionService;
+import com.archeo.server.modules.auth.services.serviceImpl.OAuth2UserService;
 import com.archeo.server.modules.common.dto.ApiResponse;
 import com.archeo.server.modules.common.exceptions.InvalidCredentialsException;
 import com.archeo.server.modules.common.exceptions.UserAlreadyExistsException;
@@ -19,6 +20,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,6 +39,7 @@ public class AuthController {
     private final IdentityProofStorageService proofStorageService;
     private final UsersCommonRepository usersCommonRepository;
     private final SessionService sessionService;
+    private final OAuth2UserService oAuth2UserService;
 
     @PostMapping("/register-owner")
     public ResponseEntity<ApiResponse<AuthResponse>> registerOwner(@Valid @RequestBody  OwnerRegisterRequest registerRequest,
@@ -136,7 +141,27 @@ public class AuthController {
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/oauth2/success")
+    public ResponseEntity<ApiResponse<AuthResponse>> oauth2LoginSuccess(HttpServletRequest request,
+                                                                        HttpServletResponse response) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        if (!(authentication instanceof OAuth2AuthenticationToken token)) {
+            throw new RuntimeException("OAuth2AuthenticationToken not found in security context");
+        }
+
+        AuthResponse authResponse = oAuth2UserService.processOAuthLogin(token, request, response);
+
+        ApiResponse<AuthResponse> apiResponse = ApiResponse.<AuthResponse>builder()
+                .statusCode(200)
+                .message("OAuth2 login successful")
+                .slug("oauth2_login_success")
+                .data(authResponse)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+    
     @PostMapping("/refreshToken")
     public ResponseEntity<?> refresh(HttpServletRequest servletRequest, HttpServletResponse servletResponse){
         authService.refreshAccessTokenFromCookie(servletRequest, servletResponse);

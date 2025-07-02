@@ -15,6 +15,14 @@
   <packaging>jar</packaging>
   <name>User Module</name>
 
+  <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+  </repositories>
+
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -69,6 +77,7 @@
     <dependency>
       <groupId>com.github.codemonstur</groupId>
       <artifactId>embedded-redis</artifactId>
+      <version>0.7.3</version>
     </dependency>
 
     <dependency>

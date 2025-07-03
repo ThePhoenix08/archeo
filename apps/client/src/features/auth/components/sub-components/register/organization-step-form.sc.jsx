@@ -1,8 +1,8 @@
-// organization-step-form.sc.jsx - Modified for category view with centered container
+// organization-step-form.sc.jsx - Modified for category view with improved navigation
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import StepContent from "@/features/auth/components/sub-components/register/step-content.sc.jsx";
-import NavigationButtons from "@/features/auth/components/sub-components/register/form-nav-btns.sc.jsx";
 import TextInputWithCharacterLimit from "@/features/auth/components/sub-components/register/text-input-with-character-limit.sc.jsx";
 import EmailInputWithOTPVerification from "@/features/auth/components/sub-components/register/email-input-with-verification.sc.jsx";
 import TextInputWithIcon from "@/features/auth/components/sub-components/register/text-input-with-icon.sc.jsx";
@@ -19,17 +19,19 @@ const OrganizationStepForm = ({
 	formData,
 	onInputChange,
 	onNext,
+	onBack,
 	onSubmit,
 	onKeyPress,
 	isAllFieldsValid,
 	isCategoryCompleted,
 	isLastCategory,
+	showBackButton = false,
 	helperText,
 	submitButtonText = "Register Organization",
 }) => {
 	const variants = {
 		enter: (dir) => ({
-			x: dir === "forward" ? 300 : -300,
+			x: dir === "forward" ? 200 : -200,
 			opacity: 0,
 		}),
 		center: {
@@ -37,7 +39,7 @@ const OrganizationStepForm = ({
 			opacity: 1,
 		},
 		exit: (dir) => ({
-			x: dir === "forward" ? -300 : 300,
+			x: dir === "forward" ? -200 : 200,
 			opacity: 0,
 		}),
 	};
@@ -91,11 +93,11 @@ const OrganizationStepForm = ({
 		if (isLastCategory) {
 			return submitButtonText;
 		}
-		return "Continue to Next Section";
+		return "Next";
 	};
 
 	return (
-		<div className="flex min-h-screen items-center justify-center p-4">
+		<div className="flex min-h-screen items-center justify-center">
 			<div className="w-full max-w-4xl">
 				<AnimatePresence custom={direction} mode="wait">
 					<motion.div
@@ -160,21 +162,39 @@ const OrganizationStepForm = ({
 								))}
 							</div>
 
-							{/* Navigation Buttons */}
-							<div className="flex max-w-2xl items-center justify-between">
-								<div>
-									{/* Helper text */}
-									<div className="text-sm text-gray-500">{getHelperText()}</div>
+							{/* Navigation Buttons - Prominently placed */}
+							<div className="">
+								{/* Helper text */}
+								<div className="mb-6 text-center">
+									<p className="text-sm text-gray-600">{getHelperText()}</p>
 								</div>
 
-								<div className="flex items-center space-x-4">
+								{/* Navigation Buttons */}
+								<div className="flex items-center justify-center gap-4">
+									{/* Previous Button */}
+									{showBackButton && (
+										<button
+											onClick={onBack}
+											className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 shadow-sm transition-all duration-200 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+										>
+											<ChevronLeft className="size-4" />
+											Previous
+										</button>
+									)}
+
 									{/* Next/Submit Button */}
-									<NavigationButtons.NextButton
+									<button
 										onClick={isLastCategory ? onSubmit : onNext}
 										disabled={!isAllFieldsValid}
-										isLast={isLastCategory}
-										lastStepText={getNextButtonText()}
-									/>
+										className={`flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium shadow-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none ${
+											isAllFieldsValid
+												? "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md"
+												: "cursor-not-allowed bg-gray-300 text-gray-500"
+										}`}
+									>
+										{getNextButtonText()}
+										{!isLastCategory && <ChevronRight className="size-4" />}
+									</button>
 								</div>
 							</div>
 						</div>

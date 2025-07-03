@@ -394,7 +394,7 @@ function RegisterOrgPage() {
 										? "bg-primary"
 										: checklist[category.checklistKey]
 											? "bg-primary/70"
-											: "bg-muted"
+											: "bg-slate-300 dark:bg-slate-600"
 								}`}
 								title={category.category}
 							/>

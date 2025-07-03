@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 
@@ -52,9 +51,10 @@ const PhoneNumberInput = ({
 	}, [value, selectedCountry.dialCode]);
 
 	const baseInputClasses = `
-    w-full border-2 border-gray-300 dark:border-gray-700 bg-background px-8 py-6 text-xl 
-    transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-600
-    focus:border-blue-600 dark:focus:border-blue-600 focus:outline-none
+    w-full border-2 border-input bg-background px-8 py-6 text-xl text-foreground
+    transition-all duration-200 hover:border-border
+    focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20
+    disabled:cursor-not-allowed disabled:opacity-50
     ${className}
   `;
 
@@ -100,18 +100,20 @@ const PhoneNumberInput = ({
 				{/* Country Code Selector */}
 				<div
 					onClick={() => !disabled && setIsDropdownOpen(!isDropdownOpen)}
-					className="flex cursor-pointer items-center space-x-2 border-2 border-r-0 border-gray-300 bg-white px-4 py-6 transition-all duration-200 hover:border-gray-400 focus:border-blue-600"
+					className={`flex cursor-pointer items-center space-x-2 border-2 border-r-0 border-input bg-card px-4 py-6 transition-all duration-200 hover:border-border focus:border-ring focus:ring-2 focus:ring-ring/20 ${
+						disabled ? "cursor-not-allowed opacity-50" : ""
+					}`}
 					style={{
 						clipPath:
 							"polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px))",
 					}}
 				>
 					<FlagComponent country={selectedCountry} />
-					<span className="text-lg font-medium text-gray-700">
+					<span className="text-lg font-medium text-card-foreground">
 						{selectedCountry.dialCode}
 					</span>
 					<ChevronDown
-						className={`h-5 w-5 text-gray-500 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
+						className={`h-5 w-5 text-muted-foreground transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
 					/>
 				</div>
 
@@ -137,17 +139,17 @@ const PhoneNumberInput = ({
 			{/* Country Dropdown */}
 			{isDropdownOpen && (
 				<div
-					className="absolute z-50 mt-2 max-h-60 w-full overflow-hidden border-2 border-gray-300 bg-white shadow-lg"
+					className="absolute z-50 mt-2 max-h-60 w-full overflow-hidden border-2 border-border bg-card shadow-lg"
 					style={clipPathStyle}
 				>
 					{/* Search Input */}
-					<div className="border-b border-gray-200 p-4">
+					<div className="border-b border-border p-4">
 						<input
 							type="text"
 							value={searchTerm}
 							onChange={(e) => setSearchTerm(e.target.value)}
 							placeholder="Search countries..."
-							className="w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-600 focus:outline-none"
+							className="w-full rounded border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 focus:outline-none"
 						/>
 					</div>
 
@@ -158,10 +160,10 @@ const PhoneNumberInput = ({
 								<div
 									key={country.code}
 									onClick={() => handleCountrySelect(country)}
-									className={`flex cursor-pointer items-center space-x-3 px-4 py-3 transition-colors hover:bg-gray-100 ${
+									className={`flex cursor-pointer items-center space-x-3 px-4 py-3 transition-colors hover:bg-accent hover:text-accent-foreground ${
 										selectedCountry.code === country.code
-											? "bg-blue-50 text-blue-600"
-											: "text-gray-900"
+											? "bg-primary/10 text-primary"
+											: "text-card-foreground"
 									}`}
 								>
 									<FlagComponent country={country} />
@@ -172,7 +174,9 @@ const PhoneNumberInput = ({
 								</div>
 							))
 						) : (
-							<div className="px-4 py-3 text-gray-500">No countries found</div>
+							<div className="px-4 py-3 text-muted-foreground">
+								No countries found
+							</div>
 						)}
 					</div>
 				</div>

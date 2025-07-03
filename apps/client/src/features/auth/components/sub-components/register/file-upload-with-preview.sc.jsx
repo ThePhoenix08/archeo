@@ -1,4 +1,5 @@
-import React, { useState, useRef } from "react";
+"use client";
+import { useState, useRef } from "react";
 import { Upload, X, Check } from "lucide-react";
 
 const FileUploadWithPreview = ({
@@ -28,7 +29,7 @@ const FileUploadWithPreview = ({
 		const match = sizeString.match(/^(\d+(?:\.\d+)?)\s*(B|KB|MB|GB)$/i);
 		if (!match) return 5 * 1024 * 1024; // Default 5MB
 		const [, size, unit] = match;
-		return parseFloat(size) * units[unit.toUpperCase()];
+		return Number.parseFloat(size) * units[unit.toUpperCase()];
 	};
 
 	// Format file size for display
@@ -37,7 +38,9 @@ const FileUploadWithPreview = ({
 		const k = 1024;
 		const sizes = ["Bytes", "KB", "MB", "GB"];
 		const i = Math.floor(Math.log(bytes) / Math.log(k));
-		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+		return (
+			Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
+		);
 	};
 
 	const handleFileSelect = (file) => {
@@ -168,17 +171,17 @@ const FileUploadWithPreview = ({
 					onDrop={handleDrop}
 					className={`cursor-pointer rounded-lg border-2 border-dashed p-10 text-center transition-all duration-200 ease-in-out ${
 						isDragOver
-							? "border-blue-500 bg-blue-50"
-							: "border-gray-300 bg-gray-50 hover:border-blue-500 hover:bg-blue-50"
+							? "border-primary bg-primary/10"
+							: "border-border bg-muted hover:border-primary hover:bg-primary/10"
 					} `}
 				>
-					<div className="mb-4 flex justify-center text-gray-400">
+					<div className="mb-4 flex justify-center text-muted-foreground">
 						{icon || <Upload size={48} />}
 					</div>
-					<p className="mb-1 text-lg font-medium text-gray-700">
+					<p className="mb-1 text-lg font-medium text-foreground">
 						{placeholder || "Drop your file here or click to select"}
 					</p>
-					<p className="m-0 text-sm text-gray-500">
+					<p className="m-0 text-sm text-muted-foreground">
 						Supported formats: {fileTypes.join(", ")} • Max size: {maxSize}
 					</p>
 				</div>
@@ -197,18 +200,18 @@ const FileUploadWithPreview = ({
 
 			{/* Upload Progress */}
 			{isUploading && (
-				<div className="mt-4 rounded-lg border border-gray-200 p-4">
+				<div className="mt-4 rounded-lg border border-border bg-card p-4">
 					<div className="mb-2 flex items-center">
-						<Upload size={20} className="mr-2 text-blue-500" />
-						<span className="text-sm text-gray-700">Uploading...</span>
+						<Upload size={20} className="mr-2 text-primary" />
+						<span className="text-sm text-card-foreground">Uploading...</span>
 					</div>
-					<div className="h-1 w-full overflow-hidden rounded-full bg-gray-200">
+					<div className="h-1 w-full overflow-hidden rounded-full bg-muted">
 						<div
-							className="h-full rounded-full bg-blue-500 transition-all duration-300 ease-out"
+							className="h-full rounded-full bg-primary transition-all duration-300 ease-out"
 							style={{ width: `${uploadProgress}%` }}
 						/>
 					</div>
-					<p className="mt-1 text-xs text-gray-500">
+					<p className="mt-1 text-xs text-muted-foreground">
 						{Math.round(uploadProgress)}% complete
 					</p>
 				</div>
@@ -216,7 +219,7 @@ const FileUploadWithPreview = ({
 
 			{/* File Preview */}
 			{uploadedFile && !isUploading && (
-				<div className="relative mt-4 rounded-lg border border-gray-200 p-4">
+				<div className="relative mt-4 rounded-lg border border-border bg-card p-4">
 					{/* Success Icon */}
 					<div className="absolute top-2 left-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-white">
 						<Check size={12} />
@@ -225,7 +228,7 @@ const FileUploadWithPreview = ({
 					{/* Remove Button */}
 					<button
 						onClick={handleRemoveFile}
-						className="absolute top-2 right-2 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-none bg-red-500 text-white transition-colors duration-200 hover:bg-red-600"
+						className="absolute top-2 right-2 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-none bg-destructive text-destructive-foreground transition-colors duration-200 hover:bg-destructive/90"
 					>
 						<X size={14} />
 					</button>
@@ -235,12 +238,12 @@ const FileUploadWithPreview = ({
 						<div className="mr-4">
 							{previewUrl ? (
 								<img
-									src={previewUrl}
+									src={previewUrl || "/placeholder.svg"}
 									alt={uploadedFile.name}
-									className="h-20 w-20 rounded border border-gray-200 object-cover"
+									className="h-20 w-20 rounded border border-border object-cover"
 								/>
 							) : (
-								<div className="flex h-20 w-20 items-center justify-center rounded border border-gray-200 bg-gray-100 text-3xl">
+								<div className="flex h-20 w-20 items-center justify-center rounded border border-border bg-muted text-3xl">
 									{getFileIcon(uploadedFile)}
 								</div>
 							)}
@@ -248,10 +251,10 @@ const FileUploadWithPreview = ({
 
 						{/* File Info */}
 						<div className="flex-1">
-							<p className="mb-1 text-sm font-medium text-gray-700">
+							<p className="mb-1 text-sm font-medium text-card-foreground">
 								{uploadedFile.name}
 							</p>
-							<p className="mb-1 text-xs text-gray-500">
+							<p className="mb-1 text-xs text-muted-foreground">
 								{formatFileSize(uploadedFile.size)}
 							</p>
 							<p className="text-xs font-medium text-green-600">

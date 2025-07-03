@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react"
 import { User, Mail, LockKeyhole } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import EmailInputWithOTPVerification from "@/features/auth/components/sub-components/register/email-input-with-verification.sc.jsx"
 import PasswordInputWithValidation from "@/features/auth/components/sub-components/register/password-input-with-validation.sc.jsx"
 import UsernameInputWithAvailability from "@/features/auth/components/sub-components/register/username-input-with-availability.sc.jsx"
@@ -174,8 +173,6 @@ export default function BasicCredsPage() {
         </div>
 
         {/* Form */}
-        <Card>
-          <CardContent className="p-8">
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* Username Field */}
               <div>
@@ -245,8 +242,6 @@ export default function BasicCredsPage() {
                 </Button>
               </div>
             </form>
-          </CardContent>
-        </Card>
       </div>
     </div>
   )

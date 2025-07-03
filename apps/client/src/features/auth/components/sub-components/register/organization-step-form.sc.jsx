@@ -1,5 +1,4 @@
-// organization-step-form.sc.jsx - Modified for category view with improved navigation
-import React from "react";
+"use client";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import StepContent from "@/features/auth/components/sub-components/register/step-content.sc.jsx";
@@ -121,7 +120,7 @@ const OrganizationStepForm = ({
 	};
 
 	return (
-		<div className="flex min-h-screen items-center justify-center">
+		<div className="flex min-h-screen items-center justify-center bg-background">
 			<div className="w-full max-w-4xl">
 				<AnimatePresence custom={direction} mode="wait">
 					<motion.div
@@ -138,7 +137,7 @@ const OrganizationStepForm = ({
 							<div className="mb-8">
 								{/* Category badge */}
 								<div className="mb-4">
-									<span className="inline-flex items-center gap-1 rounded-md bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
+									<span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
 										{categoryData.icon}
 										{categoryData.category}
 									</span>
@@ -155,16 +154,16 @@ const OrganizationStepForm = ({
 								{categoryData.fields.map((fieldData, index) => (
 									<div key={fieldData.field} className="space-y-2">
 										{/* Field Label */}
-										<label className="block text-sm font-medium text-gray-700">
+										<label className="block text-sm font-medium text-foreground">
 											{fieldData.label}
 											{fieldData.customData?.required && (
-												<span className="ml-1 text-red-500">*</span>
+												<span className="ml-1 text-destructive">*</span>
 											)}
 										</label>
 
 										{/* Field Description */}
 										{fieldData.description && (
-											<p className="mb-2 text-sm text-gray-500">
+											<p className="mb-2 text-sm text-muted-foreground">
 												{fieldData.description}
 											</p>
 										)}
@@ -190,7 +189,9 @@ const OrganizationStepForm = ({
 							<div className="">
 								{/* Helper text */}
 								<div className="mb-6 text-center">
-									<p className="text-sm text-gray-600">{getHelperText()}</p>
+									<p className="text-sm text-muted-foreground">
+										{getHelperText()}
+									</p>
 								</div>
 
 								{/* Navigation Buttons */}
@@ -199,7 +200,7 @@ const OrganizationStepForm = ({
 									{showBackButton && (
 										<button
 											onClick={onBack}
-											className="flex h-11 w-32 cursor-pointer items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-sm transition-all duration-200 hover:border-gray-400 hover:bg-gray-50 hover:shadow-lg focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+											className="flex h-11 w-32 cursor-pointer items-center justify-center gap-2 rounded-lg border border-border bg-card text-sm font-medium text-card-foreground shadow-sm transition-all duration-200 hover:border-muted-foreground hover:bg-muted hover:shadow-lg focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
 										>
 											<ChevronLeft className="size-4" />
 											Previous
@@ -210,10 +211,10 @@ const OrganizationStepForm = ({
 									<button
 										onClick={isLastCategory ? onSubmit : onNext}
 										disabled={!isAllFieldsValid}
-										className={`flex h-11 w-32 items-center justify-center gap-2 rounded-lg text-sm font-medium shadow-sm transition-all duration-200 hover:shadow-lg focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none ${
+										className={`flex h-11 w-32 items-center justify-center gap-2 rounded-lg text-sm font-medium shadow-sm transition-all duration-200 hover:shadow-lg focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none ${
 											isAllFieldsValid
-												? "cursor-pointer bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md"
-												: "cursor-not-allowed bg-gray-300 text-gray-500"
+												? "cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-md"
+												: "cursor-not-allowed bg-muted text-muted-foreground"
 										}`}
 									>
 										{getNextButtonText()}

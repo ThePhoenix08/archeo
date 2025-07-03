@@ -1,15 +1,15 @@
-import React from "react";
+"use client";
 import { useNavigate } from "react-router";
 import { useMultiStepOrganizationForm } from "@/features/auth/components/utils/useMultiStepOrganizationForm.hook.js";
 import OrganizationStepForm from "@/features/auth/components/sub-components/register/organization-step-form.sc.jsx";
 import { ROUTES } from "@/shared/constants/routes.constant.js";
+import LogoText from "@/components/brand/LogoText.sc.jsx";
 
 import {
 	Building,
 	Globe,
 	User,
 	Shield,
-	Mail,
 	Phone,
 	MapPin,
 	FileText,
@@ -17,7 +17,6 @@ import {
 	BookOpenText,
 	Contact,
 	UserRound,
-	FolderLock,
 	SquareArrowOutUpRight,
 } from "lucide-react";
 
@@ -328,8 +327,6 @@ function RegisterOrgPage() {
 		}
 	};
 
-	// const { role } = useParams();
-
 	const handleSubmit = () => {
 		console.log("Organization Registration Data:", formData);
 		console.log("Completion Checklist:", checklist);
@@ -345,52 +342,43 @@ function RegisterOrgPage() {
 	};
 
 	return (
-		<div className="relative min-h-screen">
+		<div className="relative min-h-screen bg-background">
 			{/* Header with Project Name and Quit Button */}
-			<div className="w-full px-6 py-4">
-				<div className="mx-auto flex items-center justify-between">
-					{/* Project Name */}
-					<a href="/" className="relative z-10 flex items-center gap-3">
-						<div className="flex size-8 items-center justify-center rounded-md bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg">
-							<FolderLock className="size-6" />
-						</div>
-						<div className="flex flex-col">
-							<span className="bg-gradient-to-r from-blue-600 to-purple-700 bg-clip-text text-xl font-bold text-transparent">
-								Archeo
-							</span>
-							<span className="text-xs font-medium text-blue-500/80">
-								Document Management
-							</span>
-						</div>
-					</a>
-
-					{/* Quit Button */}
-					<button
-						onClick={() => navigate(ROUTES.HOME)}
-						className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:border-red-400 hover:bg-red-500 hover:font-semibold hover:text-white hover:shadow-lg"
-					>
-						Quit
-						<SquareArrowOutUpRight className="size-4" />
-					</button>
+			<div className="mx-auto flex w-full items-center justify-between">
+				{/* Project Name */}
+				<div className="w-full">
+					<div className="box pt-4 pl-4">
+						<LogoText />
+					</div>
 				</div>
+
+				{/* Quit Button */}
+				<button
+					onClick={() => navigate(ROUTES.HOME)}
+					className="mt-4 mr-4 flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-card-foreground shadow-sm transition-colors hover:border-destructive hover:bg-destructive hover:font-semibold hover:text-destructive-foreground hover:shadow-lg"
+				>
+					Quit
+					<SquareArrowOutUpRight className="size-4" />
+				</button>
 			</div>
+
 			{/* Main Content */}
 			<div className="mx-auto max-w-4xl">
 				{/* Progress indicator */}
 				<div className="px-1">
 					<div className="mb-4 flex items-center justify-between">
-						<h2 className="text-lg font-semibold text-gray-800">
+						<h2 className="text-lg font-semibold text-foreground">
 							{currentCategoryData.title}
 						</h2>
-						<div className="text-sm text-gray-500">
+						<div className="text-sm text-muted-foreground">
 							Step {currentCategory + 1} of {totalCategories}
 						</div>
 					</div>
 
 					{/* Overall progress */}
-					<div className="mb-4 h-2 w-full rounded-full bg-gray-200">
+					<div className="mb-4 h-2 w-full rounded-full bg-muted">
 						<div
-							className="h-2 rounded-full bg-blue-600 transition-all duration-300"
+							className="h-2 rounded-full bg-primary transition-all duration-300"
 							style={{ width: `${progress.overall}%` }}
 						/>
 					</div>
@@ -403,10 +391,10 @@ function RegisterOrgPage() {
 								onClick={() => handleCategoryChange(index)}
 								className={`h-3 w-5 rounded-full transition-all duration-200 ${
 									index === currentCategory
-										? "bg-blue-600"
+										? "bg-primary"
 										: checklist[category.checklistKey]
-											? "bg-blue-400"
-											: "bg-gray-300"
+											? "bg-primary/70"
+											: "bg-muted"
 								}`}
 								title={category.category}
 							/>

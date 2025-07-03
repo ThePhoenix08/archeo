@@ -1,4 +1,3 @@
-// useMultiStepOrganizationForm.hook.js - Modified for category view
 import { useState, useEffect } from "react";
 
 export const useMultiStepOrganizationForm = (
@@ -80,7 +79,7 @@ export const useMultiStepOrganizationForm = (
 
 				// Phone validation
 				if (field.field === "phonenumber" && trimmedValue) {
-					const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
+					const phoneRegex = /^\+?[1-9][0-9]{7,14}$/;
 					return phoneRegex.test(trimmedValue);
 				}
 
@@ -142,7 +141,7 @@ export const useMultiStepOrganizationForm = (
 
 			// Phone validation
 			if (fieldData.field === "phonenumber" && trimmedValue) {
-				const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
+				const phoneRegex = /^\+?[1-9][0-9]{7,14}$/;
 				return phoneRegex.test(trimmedValue);
 			}
 

@@ -27,9 +27,9 @@ const TextInputWithCharacterLimit = ({
 	const isOverLimit = currentLength > maxLength;
 
 	const baseInputClasses = `
-    w-full border-2 border-gray-300 bg-white px-8 py-6 pr-20 text-xl 
-    transition-all duration-200 hover:border-gray-400 
-    focus:border-blue-600 focus:outline-none
+    w-full border-2 border-gray-300 dark:border-gray-700 bg-background px-8 py-6 pr-20 text-xl 
+    transition-all duration-200 hover:border-gray-400 dark:border-gray-600
+    focus:border-blue-600 dark:focus:border-blue-600 focus:outline-none
     ${isOverLimit ? "border-red-500 focus:border-red-600" : ""}
     ${className}
   `;

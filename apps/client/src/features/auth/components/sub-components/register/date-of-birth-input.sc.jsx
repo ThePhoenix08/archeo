@@ -26,9 +26,9 @@ const DateOfBirthInput = ({
 	const dropdownRef = useRef(null);
 
 	const baseInputClasses = `
-    w-full border-2 border-gray-300 bg-white px-8 py-6 pr-16 text-xl font-semibold
-    transition-all duration-200 hover:border-gray-400 cursor-pointer
-    focus:border-blue-600 focus:outline-none
+    w-full border-2 border-gray-300 dark:border-gray-700 bg-background px-8 py-6 pr-16 text-xl font-semibold
+    transition-all duration-200 hover:border-gray-400 dark:border-gray-600 cursor-pointer
+    focus:border-blue-600 dark:focus:border-blue-600 focus:outline-none
     ${className}
   `;
 

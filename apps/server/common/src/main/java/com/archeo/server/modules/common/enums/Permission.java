@@ -6,9 +6,7 @@ public enum Permission {
     DOCUMENT_DOWNLOAD_REQUEST(Resource.DOCUMENT, Action.DOWNLOAD, Condition.REQUEST),
     TEMPLATE_CREATE_OWN(Resource.TEMPLATE, Action.CREATE, Condition.OWN),
     DOCUMENT_VERIFY_ALL(Resource.DOCUMENT, Action.VERIFY, Condition.ALLOWED),
-    API_KEY_CREATE(Resource.API_KEY, Action.CREATE, Condition.OWN),
-    // Add all combinations needed...
-
+    API_KEY_CREATE(Resource.API_KEY, Action.CREATE, Condition.OWN)
     ;
 
     private final Resource resource;

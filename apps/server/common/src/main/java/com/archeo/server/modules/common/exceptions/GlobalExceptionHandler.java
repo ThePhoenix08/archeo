@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<ApiResponse<Object>> handleInvalidToken(Exception ex) {
-        return buildResponse(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "invalid_token", ex.getMessage());
+        return buildResponse(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "expired_token", ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

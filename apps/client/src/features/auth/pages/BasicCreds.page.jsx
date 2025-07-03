@@ -156,8 +156,12 @@ function BasicCredsPage() {
 
 	return (
 		<div className="relative min-h-screen bg-gray-50">
-			<div className="top-0 left-0 absolute"><LogoText/></div>
-			<div className="mx-auto max-w-2xl px-6 py-12">
+			<div className="w-screen">
+				<div className="box pt-4 pl-4">
+					<LogoText/>
+				</div>
+			</div>
+			<div className="mx-auto max-w-2xl px-6 py-2">
 				{/* Header */}
 				<div className="heading my-4 flex items-center justify-center gap-4">
 					<div className="text-gray-600">

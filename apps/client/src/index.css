@@ -1,16 +1,15 @@
-
+@import url('https://fonts.googleapis.com/css2?family=Anta&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
 	--font-inter: 'Inter', sans-serif;
-	--font-nunito-sans: 'Nunito Sans', sans-serif;
+	--font-anta: 'Anta', sans-serif;
 	--default-font-family: var(--font-inter);
 	--font-display: var(--font-inter);
+	--logo-primary: #051f34;
 }
 
 @theme inline {

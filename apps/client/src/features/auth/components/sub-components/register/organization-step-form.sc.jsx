@@ -4,13 +4,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import StepContent from "@/features/auth/components/sub-components/register/step-content.sc.jsx";
 import TextInputWithCharacterLimit from "@/features/auth/components/sub-components/register/text-input-with-character-limit.sc.jsx";
-import EmailInputWithOTPVerification from "@/features/auth/components/sub-components/register/email-input-with-verification.sc.jsx";
 import TextInputWithIcon from "@/features/auth/components/sub-components/register/text-input-with-icon.sc.jsx";
 import PhoneNumberInput from "@/features/auth/components/sub-components/register/phone-number-input.sc.jsx";
 import ThreeLineAddressInputWithPreview from "@/features/auth/components/sub-components/register/three-line-address-input-with-preview.sc.jsx";
 import URLInputWithLinkPreview from "@/features/auth/components/sub-components/register/url-input-with-link-preview-.sc.jsx";
 import SelectWithSearch from "@/features/auth/components/sub-components/register/select-with-search.sc.jsx";
-// import FileUploadWithPreview from "@/features/auth/components/sub-components/register/file-upload-with-preview.sc.jsx";
+import FileUploadWithPreview from "@/features/auth/components/sub-components/register/file-upload-with-preview.sc.jsx";
 
 const OrganizationStepForm = ({
 	currentCategory,
@@ -51,14 +50,29 @@ const OrganizationStepForm = ({
 			case "designation":
 				return <TextInputWithCharacterLimit {...props} />;
 
-			case "email":
-				return <EmailInputWithOTPVerification {...props} />;
-
 			case "phonenumber":
 				return <PhoneNumberInput {...props} />;
 
 			case "address":
-				return <ThreeLineAddressInputWithPreview {...props} />;
+				// Special handling for address field
+				const addressValue = formData[fieldData.field] || {};
+				return (
+					<ThreeLineAddressInputWithPreview
+						address1={addressValue.address1 || ""}
+						address2={addressValue.address2 || ""}
+						address3={addressValue.address3 || ""}
+						onAddress1Change={(value) =>
+							handleAddressChange(fieldData.field, "address1", value)
+						}
+						onAddress2Change={(value) =>
+							handleAddressChange(fieldData.field, "address2", value)
+						}
+						onAddress3Change={(value) =>
+							handleAddressChange(fieldData.field, "address3", value)
+						}
+						onKeyPress={onKeyPress}
+					/>
+				);
 
 			case "website":
 				return <URLInputWithLinkPreview {...props} />;
@@ -67,8 +81,8 @@ const OrganizationStepForm = ({
 			case "prooftype":
 				return <SelectWithSearch {...props} />;
 
-			// case "prooffilename":
-			// 	return <FileUploadWithPreview {...props} />;
+			case "prooffilename":
+				return <FileUploadWithPreview {...props} />;
 
 			default:
 				return <TextInputWithIcon {...props} />;
@@ -94,6 +108,16 @@ const OrganizationStepForm = ({
 			return submitButtonText;
 		}
 		return "Next";
+	};
+
+	// Special handler for address field
+	const handleAddressChange = (fieldName, addressLine, value) => {
+		const currentAddress = formData[fieldName];
+		const updatedAddress = {
+			...currentAddress,
+			[addressLine]: value,
+		};
+		onInputChange(fieldName, updatedAddress);
 	};
 
 	return (
@@ -175,7 +199,7 @@ const OrganizationStepForm = ({
 									{showBackButton && (
 										<button
 											onClick={onBack}
-											className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 shadow-sm transition-all duration-200 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+											className="flex h-11 w-32 cursor-pointer items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-sm transition-all duration-200 hover:border-gray-400 hover:bg-gray-50 hover:shadow-lg focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
 										>
 											<ChevronLeft className="size-4" />
 											Previous
@@ -186,9 +210,9 @@ const OrganizationStepForm = ({
 									<button
 										onClick={isLastCategory ? onSubmit : onNext}
 										disabled={!isAllFieldsValid}
-										className={`flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium shadow-sm transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none ${
+										className={`flex h-11 w-32 items-center justify-center gap-2 rounded-lg text-sm font-medium shadow-sm transition-all duration-200 hover:shadow-lg focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none ${
 											isAllFieldsValid
-												? "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md"
+												? "cursor-pointer bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md"
 												: "cursor-not-allowed bg-gray-300 text-gray-500"
 										}`}
 									>

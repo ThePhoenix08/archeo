@@ -367,7 +367,7 @@ function RegisterOrgPage() {
 					{/* Quit Button */}
 					<button
 						onClick={() => navigate(ROUTES.HOME)}
-						className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:border-gray-400 hover:bg-gray-50"
+						className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:border-red-400 hover:bg-red-500 hover:font-semibold hover:text-white hover:shadow-lg"
 					>
 						Quit
 						<SquareArrowOutUpRight className="size-4" />
@@ -376,26 +376,8 @@ function RegisterOrgPage() {
 			</div>
 			{/* Main Content */}
 			<div className="mx-auto max-w-4xl">
-				{/* Back button and navigation */}
-				{/* <div className="heading my-4 flex items-center gap-4">
-					<NavigationButtons.BackButton
-						onClick={handleBack}
-						show={currentCategory > 0}
-					/>
-					<span className="text-2xl text-gray-600">{" | "}</span>
-					<div className="text-gray-600">
-						Already have an account?{" "}
-						<Link
-							to={ROUTES.LOGIN}
-							className="ml-2 font-medium text-blue-600 hover:text-blue-700 hover:underline"
-						>
-							Sign in
-						</Link>
-					</div>
-				</div> */}
-
 				{/* Progress indicator */}
-				<div>
+				<div className="px-1">
 					<div className="mb-4 flex items-center justify-between">
 						<h2 className="text-lg font-semibold text-gray-800">
 							{currentCategoryData.title}
@@ -433,7 +415,7 @@ function RegisterOrgPage() {
 				</div>
 
 				{/* Step Form */}
-				<div>
+				<div className="flex items-center justify-center">
 					<OrganizationStepForm
 						currentCategory={currentCategory}
 						direction={direction}

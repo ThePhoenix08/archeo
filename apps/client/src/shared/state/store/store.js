@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { apiSlice } from "@/shared/reducer/apiSlice.reducer";
+import { apiSlice } from "@/shared/state/redux-apis/slice.barrel.js";
 import authReducer from "@/features/auth/state/slices/auth.slice";
 import {
 	persistStore,

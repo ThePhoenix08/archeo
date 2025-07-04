@@ -1,4 +1,4 @@
-import { apiSlice } from "@/shared/reducer/slice.barrel";
+import { apiSlice } from "@/shared/state/redux-apis/slice.barrel.js";
 import {
 	setCredentials,
 	clearCredentials,

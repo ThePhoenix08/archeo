@@ -1,16 +1,14 @@
-import { FolderLock } from "lucide-react";
-
 function LogoText() {
 	return (
-		<a href="/" className="relative z-10 mb-8 flex items-center gap-3">
-			<div className="flex size-8 items-center justify-center rounded-md bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg">
-				<FolderLock className="size-6" />
+		<a href="/" className="focus:outline-none relative w-fit z-10 flex items-center gap-3">
+			<div className="w-10">
+				<img src="/assets/svg/logo_SVG.svg" alt="logo" className="w-full" />
 			</div>
 			<div className="flex flex-col">
-				<span className="font-(family-name:--font-nunito-sans) bg-gradient-to-r from-blue-600 to-purple-700 bg-clip-text text-xl font-bold text-transparent">
+				<span className="font-(family-name:--font-anta) tracking-wider text-[#051f34] dark:text-blue-400 text-xl font-bold">
 					Archeo
 				</span>
-				<span className="text-xs font-medium text-blue-500/80">
+				<span className="text-xs font-medium text-gray-700 dark:text-gray-300">
 					Document Management
 				</span>
 			</div>

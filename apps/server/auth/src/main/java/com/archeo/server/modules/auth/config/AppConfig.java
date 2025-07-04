@@ -1,6 +1,6 @@
 package com.archeo.server.modules.auth.config;
 
-import com.archeo.server.modules.auth.services.serviceImpl.OAuth2UserService;
+import com.archeo.server.modules.auth.services.OAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -11,9 +11,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
@@ -22,17 +21,16 @@ public class AppConfig {
     private final CorsConfigurationSource corsConfigurationSource;
     private final OAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final JwtTokenValidator jwtTokenValidator;
     @Autowired
-    public AppConfig(@Qualifier("corsConfigurationSource")CorsConfigurationSource corsConfigurationSource, @Lazy OAuth2UserService oAuth2UserService, @Lazy OAuth2SuccessHandler oAuth2SuccessHandler) {
+    public AppConfig(@Qualifier("corsConfigurationSource")CorsConfigurationSource corsConfigurationSource, @Lazy OAuth2UserService oAuth2UserService, @Lazy OAuth2SuccessHandler oAuth2SuccessHandler, JwtTokenValidator jwtTokenValidator) {
         this.corsConfigurationSource = corsConfigurationSource;
         this.oAuth2UserService = oAuth2UserService;
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
+        this.jwtTokenValidator = jwtTokenValidator;
     }
 
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
+
 
     @Bean
     public BCryptPasswordEncoder bcryptEncoder() {
@@ -56,7 +54,7 @@ public class AppConfig {
                         .userInfoEndpoint(user -> user.userService(oAuth2UserService))
                         .successHandler(oAuth2SuccessHandler))
 
-                .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class);
+                .addFilterBefore(jwtTokenValidator, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

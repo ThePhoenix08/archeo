@@ -144,10 +144,6 @@ export default function BasicCredsPage() {
     }
   }
 
-  useEffect(() => {
-    console.log("Errors:", errors)
-  }, [errors])
-
   return (
     <div className="relative min-h-screen bg-background">
       <div className="w-full focus:outline-none">

@@ -7,6 +7,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Link, useNavigate } from "react-router"
 import { ROUTES } from "@/shared/constants/routes.constant.js"
 import LogoText from "@/components/brand/LogoText.sc.jsx"
+import { useDispatch } from "react-redux"
+import { setAgentType } from "@/features/auth/state/slices/auth.slice.js"
+import { AGENT_TYPES_LIST } from "@/shared/constants/roles.constant.js"
 
 const imagesURLs = {
   student: "https://res.cloudinary.com/ddzcbt9uh/image/upload/v1751523145/student_dy3qye.webp",
@@ -16,11 +19,13 @@ const imagesURLs = {
 export default function SelectAgentTypePage() {
   const [selectedType, setSelectedType] = useState("")
 	const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleContinue = () => {
-    if (selectedType) {
+    if (selectedType && AGENT_TYPES_LIST.includes(selectedType)) {
       console.log("Selected agent type:", selectedType)
       // Handle navigation or form submission here
+      dispatch(setAgentType(selectedType));
       navigate(ROUTES.REGISTER_AGENT_DETAILS);
     }
   }

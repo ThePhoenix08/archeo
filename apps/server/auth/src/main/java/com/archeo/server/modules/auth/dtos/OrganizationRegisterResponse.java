@@ -1,6 +1,7 @@
 package com.archeo.server.modules.user.dtos;
 
 import com.archeo.server.modules.common.enums.Permission;
+import com.archeo.server.modules.common.models.UsersCommon;
 import com.archeo.server.modules.user.enums.VERIFICATION_STATUS;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +11,11 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class OrganizationRegistrationResponse {
+public class OrganizationRegisterResponse {
 
     private UUID id;
+
+    private UsersCommon user;
 
     private String organizationName;
 

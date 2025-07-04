@@ -1,57 +1,56 @@
-package com.archeo.server.modules.auth.dtos;
+package com.archeo.server.modules.user.dtos;
 
-import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
+import com.archeo.server.modules.common.enums.Permission;
+import com.archeo.server.modules.common.enums.USER_ROLE;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class OrganizationRegisterRequest {
 
-    @NotBlank(message = "Username is mandatory")
-    @Size(min = 4, max = 30, message = "Username must be between 4 and 30 characters")
-    private String username;
-
-    @Email(message = "Email should be valid")
-    @NotBlank(message = "Email is required")
-    private String email;
-
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, max = 64, message = "Password must be between 8 and 64 characters")
-    private String password;
-
-    @NotBlank(message = "Organization name is required")
-    @Size(max = 100, message = "Organization name must be under 100 characters")
+    @NotBlank
+    @Size(max = 100)
     private String organizationName;
 
-    @Size(max = 50, message = "Organization type must be under 50 characters")
+    @Size(max = 50)
     private String organizationType;
 
-    @NotEmpty(message = "At least one organization domain must be specified")
-    private List<@NotBlank(message = "Domain must not be blank") String> organizationDomains;
+    @NotNull(message = "User role must be specified")
+    private List<USER_ROLE> userRole;
 
-    @Size(max = 100, message = "Contact name must be under 100 characters")
+    private String organizationIdentificationNumber;
+
+    private List<String> organizationDomains;
+
+    @NotBlank
+    @Size(max = 100)
     private String contactName;
 
-    @Email(message = "Contact email should be valid")
-    @NotBlank(message = "Contact email is required")
-    private String contactEmail;
-
-    @Pattern(regexp = "^[0-9\\-\\+]{9,15}$", message = "Phone number must be valid")
+    @Size(max = 20)
     private String contactPhone;
 
-    @Size(max = 255, message = "Identity proof URL or ID must be under 255 characters")
+    private String contactDesignation;
+
     private String identityProof;
 
-    @Size(max = 100, message = "Website URL must be under 100 characters")
     private String webUrl;
 
-    @Size(max = 500, message = "Address must be under 500 characters")
     private String address;
 
+    private String logo;
 
+    private String description;
+
+    private String purpose;
+
+    private List<Permission> permissions;
+
+    private boolean isOwner;
+    private boolean isIssuer;
+    private boolean isVerifier;
+    private boolean isApiAccessEnabled;
 }

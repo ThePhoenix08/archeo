@@ -10,6 +10,8 @@ const TextInputWithIcon = ({
 	disabled = false,
 	autoFocus = false,
 	icon: Icon,
+	name,
+	required,
 }) => {
 	const baseInputClasses = `
     w-full border-2 border-gray-300 dark:border-gray-700 bg-background px-8 py-6 pr-16 text-xl  
@@ -35,9 +37,11 @@ const TextInputWithIcon = ({
 				style={clipPathStyle}
 				disabled={disabled}
 				autoFocus={autoFocus}
+				name={name}
+				required={required}
 			/>
 			{Icon && (
-				<div className="absolute top-1/2 right-6 -translate-y-1/2 transform text-gray-500">
+				<div className="absolute top-1/2 right-6 -translate-y-1/2 transform text-gray-500 pointer-events-none">
 					<Icon className="h-6 w-6" />
 				</div>
 			)}

@@ -13,6 +13,7 @@ const initialState = {
 	error: null,
 	accessToken: null,
 	tokenExpiryEstimate: null,
+	prefersThemeMode: "system",
 };
 
 const authSlice = createSlice({
@@ -67,7 +68,10 @@ const authSlice = createSlice({
 			if (state.user) {
 				state.user = { ...state.user, ...payload };
 			}
-		}
+		},
+		setPreferences: (state, { payload }) => {
+			state.prefersDarkMode = payload;
+		},
 	}
 });
 
@@ -83,6 +87,7 @@ export const {
 	setError,
 	clearError,
 	updateUser,
+	setPreferences,
 } = authSlice.actions;
 export default authSlice.reducer;
 
@@ -95,6 +100,7 @@ export const selectAgentType = (state) => state.auth.agentType;
 export const selectAuthLoading = (state) => state.auth.isLoading;
 export const selectAuthError = (state) => state.auth.error;
 export const selectIsRefreshing = (state) => state.auth.isRefreshing;
+export const selectPreferences = (state) => state.auth.prefersThemeMode;
 
 // Token selectors
 export const selectAccessToken = (state) => state.auth.accessToken;

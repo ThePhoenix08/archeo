@@ -1,6 +1,6 @@
 function LogoText() {
 	return (
-		<a href="/" className="relative z-10 mb-8 flex items-center gap-3">
+		<a href="/" className="focus:outline-none relative w-fit z-10 flex items-center gap-3">
 			<div className="w-10">
 				<img src="/assets/svg/logo_SVG.svg" alt="logo" className="w-full" />
 			</div>

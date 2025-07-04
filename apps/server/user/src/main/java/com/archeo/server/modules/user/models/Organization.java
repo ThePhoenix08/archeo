@@ -7,10 +7,12 @@ import com.archeo.server.modules.user.enums.VERIFICATION_STATUS;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -18,8 +20,11 @@ import java.util.List;
 public class Organization {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
+
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
@@ -30,9 +35,12 @@ public class Organization {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<Permission> permissions;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "owner_roles", joinColumns = @JoinColumn(name = "owner_id"))
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private USER_ROLE userRole = USER_ROLE.ROLE_OWNER;
+    @Column(name = "user_role", nullable = false)
+    private List<USER_ROLE> userRole;
+
 
     @Column(name = "organization_name", nullable = false, length = 100)
     private String organizationName;

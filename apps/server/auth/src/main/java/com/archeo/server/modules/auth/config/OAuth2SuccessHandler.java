@@ -1,6 +1,6 @@
 package com.archeo.server.modules.auth.config;
 
-import com.archeo.server.modules.auth.services.serviceImpl.OAuth2UserService;
+import com.archeo.server.modules.auth.services.OAuth2UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

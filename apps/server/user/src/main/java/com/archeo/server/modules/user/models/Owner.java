@@ -8,10 +8,12 @@ import com.archeo.server.modules.common.models.UsersCommon;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -19,9 +21,10 @@ import java.util.List;
 public class Owner {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @GeneratedValue
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
 
     @Column(name="full_name" , nullable = false, length = 300)
     private String fullName;
@@ -30,9 +33,12 @@ public class Owner {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<Permission> permissions;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "owner_roles", joinColumns = @JoinColumn(name = "owner_id"))
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private USER_ROLE userRole = USER_ROLE.ROLE_OWNER;
+    @Column(name = "user_role", nullable = false)
+    private List<USER_ROLE> userRole;
+
 
     @Column(name = "dob")
     private LocalDate dob;

@@ -8,11 +8,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface OwnerRepo extends JpaRepository<Owner, Long> {
-    Optional<Object> findByUser(UsersCommon user);
+public interface OwnerRepo extends JpaRepository<Owner, UUID> {
+    Optional<Owner> findByUser(UsersCommon user);
 
     @Query("SELECT o FROM Owner o WHERE o.user.email = :email")
     Optional<Owner> findByUserEmail(@Param("email") String email);
+
+    boolean existsByUser(UsersCommon user);
 }

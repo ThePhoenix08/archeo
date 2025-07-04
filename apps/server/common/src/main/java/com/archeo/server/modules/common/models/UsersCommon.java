@@ -2,12 +2,13 @@
 
 package com.archeo.server.modules.common.models;
 
-import com.archeo.server.modules.common.enums.USER_ROLE;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -15,8 +16,11 @@ import java.sql.Timestamp;
 public class UsersCommon {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // SERIAL in PostgreSQL
-    private Long id;
+    @GeneratedValue
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
+
 
     @Column(nullable = false, length = 50)
     private String username;
@@ -27,8 +31,11 @@ public class UsersCommon {
     @Column(name = "password_hash", nullable = false, length = 255)
     private String password;
 
+    @Column(name = "provider")
+    private String provider;
 
-
+    @Column(name = "provider_id", unique = true)
+    private String providerId;
 
 
     @Column(name = "is_active", nullable = false)
@@ -38,4 +45,9 @@ public class UsersCommon {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private Timestamp createdAt;
+
+    public boolean isOAuthUser() {
+        return provider != null && providerId != null;
+    }
+
 }

@@ -1,36 +1,32 @@
 package com.archeo.server.modules.user.dtos;
 
 import com.archeo.server.modules.common.enums.Permission;
-import com.archeo.server.modules.common.enums.USER_ROLE;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import com.archeo.server.modules.common.models.UsersCommon;
+import com.archeo.server.modules.user.enums.VERIFICATION_STATUS;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
-public class OrganizationRegisterRequest {
+@Builder
+public class OrganizationRegisterResponse {
 
-    @NotBlank
-    @Size(max = 100)
+    private UUID id;
+
+    private UsersCommon user;
+
     private String organizationName;
 
-    @Size(max = 50)
     private String organizationType;
-
-    @NotNull(message = "User role must be specified")
-    private List<USER_ROLE> userRole;
 
     private String organizationIdentificationNumber;
 
     private List<String> organizationDomains;
 
-    @NotBlank
-    @Size(max = 100)
     private String contactName;
 
-    @Size(max = 20)
     private String contactPhone;
 
     private String contactDesignation;
@@ -53,4 +49,8 @@ public class OrganizationRegisterRequest {
     private boolean isIssuer;
     private boolean isVerifier;
     private boolean isApiAccessEnabled;
+
+    private VERIFICATION_STATUS verificationStatus;
+
+    private String email; // From UsersCommon
 }

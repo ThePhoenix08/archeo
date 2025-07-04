@@ -15,7 +15,7 @@ public class Session implements Serializable {
     @Id
     private UUID id;
 
-    private Long userId;
+    private UUID userId;
 
     private String refreshTokenHash;
 

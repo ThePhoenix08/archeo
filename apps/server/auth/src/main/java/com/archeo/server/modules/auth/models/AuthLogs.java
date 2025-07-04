@@ -5,8 +5,10 @@ import com.archeo.server.modules.common.models.UsersCommon;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
 @Entity
 @Table(name = "auth_logs")
@@ -18,8 +20,10 @@ import java.sql.Timestamp;
 public class AuthLogs {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)

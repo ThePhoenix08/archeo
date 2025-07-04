@@ -1,23 +1,20 @@
-package com.archeo.server.modules.auth.services.serviceImpl;
+package com.archeo.server.modules.auth.services;
 
 import com.archeo.server.modules.auth.config.JwtProvider;
 import com.archeo.server.modules.auth.dtos.AuthResponse;
-import com.archeo.server.modules.auth.services.AuthLogsService;
-import com.archeo.server.modules.auth.services.SessionService;
-import com.archeo.server.modules.common.enums.USER_ROLE;
 import com.archeo.server.modules.common.models.UsersCommon;
 import com.archeo.server.modules.common.repositories.UsersCommonRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class OAuth2UserService extends DefaultOAuth2UserService {
@@ -41,12 +38,12 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                     UsersCommon newUser = new UsersCommon();
                     newUser.setEmail(email);
                     newUser.setUsername(username);
-                    newUser.setUserRole(USER_ROLE.ROLE_OWNER);
+//                    newUser.setUserRole(USER_ROLE.ROLE_OWNER);
                     newUser.setPassword("");
                     return userRepository.save(newUser);
                 });
 
-        Map<String, Object> claims = Map.of("authorities", user.getUserRole().name());
+        Map<String, Object> claims = Map.of("authorities", null);
         String accessToken = jwtProvider.generateAccessToken(claims, user.getEmail());
         String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
 
@@ -62,7 +59,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         AuthResponse authResponse = AuthResponse.builder()
                 .accessToken(accessToken)
-                .userRole(user.getUserRole())
+//                .userRole(user.getUserRole())
                 .build();
 
         System.out.println("Access Token: " + accessToken);

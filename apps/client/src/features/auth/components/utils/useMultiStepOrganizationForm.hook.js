@@ -1,3 +1,4 @@
+// useMultiStepOrganizationForm.hook.js - Modified for category view
 import { useState, useEffect } from "react";
 
 export const useMultiStepOrganizationForm = (
@@ -65,21 +66,25 @@ export const useMultiStepOrganizationForm = (
 
 			if (typeof value === "string") {
 				const trimmedValue = value.trim();
-				
+
 				// Check minimum length
-				if (field.customData?.minLength && trimmedValue.length < field.customData.minLength) {
+				if (
+					field.customData?.minLength &&
+					trimmedValue.length < field.customData.minLength
+				) {
 					return false;
 				}
 
 				// Email validation
 				if (field.field === "email" && trimmedValue) {
-					const emailRegex = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+					const emailRegex =
+						/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 					return emailRegex.test(trimmedValue);
 				}
 
 				// Phone validation
 				if (field.field === "phonenumber" && trimmedValue) {
-					const phoneRegex = /^\+?[1-9][0-9]{7,14}$/;
+					const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
 					return phoneRegex.test(trimmedValue);
 				}
 
@@ -124,24 +129,31 @@ export const useMultiStepOrganizationForm = (
 			const trimmedValue = value.trim();
 
 			// Check minimum length
-			if (fieldData.customData?.minLength && trimmedValue.length < fieldData.customData.minLength) {
+			if (
+				fieldData.customData?.minLength &&
+				trimmedValue.length < fieldData.customData.minLength
+			) {
 				return false;
 			}
 
 			// Check maximum length
-			if (fieldData.customData?.maxLength && trimmedValue.length > fieldData.customData.maxLength) {
+			if (
+				fieldData.customData?.maxLength &&
+				trimmedValue.length > fieldData.customData.maxLength
+			) {
 				return false;
 			}
 
 			// Email validation
 			if (fieldData.field === "email" && trimmedValue) {
-				const emailRegex = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+				const emailRegex =
+					/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 				return emailRegex.test(trimmedValue);
 			}
 
 			// Phone validation
 			if (fieldData.field === "phonenumber" && trimmedValue) {
-				const phoneRegex = /^\+?[1-9][0-9]{7,14}$/;
+				const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
 				return phoneRegex.test(trimmedValue);
 			}
 
@@ -168,7 +180,10 @@ export const useMultiStepOrganizationForm = (
 		return currentCategoryData.fields.every((field) => {
 			// Skip validation for non-required empty fields
 			const value = formData[field.field];
-			if (!field.customData?.required && (!value || (typeof value === "string" && value.trim() === ""))) {
+			if (
+				!field.customData?.required &&
+				(!value || (typeof value === "string" && value.trim() === ""))
+			) {
 				return true;
 			}
 			return isFieldValid(field);
@@ -179,7 +194,7 @@ export const useMultiStepOrganizationForm = (
 		if (!areAllCategoryFieldsValid()) return;
 
 		const isLastCategory = currentCategory === categories.length - 1;
-		
+
 		setDirection("forward");
 
 		if (!isLastCategory) {
@@ -188,14 +203,19 @@ export const useMultiStepOrganizationForm = (
 	};
 
 	const handleBack = () => {
+		setDirection("backward");
+
 		if (currentCategory > 0) {
-			setDirection("backward");
 			setCurrentCategory((prev) => prev - 1);
 		}
 	};
 
 	const handleCategoryChange = (categoryIndex) => {
-		if (categoryIndex < 0 || categoryIndex >= categories.length || categoryIndex === currentCategory) {
+		if (
+			categoryIndex < 0 ||
+			categoryIndex >= categories.length ||
+			categoryIndex === currentCategory
+		) {
 			return;
 		}
 

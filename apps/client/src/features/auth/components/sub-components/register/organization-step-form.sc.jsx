@@ -1,6 +1,6 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ListRestart } from "lucide-react";
 import StepContent from "@/features/auth/components/sub-components/register/step-content.sc.jsx";
 import TextInputWithCharacterLimit from "@/features/auth/components/sub-components/register/text-input-with-character-limit.sc.jsx";
 import TextInputWithIcon from "@/features/auth/components/sub-components/register/text-input-with-icon.sc.jsx";
@@ -21,6 +21,7 @@ const OrganizationStepForm = ({
 	onSubmit,
 	onKeyPress,
 	isAllFieldsValid,
+	resetForm,
 	isCategoryCompleted,
 	isLastCategory,
 	showBackButton = false,
@@ -120,7 +121,7 @@ const OrganizationStepForm = ({
 	};
 
 	return (
-		<div className="flex min-h-screen items-center justify-center bg-background">
+		<div className="min-h-screen bg-background">
 			<div className="w-full max-w-4xl">
 				<AnimatePresence custom={direction} mode="wait">
 					<motion.div
@@ -136,11 +137,18 @@ const OrganizationStepForm = ({
 							{/* Category Header */}
 							<div className="mb-8">
 								{/* Category badge */}
-								<div className="mb-4">
+								<div className="mb-4 flex items-center justify-between">
 									<span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
 										{categoryData.icon}
 										{categoryData.category}
 									</span>
+									<button
+										type="reset"
+										onClick={() => resetForm()}
+										className="flex cursor-pointer items-center gap-1 rounded-md bg-destructive/10 px-2 py-1 text-xs font-medium text-destructive transition-colors duration-200 hover:bg-destructive/20 hover:text-destructive"
+									>
+										Reset Form <ListRestart size={16} />
+									</button>
 								</div>
 
 								<StepContent

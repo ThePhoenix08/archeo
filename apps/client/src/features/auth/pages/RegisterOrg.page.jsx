@@ -276,15 +276,13 @@ const organizationCategories = [
 const FORMDATA_BLUEPRINT = {
 	orgname: "",
 	orgtype: "",
-	email: "",
 	website: "",
 	address: [],
 	contactname: "",
 	designation: "",
 	phonenumber: "",
 	prooftype: "",
-	prooffilename: "",
-	prooffiletype: "",
+	prooffilename: null,
 };
 
 const SUBMIT_CHECKLIST_BLUEPRINT = {
@@ -292,8 +290,6 @@ const SUBMIT_CHECKLIST_BLUEPRINT = {
 	ContactInfoStageCompleted: false,
 	ContactPersonStageCompleted: false,
 	VerificationStageCompleted: false,
-	FileUploadSuccessful: false,
-	EmailVerified: false,
 };
 
 function RegisterOrgPage() {
@@ -312,6 +308,7 @@ function RegisterOrgPage() {
 		totalCategories,
 		currentCategoryData,
 		handleCategoryChange,
+		resetForm,
 		handleSubmit: submitForm,
 		progress,
 		isLastCategory,
@@ -327,11 +324,91 @@ function RegisterOrgPage() {
 		}
 	};
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
 		console.log("Organization Registration Data:", formData);
 		console.log("Completion Checklist:", checklist);
+
+		// Validate that all required fields are filled
+		const { isValid } = submitForm();
+		if (!isValid) {
+			alert("Please complete all required fields before submitting.");
+			return;
+		}
+
+		// Prepare form data for backend submission
+		const formDataToSubmit = new FormData();
+
+		// Add all text fields to FormData
+		formDataToSubmit.append("orgname", formData.orgname);
+		formDataToSubmit.append("orgtype", formData.orgtype);
+		formDataToSubmit.append("website", formData.website);
+		formDataToSubmit.append("contactname", formData.contactname);
+		formDataToSubmit.append("designation", formData.designation);
+		formDataToSubmit.append("phonenumber", formData.phonenumber);
+		formDataToSubmit.append("prooftype", formData.prooftype);
+
+		// Handle address array
+		if (Array.isArray(formData.address)) {
+			formDataToSubmit.append("address", JSON.stringify(formData.address));
+		} else {
+			formDataToSubmit.append("address", formData.address);
+		}
+
+		// Handle file upload
+		if (formData.prooffilename && formData.prooffilename.file) {
+			// Add the actual file to FormData
+			formDataToSubmit.append("prooffile", formData.prooffilename.file);
+		}
+
+		// Add completion checklist
+		formDataToSubmit.append("checklist", JSON.stringify(checklist));
+
+		// try {
+		// 	// Submit to backend
+		// 	const response = await fetch("/api/register-organization", {
+		// 		method: "POST",
+		// 		body: formDataToSubmit, // Don't set Content-Type header, let browser set it
+		// 	});
+
+		// 	if (!response.ok) {
+		// 		throw new Error(`HTTP error! status: ${response.status}`);
+		// 	}
+
+		// 	const result = await response.json();
+		// 	console.log("Registration successful:", result);
+		// 	alert("Organization registered successfully!");
+
+		// 	// Reset form or redirect
+		// 	// navigate(ROUTES.SUCCESS);
+		// } catch (error) {
+		// 	console.error("Registration failed:", error);
+		// 	alert("Registration failed. Please try again.");
+		// }
+		// DEBUG: Convert FormData to Object for logging
+		const formDataObject = {};
+		const formDataFiles = {};
+
+		for (let [key, value] of formDataToSubmit.entries()) {
+			if (value instanceof File) {
+				formDataFiles[key] = {
+					name: value.name,
+					size: value.size,
+					type: value.type,
+					lastModified: value.lastModified,
+				};
+			} else {
+				formDataObject[key] = value;
+			}
+		}
+
+		console.log("FormData as Object:", formDataObject);
+		console.log("FormData Files:", formDataFiles);
+		console.log(
+			"Total FormData entries:",
+			Array.from(formDataToSubmit.entries()).length
+		);
+
 		alert("Organization registered successfully!");
-		// Add your submission logic here
 	};
 
 	const handleFormKeyPress = (e) => {
@@ -355,7 +432,7 @@ function RegisterOrgPage() {
 				{/* Quit Button */}
 				<button
 					onClick={() => navigate(ROUTES.HOME)}
-					className="mt-4 mr-4 flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-card-foreground shadow-sm transition-colors hover:border-destructive hover:bg-destructive hover:font-semibold hover:text-destructive-foreground hover:shadow-lg"
+					className="mr-2 flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-card-foreground shadow-sm transition-colors hover:border-destructive hover:bg-destructive hover:font-semibold hover:text-destructive-foreground hover:shadow-lg"
 				>
 					Quit
 					<SquareArrowOutUpRight className="size-4" />
@@ -403,7 +480,7 @@ function RegisterOrgPage() {
 				</div>
 
 				{/* Step Form */}
-				<div className="flex items-center justify-center">
+				<div className="w-full">
 					<OrganizationStepForm
 						currentCategory={currentCategory}
 						direction={direction}
@@ -413,6 +490,7 @@ function RegisterOrgPage() {
 						onNext={handleNext}
 						onBack={handlePrevious}
 						onSubmit={handleSubmit}
+						resetForm={resetForm}
 						onKeyPress={handleFormKeyPress}
 						isAllFieldsValid={areAllCategoryFieldsValid()}
 						isCategoryCompleted={isCurrentCategoryCompleted()}

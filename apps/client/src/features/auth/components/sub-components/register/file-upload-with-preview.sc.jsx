@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Upload, X, Check } from "lucide-react";
 
 const FileUploadWithPreview = ({
@@ -22,6 +22,17 @@ const FileUploadWithPreview = ({
 		maxSize = "5MB",
 		icon,
 	} = customData;
+
+	// Initialize with existing value if provided
+	useEffect(() => {
+		if (value && value.file) {
+			setUploadedFile(value.file);
+			if (value.file.type.startsWith("image/")) {
+				const url = URL.createObjectURL(value.file);
+				setPreviewUrl(url);
+			}
+		}
+	}, [value]);
 
 	// Helper function to parse max size string to bytes
 	const parseMaxSize = (sizeString) => {
@@ -55,7 +66,7 @@ const FileUploadWithPreview = ({
 			return;
 		}
 
-		// Validate file size (convert maxSize string to bytes)
+		// Validate file size
 		const maxSizeBytes = parseMaxSize(maxSize);
 		if (file.size > maxSizeBytes) {
 			alert(`File size must be less than ${maxSize}`);
@@ -81,21 +92,13 @@ const FileUploadWithPreview = ({
 					clearInterval(interval);
 					setIsUploading(false);
 
-					// Update form data with file information
-					onChange(file.name);
+					// Create comprehensive file data object
+					const fileData = {
+						file: file, // The actual File object - this is what gets sent to backend
+					};
 
-					// You would also set the file type in a real implementation
-					// This would typically be handled by a parent component or form state
-					if (onChange && typeof onChange === "function") {
-						// Simulate setting file type in form data
-						// In a real implementation, you'd pass this through props or context
-						setTimeout(() => {
-							// This would be handled by the parent component
-							// formData.fileType = file.type;
-							// formData.fileSize = file.size;
-						}, 100);
-					}
-
+					// Pass the complete file data to parent component
+					onChange(fileData);
 					return 100;
 				}
 				return prev + Math.random() * 15;
@@ -141,7 +144,7 @@ const FileUploadWithPreview = ({
 		if (previewUrl) {
 			URL.revokeObjectURL(previewUrl);
 		}
-		onChange("");
+		onChange(null);
 		// Reset the file input
 		if (fileInputRef.current) {
 			fileInputRef.current.value = "";

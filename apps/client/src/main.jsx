@@ -2,19 +2,16 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "@/index.css";
 import App from "@/App.jsx";
-import { store } from "@/shared/store/store.js";
+import { store } from "@/shared/state/store/store.js";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import { persistor } from "@/shared/store/store.js";
-import { ThemeProvider } from "@/shared/wrappers/Theme.provider.jsx";
+import { persistor } from "@/shared/state/store/store.js";
 
 createRoot(document.getElementById("root")).render(
 	<StrictMode>
 		<Provider store={store}>
 			<PersistGate loading={null} persistor={persistor}>
-				<ThemeProvider>
-					<App />
-				</ThemeProvider>
+				<App />
 			</PersistGate>
 		</Provider>
 	</StrictMode>

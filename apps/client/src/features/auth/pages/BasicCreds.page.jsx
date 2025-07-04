@@ -150,7 +150,7 @@ export default function BasicCredsPage() {
 
   return (
     <div className="relative min-h-screen bg-background">
-      <div className="w-full">
+      <div className="w-full focus:outline-none">
         <div className="box pt-4 pl-4">
           <LogoText />
         </div>

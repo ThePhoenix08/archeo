@@ -34,8 +34,11 @@ import BasicCredsPage from "@/features/auth/pages/BasicCreds.page.jsx";
 import AgentTypePage from "@/features/auth/pages/AgentType.page.jsx";
 import SelectRolesPage from "@/features/auth/pages/SelectRoles.page.jsx";
 import AgentDetailsFormPage from "@/features/auth/pages/AgentDetailsForm.page.jsx";
+import { useTheme } from "@/hooks/useTheme.hook.js";
 
 function App() {
+	useTheme();
+
 	return (
 		<BrowserRouter>
 			<Routes>

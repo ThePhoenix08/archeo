@@ -49,9 +49,9 @@ const SelectWithSearch = ({
 	}, [searchTerm]);
 
 	const baseSelectClasses = `
-    w-full border-2 border-gray-300 bg-white px-8 py-6 pr-16 text-xl 
-    transition-all duration-200 hover:border-gray-400 cursor-pointer
-    focus:border-blue-600 focus:outline-none
+    w-full border-2 border-gray-300 dark:border-gray-700 bg-background px-8 py-6 pr-16 text-xl 
+    transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-600 cursor-pointer
+    focus:border-blue-600 dark:focus:border-blue-600 focus:outline-none
     ${className}
   `;
 
@@ -104,30 +104,30 @@ const SelectWithSearch = ({
 				className={baseSelectClasses}
 				style={clipPathStyle}
 			>
-				<span className={selectedOption ? "text-black" : "text-gray-500"}>
+				<span className={selectedOption ? "text-foreground" : "text-muted-foreground"}>
 					{selectedOption ? selectedOption.label : placeholder}
 				</span>
 				<ChevronDown
-					className={`absolute top-1/2 right-6 h-6 w-6 -translate-y-1/2 transform text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`}
+					className={`absolute top-1/2 right-6 h-6 w-6 -translate-y-1/2 transform text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`}
 				/>
 			</div>
 
 			{isOpen && (
 				<div
-					className="absolute z-50 mt-2 max-h-60 w-full overflow-hidden border-2 border-gray-300 bg-white shadow-lg"
+					className="absolute z-50 mt-2 max-h-60 w-full overflow-hidden border-2 border-gray-300 dark:border-gray-700 bg-background shadow-lg dark:shadow-accent-foreground"
 					style={clipPathStyle}
 				>
 					{/* Search Input */}
-					<div className="border-b border-gray-200 p-4">
+					<div className="border-b border-gray-200 dark:border-gray-800 p-4">
 						<div className="relative">
-							<Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400" />
+							<Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
 							<input
 								ref={searchInputRef}
 								type="text"
 								value={searchTerm}
 								onChange={(e) => setSearchTerm(e.target.value)}
 								placeholder={searchPlaceholder}
-								className="w-full rounded border border-gray-300 py-2 pr-4 pl-10 focus:border-blue-600 focus:outline-none"
+								className="w-full rounded border border-gray-300 dark:border-gray-700 py-2 pr-4 pl-10 focus:border-blue-600 dark:focus:border-blue-600 focus:outline-none"
 							/>
 						</div>
 					</div>
@@ -142,20 +142,20 @@ const SelectWithSearch = ({
 									onClick={() => handleSelect(option)}
 									className={`flex cursor-pointer items-center justify-between px-8 py-4 transition-colors ${
 										index === highlightedIndex
-											? "bg-blue-50"
+											? "bg-blue-50 dark:bg-blue-950"
 											: value === option.value
-												? "bg-blue-50"
-												: "hover:bg-gray-100"
-									} ${value === option.value ? "text-blue-600" : "text-gray-900"}`}
+												? "bg-blue-50 dark:bg-blue-950"
+												: "hover:bg-gray-100 hover:dark:bg-gray-900"
+									} ${value === option.value ? "text-blue-600 dark:text-blue-400" : "text-gray-900 dark:text-gray-100"}`}
 								>
 									<span>{option.label}</span>
 									{value === option.value && (
-										<Check className="h-5 w-5 text-blue-600" />
+										<Check className="h-5 w-5 text-primary" />
 									)}
 								</div>
 							))
 						) : (
-							<div className="px-8 py-4 text-gray-500">No options found</div>
+							<div className="px-8 py-4 text-muted-foreground">No options found</div>
 						)}
 					</div>
 				</div>

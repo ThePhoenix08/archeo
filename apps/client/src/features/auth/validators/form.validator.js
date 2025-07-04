@@ -446,11 +446,11 @@ export const Validators = Object.freeze({
     }
     
     // Only allow alphanumeric characters, $ and _
-    const allowedCharsRegex = /^[A-Za-z0-9$_]+$/;
+    const allowedCharsRegex = /^[A-Za-z0-9@_]+$/;
     if (!allowedCharsRegex.test(value)) {
       return {
         isValid: false,
-        errorMessage: `${fieldName} can only contain letters, numbers, $ and _ characters.`
+        errorMessage: `${fieldName} can only contain letters, numbers, @ and _ characters.`
       };
     }
     
@@ -479,10 +479,10 @@ export const Validators = Object.freeze({
     }
     
     // Check for at least 1 symbol ($ or _)
-    if (!/[$_]/.test(value)) {
+    if (!/[_@]/.test(value)) {
       return {
         isValid: false,
-        errorMessage: `${fieldName} must contain at least one symbol ($ or _).`
+        errorMessage: `${fieldName} must contain at least one symbol (_ or @).`
       };
     }
     

@@ -14,9 +14,10 @@ const URLInputWithLinkPreview = ({
 	const { preview, loading, error } = useLinkPreview(value);
 
 	const baseInputClasses = `
-    w-full border-2 border-gray-300 bg-white px-8 py-6 pr-16 text-xl 
-    transition-all duration-200 hover:border-gray-400 
-    focus:border-blue-600 focus:outline-none
+    w-full border-2 border-input bg-background px-8 py-6 pr-16 text-xl text-foreground
+    transition-all duration-200 hover:border-border
+    focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20
+    disabled:cursor-not-allowed disabled:opacity-50
     ${className}
   `;
 
@@ -40,24 +41,24 @@ const URLInputWithLinkPreview = ({
 					disabled={disabled}
 					autoFocus={autoFocus}
 				/>
-				<Globe className="absolute top-1/2 right-6 h-6 w-6 -translate-y-1/2 transform text-gray-500" />
+				<Globe className="absolute top-1/2 right-6 h-6 w-6 -translate-y-1/2 transform text-muted-foreground" />
 			</div>
 
 			{/* Link Preview */}
 			{value && (
 				<div
-					className="border-2 border-gray-200 bg-gray-50 p-4 transition-all duration-200"
+					className="border-2 border-border bg-muted p-4 transition-all duration-200"
 					style={clipPathStyle}
 				>
 					{loading && (
-						<div className="flex items-center space-x-2 text-gray-500">
-							<div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></div>
+						<div className="flex items-center space-x-2 text-muted-foreground">
+							<div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
 							<span>Loading preview...</span>
 						</div>
 					)}
 
 					{error && (
-						<div className="text-sm text-red-500">
+						<div className="text-sm text-destructive">
 							Unable to load preview for this URL
 						</div>
 					)}
@@ -69,20 +70,20 @@ const URLInputWithLinkPreview = ({
 									<img
 										src={preview.image || "/placeholder.svg"}
 										alt={preview.title}
-										className="h-16 w-16 rounded object-cover"
+										className="h-16 w-16 rounded border border-border object-cover"
 										onError={(e) => (e.target.style.display = "none")}
 									/>
 								)}
 								<div className="min-w-0 flex-1">
-									<h3 className="truncate font-semibold text-gray-900">
+									<h3 className="truncate font-semibold text-foreground">
 										{preview.title || "No title available"}
 									</h3>
-									<p className="line-clamp-2 text-sm text-gray-600">
+									<p className="line-clamp-2 text-sm text-muted-foreground">
 										{preview.description || "No description available"}
 									</p>
 									<div className="mt-1 flex items-center space-x-1">
-										<ExternalLink className="h-3 w-3 text-gray-400" />
-										<span className="truncate text-xs text-gray-500">
+										<ExternalLink className="h-3 w-3 text-muted-foreground" />
+										<span className="truncate text-xs text-muted-foreground">
 											{preview.domain || new URL(value).hostname}
 										</span>
 									</div>

@@ -5,7 +5,7 @@ const CustomLabel = ({ text, icon }) => {
 		// {/* Label with Icon */}
 		<div className="my-2 flex items-center space-x-3 px-2">
 			<div
-				className="bg-blue-100 p-2 text-blue-600"
+				className="bg-background p-2 text-primary"
 				style={{
 					clipPath:
 						"polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))",
@@ -13,7 +13,7 @@ const CustomLabel = ({ text, icon }) => {
 			>
 				{cloneElement(icon, { className: "h-5 w-5" })}
 			</div>
-			<span className="text-xl font-bold text-gray-900">{text}</span>
+			<span className="text-xl font-bold text-primary-foreground">{text}</span>
 		</div>
 	);
 };

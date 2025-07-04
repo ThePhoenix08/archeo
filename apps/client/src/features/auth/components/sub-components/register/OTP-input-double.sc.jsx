@@ -18,9 +18,9 @@ const OTPInputDouble = ({
 	}, [value]);
 
 	const baseInputClasses = `
-    w-16 h-16 text-center text-2xl font-semibold border-2 border-gray-300 bg-white
-    transition-all duration-200 hover:border-gray-400 
-    focus:border-blue-600 focus:outline-none
+    w-16 h-16 text-center text-2xl font-semibold border-2 border-gray-300 dark:border-gray-700 
+		bg-background transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-600
+    focus:border-blue-600 dark:focus:border-blue-600 focus:outline-none
     ${className}
   `;
 

@@ -13,9 +13,10 @@ const ThreeLineAddressInputWithPreview = ({
 	disabled = false,
 }) => {
 	const baseInputClasses = `
-    w-full border-2 border-gray-300 bg-white px-8 py-6 text-xl 
-    transition-all duration-200 hover:border-gray-400 
-    focus:border-blue-600 focus:outline-none
+    w-full border-2 border-input bg-background px-8 py-6 pr-16 text-xl text-foreground
+    transition-all duration-200 hover:border-border
+    focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20
+    disabled:cursor-not-allowed disabled:opacity-50
     ${className}
   `;
 
@@ -71,17 +72,21 @@ const ThreeLineAddressInputWithPreview = ({
 
 			{/* Address Preview */}
 			<div
-				className="border-2 border-gray-200 bg-gray-50 p-6 transition-all duration-200"
+				className="border-2 border-border bg-muted p-6 transition-all duration-200"
 				style={clipPathStyle}
 			>
 				<div className="flex items-start space-x-3">
-					<MapPin className="mt-1 h-6 w-6 flex-shrink-0 text-gray-500" />
+					<MapPin className="mt-1 h-6 w-6 flex-shrink-0 text-muted-foreground" />
 					<div className="flex-1">
-						<h3 className="mb-2 font-semibold text-gray-900">
+						<h3 className="mb-2 font-semibold text-foreground">
 							Address Preview
 						</h3>
 						<p
-							className={`text-lg ${address1 || address2 || address3 ? "text-gray-900" : "text-gray-500 italic"}`}
+							className={`text-lg ${
+								address1 || address2 || address3
+									? "text-foreground"
+									: "text-muted-foreground italic"
+							}`}
 						>
 							{getCompleteAddress()}
 						</p>

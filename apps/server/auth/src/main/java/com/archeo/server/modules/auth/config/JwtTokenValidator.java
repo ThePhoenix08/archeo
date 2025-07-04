@@ -71,7 +71,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                 UsersCommon userEntity = usersCommonRepository.findByEmail(email)
                         .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-                CustomUserDetails customUserDetails = new CustomUserDetails(userEntity, authorityList);
+                CustomUserDetails customUserDetails = new CustomUserDetails(userEntity, authorityList, null);
 
                 Authentication auth = new UsernamePasswordAuthenticationToken(
                         customUserDetails,

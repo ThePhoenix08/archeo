@@ -24,9 +24,14 @@
 │   │   ├── package.json
 │   │   ├── public/
 │   │   │   └── assets/
-│   │   │       ├── .gitkeep
-│   │   │       ├── complete_logo.svg
-│   │   │       └── login.jpeg
+│   │   │       ├── login.jpeg
+│   │   │       ├── png/
+│   │   │       │   ├── logo_full_PNG.png
+│   │   │       │   └── transparent_logo_PNG.png
+│   │   │       └── svg/
+│   │   │           ├── logo_SVG.svg
+│   │   │           ├── logo_full_SVG.svg
+│   │   │           └── logo_full_horizontal.svg
 │   │   ├── src/
 │   │   │   ├── App.css
 │   │   │   ├── App.jsx
@@ -40,10 +45,13 @@
 │   │   │   │       ├── card.jsx
 │   │   │   │       ├── command.jsx
 │   │   │   │       ├── dialog.jsx
+│   │   │   │       ├── drawer.jsx
 │   │   │   │       ├── input.jsx
 │   │   │   │       ├── label.jsx
 │   │   │   │       ├── popover.jsx
+│   │   │   │       ├── radio-group.jsx
 │   │   │   │       ├── select-native.jsx
+│   │   │   │       ├── select.jsx
 │   │   │   │       ├── separator.jsx
 │   │   │   │       ├── skeleton.jsx
 │   │   │   │       └── stepper.jsx
@@ -67,29 +75,23 @@
 │   │   │   │   │   │   ├── EnhancedLoginLeftSection.c.jsx
 │   │   │   │   │   │   ├── login-form.c.jsx
 │   │   │   │   │   │   ├── sub-components/
-│   │   │   │   │   │   │   └── register/
-│   │   │   │   │   │   │       ├── CustomCalender.sc.jsx
-│   │   │   │   │   │   │       ├── CustomLabel.sc.jsx
-│   │   │   │   │   │   │       ├── OTP-input-double.sc.jsx
-│   │   │   │   │   │   │       ├── date-of-birth-input.sc.jsx
-│   │   │   │   │   │   │       ├── email-input-with-verification.sc.jsx
-│   │   │   │   │   │   │       ├── file-input.sc.jsx
-│   │   │   │   │   │   │       ├── form-input.sc.jsx
-│   │   │   │   │   │   │       ├── form-nav-btns.sc.jsx
-│   │   │   │   │   │   │       ├── organization-step-form.sc.jsx
-│   │   │   │   │   │   │       ├── password-input-with-validation.sc.jsx
-│   │   │   │   │   │   │       ├── password-validation.sc.jsx
-│   │   │   │   │   │   │       ├── phone-number-input.sc.jsx
-│   │   │   │   │   │   │       ├── progress-indicator.sc.jsx
-│   │   │   │   │   │   │       ├── register-header.sc.jsx
-│   │   │   │   │   │   │       ├── select-with-search.sc.jsx
-│   │   │   │   │   │   │       ├── step-content.sc.jsx
-│   │   │   │   │   │   │       ├── step-form.sc.jsx
-│   │   │   │   │   │   │       ├── text-input-with-character-limit.sc.jsx
-│   │   │   │   │   │   │       ├── text-input-with-icon.sc.jsx
-│   │   │   │   │   │   │       ├── three-line-address-input-with-preview.sc.jsx
-│   │   │   │   │   │   │       ├── url-input-with-link-preview-.sc.jsx
-│   │   │   │   │   │   │       └── username-input-with-availability.sc.jsx
+│   │   │   │   │   │   │   ├── register/
+│   │   │   │   │   │   │   │   ├── CustomLabel.sc.jsx
+│   │   │   │   │   │   │   │   ├── OTP-input-double.sc.jsx
+│   │   │   │   │   │   │   │   ├── date-of-birth-input.sc.jsx
+│   │   │   │   │   │   │   │   ├── email-input-with-verification.sc.jsx
+│   │   │   │   │   │   │   │   ├── file-upload-with-preview.sc.jsx
+│   │   │   │   │   │   │   │   ├── organization-step-form.sc.jsx
+│   │   │   │   │   │   │   │   ├── password-input-with-validation.sc.jsx
+│   │   │   │   │   │   │   │   ├── phone-number-input.sc.jsx
+│   │   │   │   │   │   │   │   ├── select-with-search.sc.jsx
+│   │   │   │   │   │   │   │   ├── step-content.sc.jsx
+│   │   │   │   │   │   │   │   ├── text-input-with-character-limit.sc.jsx
+│   │   │   │   │   │   │   │   ├── text-input-with-icon.sc.jsx
+│   │   │   │   │   │   │   │   ├── three-line-address-input-with-preview.sc.jsx
+│   │   │   │   │   │   │   │   ├── url-input-with-link-preview-.sc.jsx
+│   │   │   │   │   │   │   │   └── username-input-with-availability.sc.jsx
+│   │   │   │   │   │   │   └── theme-toggle.c.jsx
 │   │   │   │   │   │   └── utils/
 │   │   │   │   │   │       └── useMultiStepOrganizationForm.hook.js
 │   │   │   │   │   ├── constants/
@@ -154,7 +156,8 @@
 │   │   │   │   ├── use-character-limit.hook.js
 │   │   │   │   ├── use-file-upload.hook.js
 │   │   │   │   ├── use-link-preview.hook.js
-│   │   │   │   └── use-token-refresh.hook.js
+│   │   │   │   ├── use-token-refresh.hook.js
+│   │   │   │   └── useTheme.hook.js
 │   │   │   ├── index.css
 │   │   │   ├── lib/
 │   │   │   │   └── utils.js
@@ -169,13 +172,14 @@
 │   │   │       │   ├── AccessDenied.page.jsx
 │   │   │       │   ├── Error.page.jsx
 │   │   │       │   └── NotFound.page.jsx
-│   │   │       ├── reducer/
-│   │   │       │   ├── apiSlice.reducer.js
-│   │   │       │   └── slice.barrel.js
-│   │   │       ├── store/
-│   │   │       │   ├── hooks.js
-│   │   │       │   ├── store.barrel.js
-│   │   │       │   └── store.js
+│   │   │       ├── state/
+│   │   │       │   ├── redux-apis/
+│   │   │       │   │   ├── base.api.js
+│   │   │       │   │   └── slice.barrel.js
+│   │   │       │   └── store/
+│   │   │       │       ├── hooks.js
+│   │   │       │       ├── store.barrel.js
+│   │   │       │       └── store.js
 │   │   │       ├── utils/
 │   │   │       │   └── routes.util.js
 │   │   │       └── wrappers/
@@ -225,13 +229,15 @@
 │       │       │   │                   └── auth/
 │       │       │   │                       ├── config/
 │       │       │   │                       │   ├── AppConfig.java
+│       │       │   │                       │   ├── CustomUserDetails.java
 │       │       │   │                       │   ├── JwtConstant.java
 │       │       │   │                       │   ├── JwtProvider.java
 │       │       │   │                       │   ├── JwtTokenValidator.java
 │       │       │   │                       │   ├── OAuth2SuccessHandler.java
 │       │       │   │                       │   ├── ROIDeserializer.java
 │       │       │   │                       │   ├── RedisConfig.java
-│       │       │   │                       │   └── RequestLoggingFilter.java
+│       │       │   │                       │   ├── RequestLoggingFilter.java
+│       │       │   │                       │   └── SecurityConfig.java
 │       │       │   │                       ├── controllers/
 │       │       │   │                       │   ├── AuthController.java
 │       │       │   │                       │   └── LinkPreviewController.java
@@ -240,7 +246,10 @@
 │       │       │   │                       │   ├── LinkPreviewRequest.java
 │       │       │   │                       │   ├── LoginRequest.java
 │       │       │   │                       │   ├── OrganizationRegisterRequest.java
-│       │       │   │                       │   └── OwnerRegisterRequest.java
+│       │       │   │                       │   ├── OrganizationRegisterResponse.java
+│       │       │   │                       │   ├── OwnerRegisterRequest.java
+│       │       │   │                       │   ├── OwnerRegisterResponse.java
+│       │       │   │                       │   └── UserCommonRegisterRequest.java
 │       │       │   │                       ├── mapper/
 │       │       │   │                       │   ├── OrganizationMapper.java
 │       │       │   │                       │   ├── OwnerMapper.java
@@ -252,16 +261,16 @@
 │       │       │   │                       │   ├── AuthLogsRepo.java
 │       │       │   │                       │   └── SessionRedisRepository.java
 │       │       │   │                       └── services/
-│       │       │   │                           ├── ABACService.java
+│       │       │   │                           ├── ABACPermissionEvaluator.java
 │       │       │   │                           ├── AuthLogsService.java
 │       │       │   │                           ├── AuthService.java
 │       │       │   │                           ├── CustomUserDetailsService.java
 │       │       │   │                           ├── IdentityProofStorageService.java
 │       │       │   │                           ├── LinkPreviewService.java
+│       │       │   │                           ├── OAuth2UserService.java
 │       │       │   │                           ├── SessionService.java
 │       │       │   │                           └── serviceImpl/
-│       │       │   │                               ├── AuthServiceImpl.java
-│       │       │   │                               └── OAuth2UserService.java
+│       │       │   │                               └── AuthServiceImpl.java
 │       │       │   └── resources/
 │       │       │       └── application.properties
 │       │       └── test/
@@ -337,7 +346,6 @@
 │       │       │   │                       │   ├── Session.java
 │       │       │   │                       │   └── UsersCommon.java
 │       │       │   │                       ├── repositories/
-│       │       │   │                       │   ├── PermissionRepo.java
 │       │       │   │                       │   └── UsersCommonRepository.java
 │       │       │   │                       └── utils/
 │       │       │   │                           └── CommonUtils.java
@@ -573,4 +581,4 @@
 └── tests/
     └── .gitkeep
 
-285 directories, 289 files
+288 directories, 294 files

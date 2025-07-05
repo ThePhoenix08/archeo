@@ -13,7 +13,7 @@ const CustomLabel = ({ text, icon }) => {
 			>
 				{cloneElement(icon, { className: "h-5 w-5" })}
 			</div>
-			<span className="text-xl font-bold text-primary-foreground">{text}</span>
+			<span className="text-xl font-bold text-foreground">{text}</span>
 		</div>
 	);
 };

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
+import CustomLabel from "@/features/auth/components/sub-components/register/CustomLabel.sc.jsx";
 
 const PhoneNumberInput = ({
 	value,
@@ -10,11 +11,13 @@ const PhoneNumberInput = ({
 	className = "",
 	disabled = false,
 	autoFocus = false,
+	customData = {},
 }) => {
 	const [selectedCountry, setSelectedCountry] = useState(countries[0]);
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
 	const dropdownRef = useRef(null);
+	const { icon, text, name, required } = customData || {};
 
 	const filteredCountries = countries.filter(
 		(country) =>
@@ -95,93 +98,95 @@ const PhoneNumberInput = ({
 	};
 
 	return (
-		<div className="relative" ref={dropdownRef}>
-			<div className="flex">
-				{/* Country Code Selector */}
-				<div
-					onClick={() => !disabled && setIsDropdownOpen(!isDropdownOpen)}
-					className={`flex cursor-pointer items-center space-x-2 border-2 border-r-0 border-input bg-card px-4 py-6 transition-all duration-200 hover:border-border focus:border-ring focus:ring-2 focus:ring-ring/20 ${
-						disabled ? "cursor-not-allowed opacity-50" : ""
-					}`}
-					style={{
-						clipPath:
-							"polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px))",
-					}}
-				>
-					<FlagComponent country={selectedCountry} />
-					<span className="text-lg font-medium text-card-foreground">
-						{selectedCountry.dialCode}
-					</span>
-					<ChevronDown
-						className={`h-5 w-5 text-muted-foreground transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
-					/>
-				</div>
-
-				{/* Phone Number Input */}
-				<input
-					type="tel"
-					value={value.replace(selectedCountry.dialCode, "").trim()}
-					onChange={(e) =>
-						handlePhoneChange(`${selectedCountry.dialCode} ${e.target.value}`)
-					}
-					onKeyDown={onKeyPress}
-					placeholder={placeholder}
-					className={`${baseInputClasses} rounded-l-none border-l-0`}
-					style={{
-						clipPath:
-							"polygon(16px 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px))",
-					}}
-					disabled={disabled}
-					autoFocus={autoFocus}
-				/>
-			</div>
-
-			{/* Country Dropdown */}
-			{isDropdownOpen && (
-				<div
-					className="absolute z-50 mt-2 max-h-60 w-full overflow-hidden border-2 border-border bg-card shadow-lg"
-					style={clipPathStyle}
-				>
-					{/* Search Input */}
-					<div className="border-b border-border p-4">
-						<input
-							type="text"
-							value={searchTerm}
-							onChange={(e) => setSearchTerm(e.target.value)}
-							placeholder="Search countries..."
-							className="w-full rounded border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 focus:outline-none"
+		<>
+			<CustomLabel text={text} icon={icon} />
+			<div className="relative" ref={dropdownRef}>
+				<div className="flex">
+					{/* Country Code Selector */}
+					<div
+						onClick={() => !disabled && setIsDropdownOpen(!isDropdownOpen)}
+						className={`flex cursor-pointer items-center space-x-2 border-2 border-r-0 border-input bg-card px-4 py-6 transition-all duration-200 hover:border-border focus:border-ring focus:ring-2 focus:ring-ring/20 ${
+							disabled ? "cursor-not-allowed opacity-50" : ""
+						}`}
+						style={{
+							clipPath:
+								"polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px))",
+						}}
+					>
+						<FlagComponent country={selectedCountry} />
+						<span className="text-lg font-medium text-card-foreground">
+							{selectedCountry.dialCode}
+						</span>
+						<ChevronDown
+							className={`h-5 w-5 text-muted-foreground transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
 						/>
 					</div>
-
-					{/* Countries List */}
-					<div className="max-h-40 overflow-y-auto">
-						{filteredCountries.length > 0 ? (
-							filteredCountries.map((country) => (
-								<div
-									key={country.code}
-									onClick={() => handleCountrySelect(country)}
-									className={`flex cursor-pointer items-center space-x-3 px-4 py-3 transition-colors hover:bg-accent hover:text-accent-foreground ${
-										selectedCountry.code === country.code
-											? "bg-primary/10 text-primary"
-											: "text-card-foreground"
-									}`}
-								>
-									<FlagComponent country={country} />
-									<span className="text-sm font-medium">
-										{country.dialCode}
-									</span>
-									<span className="flex-1 text-sm">{country.name}</span>
-								</div>
-							))
-						) : (
-							<div className="px-4 py-3 text-muted-foreground">
-								No countries found
-							</div>
-						)}
-					</div>
+					{/* Phone Number Input */}
+					<input
+						type="tel"
+						value={value.replace(selectedCountry.dialCode, "").trim()}
+						onChange={(e) =>
+							handlePhoneChange(`${selectedCountry.dialCode} ${e.target.value}`)
+						}
+						required={required}
+						name={name}
+						onKeyDown={onKeyPress}
+						placeholder={placeholder}
+						className={`${baseInputClasses} rounded-l-none border-l-0`}
+						style={{
+							clipPath:
+								"polygon(16px 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px))",
+						}}
+						disabled={disabled}
+						autoFocus={autoFocus}
+					/>
 				</div>
-			)}
-		</div>
+				{/* Country Dropdown */}
+				{isDropdownOpen && (
+					<div
+						className="absolute z-50 mt-2 max-h-60 w-full overflow-hidden border-2 border-border bg-card shadow-lg"
+						style={clipPathStyle}
+					>
+						{/* Search Input */}
+						<div className="border-b border-border p-4">
+							<input
+								type="text"
+								value={searchTerm}
+								onChange={(e) => setSearchTerm(e.target.value)}
+								placeholder="Search countries..."
+								className="w-full rounded border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 focus:outline-none"
+							/>
+						</div>
+						{/* Countries List */}
+						<div className="max-h-40 overflow-y-auto">
+							{filteredCountries.length > 0 ? (
+								filteredCountries.map((country) => (
+									<div
+										key={country.code}
+										onClick={() => handleCountrySelect(country)}
+										className={`flex cursor-pointer items-center space-x-3 px-4 py-3 transition-colors hover:bg-accent hover:text-accent-foreground ${
+											selectedCountry.code === country.code
+												? "bg-primary/10 text-primary"
+												: "text-card-foreground"
+										}`}
+									>
+										<FlagComponent country={country} />
+										<span className="text-sm font-medium">
+											{country.dialCode}
+										</span>
+										<span className="flex-1 text-sm">{country.name}</span>
+									</div>
+								))
+							) : (
+								<div className="px-4 py-3 text-muted-foreground">
+									No countries found
+								</div>
+							)}
+						</div>
+					</div>
+				)}
+			</div>
+		</>
 	);
 };
 

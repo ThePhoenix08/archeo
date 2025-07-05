@@ -1,4 +1,5 @@
 import RegisterOrgPage from "@/features/auth/pages/RegisterOrg.page.jsx";
+import UserDetailsPage from "@/features/auth/pages/RegisterUser.page.jsx";
 import { AGENT_TYPES, AGENT_TYPES_LIST } from "@/shared/constants/roles.constant.js";
 import { useParams } from "react-router";
 
@@ -8,7 +9,7 @@ function AgentDetailsFormPage() {
     agentType = AGENT_TYPES.INDIVIDUAL;
 
   return agentType === AGENT_TYPES.INDIVIDUAL 
-    ? <div>AgentDetailsFormPage</div> 
+    ? <UserDetailsPage/> 
     : <RegisterOrgPage/>;
 }
 export default AgentDetailsFormPage;

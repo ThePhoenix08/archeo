@@ -1,4 +1,4 @@
-package com.archeo.server.modules.user.dtos;
+package com.archeo.server.modules.auth.dtos;
 
 import com.archeo.server.modules.common.enums.Resource;
 

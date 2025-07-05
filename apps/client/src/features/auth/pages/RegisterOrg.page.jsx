@@ -1,9 +1,15 @@
 "use client";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { useMultiStepOrganizationForm } from "@/features/auth/components/utils/useMultiStepOrganizationForm.hook.js";
 import OrganizationStepForm from "@/features/auth/components/sub-components/register/organization-step-form.sc.jsx";
 import { ROUTES } from "@/shared/constants/routes.constant.js";
 import LogoText from "@/components/brand/LogoText.sc.jsx";
+import {
+	Validators,
+	validatorsNames,
+} from "@/features/auth/validators/form.validator.js";
+import { countries } from "@/features/auth/components/sub-components/register/phone-number-input.sc.jsx";
+import { toast, Bounce } from "react-toastify";
 
 import {
 	Building,
@@ -20,7 +26,9 @@ import {
 	SquareArrowOutUpRight,
 } from "lucide-react";
 
-// Organization form categories with their respective fields
+const countryCodes = countries.map((country) => country.code);
+
+// Organization form categories with their respective fields and validation rules
 const organizationCategories = [
 	{
 		category: "Basic Info",
@@ -41,6 +49,14 @@ const organizationCategories = [
 					required: true,
 					maxLength: 100,
 					minLength: 2,
+				},
+				validation: {
+					validator: validatorsNames.ONLY_ALPHA_NUMERIC,
+					options: {
+						minLength: 2,
+						maxLength: 100,
+						allowSpecialChars: ".,&()-",
+					},
 				},
 			},
 			{
@@ -99,6 +115,29 @@ const organizationCategories = [
 						{ value: "other", label: "Other" },
 					],
 				},
+				validation: {
+					validator: validatorsNames.VALUE_IN_GIVEN_ARRAY,
+					options: {
+						allowedValues: [
+							"government",
+							"educational institution",
+							"commercial entity",
+							"non-governmental organization",
+							"hospital / medical institution",
+							"financial institution",
+							"legal / judicial authority",
+							"research & development body",
+							"regulatory authority",
+							"military / defense",
+							"embassy / diplomatic mission",
+							"accredited lab / testing facility",
+							"utility / infrastructure provider",
+							"training & certification body",
+							"other",
+						],
+						caseSensitive: false,
+					},
+				},
 			},
 		],
 	},
@@ -118,7 +157,7 @@ const organizationCategories = [
 					icon: <Globe />,
 					text: "Website",
 					name: "website",
-					required: false,
+					required: true,
 				},
 			},
 			{
@@ -132,6 +171,13 @@ const organizationCategories = [
 					text: "Address",
 					name: "address",
 					required: true,
+				},
+				validation: {
+					validator: validatorsNames.ADDRESS_VALIDATOR,
+					options: {
+						minLineLength: 3,
+						maxTotalLength: 300,
+					},
 				},
 			},
 		],
@@ -156,6 +202,13 @@ const organizationCategories = [
 					maxLength: 50,
 					minLength: 2,
 				},
+				validation: {
+					validator: validatorsNames.ONLY_ALPHA,
+					options: {
+						minLength: 2,
+						maxLength: 50,
+					},
+				},
 			},
 			{
 				field: "designation",
@@ -169,6 +222,14 @@ const organizationCategories = [
 					required: true,
 					maxLength: 50,
 				},
+				validation: {
+					validator: validatorsNames.ONLY_ALPHA_NUMERIC,
+					options: {
+						minLength: 2,
+						maxLength: 50,
+						allowSpecialChars: ".,&()-/",
+					},
+				},
 			},
 			{
 				field: "phonenumber",
@@ -180,6 +241,12 @@ const organizationCategories = [
 					text: "Phone Number",
 					name: "phonenumber",
 					required: true,
+				},
+				validation: {
+					validator: validatorsNames.PHONE_NUMBER,
+					options: {
+						country: countryCodes,
+					},
 				},
 			},
 		],
@@ -254,6 +321,31 @@ const organizationCategories = [
 						{ value: "other", label: "Other Government Document" },
 					],
 				},
+				validation: {
+					validator: validatorsNames.VALUE_IN_GIVEN_ARRAY,
+					options: {
+						allowedValues: [
+							"gst certificate",
+							"company incorporation certificate",
+							"organization pan card",
+							"udyam / msme certificate",
+							"ngo registration certificate",
+							"government issuance letter",
+							"operational license",
+							"tax registration document",
+							"mou with government body",
+							"regulatory registration certificate",
+							"insurance certificate",
+							"letter of consent / authorization",
+							"identity proof of authorized signatory",
+							"address proof (utility bill, rent agreement)",
+							"business registration number proof",
+							"tax",
+							"other",
+						],
+						caseSensitive: false,
+					},
+				},
 			},
 			{
 				field: "prooffilename",
@@ -268,72 +360,389 @@ const organizationCategories = [
 					fileTypes: [".pdf", ".jpg", ".jpeg", ".png"],
 					maxSize: "5MB",
 				},
+				validation: {
+					validator: validatorsNames.FILE_VALIDATOR,
+					options: {
+						maxSize: 5 * 1024 * 1024, // 5MB
+						allowedTypes: [
+							"application/pdf",
+							"image/jpeg",
+							"image/jpg",
+							"image/png",
+						],
+						allowedExtensions: ["pdf", "jpg", "jpeg", "png"],
+					},
+				},
 			},
 		],
 	},
 ];
 
-const FORMDATA_BLUEPRINT = {
-	orgname: "",
-	orgtype: "",
-	website: "",
-	address: [],
-	contactname: "",
-	designation: "",
-	phonenumber: "",
-	prooftype: "",
-	prooffilename: null,
-};
-
-const SUBMIT_CHECKLIST_BLUEPRINT = {
-	BasicInfoStageCompleted: false,
-	ContactInfoStageCompleted: false,
-	ContactPersonStageCompleted: false,
-	VerificationStageCompleted: false,
-};
-
 function RegisterOrgPage() {
 	const navigate = useNavigate();
-	const {
-		currentCategory,
-		direction,
-		formData,
-		checklist,
-		handleInputChange,
-		handleNext,
-		handleBack,
-		handleKeyPress,
-		areAllCategoryFieldsValid,
-		isCurrentCategoryCompleted,
-		totalCategories,
-		currentCategoryData,
-		handleCategoryChange,
-		resetForm,
-		handleSubmit: submitForm,
-		progress,
-		isLastCategory,
-	} = useMultiStepOrganizationForm(
-		organizationCategories,
-		FORMDATA_BLUEPRINT,
-		SUBMIT_CHECKLIST_BLUEPRINT
-	);
+	// State management
+	const [currentCategory, setCurrentCategory] = useState(0);
+	const [direction, setDirection] = useState("forward");
+	const [formData, setFormData] = useState({
+		orgname: "",
+		orgtype: "",
+		website: "",
+		address: {},
+		contactname: "",
+		designation: "",
+		phonenumber: "",
+		prooftype: "",
+		prooffilename: null,
+	});
+	const [checklist, setChecklist] = useState({
+		BasicInfoStageCompleted: false,
+		ContactInfoStageCompleted: false,
+		ContactPersonStageCompleted: false,
+		VerificationStageCompleted: false,
+	});
+	const [fieldErrors, setFieldErrors] = useState({});
 
-	const handlePrevious = () => {
-		if (currentCategory > 0) {
-			handleBack();
+	// Helper functions
+	const currentCategoryData = organizationCategories[currentCategory];
+	const totalCategories = organizationCategories.length;
+	const isLastCategory = currentCategory === totalCategories - 1;
+
+	// Calculate progress
+	const progress = {
+		overall: Math.round(((currentCategory + 1) / totalCategories) * 100),
+	};
+
+	// Enhanced field validation using external validator
+	const validateField = (field, value) => {
+		// Skip validation if field is not required and value is empty
+		if (
+			!field.customData?.required &&
+			(!value || (typeof value === "string" && value.trim() === ""))
+		) {
+			return { isValid: true, errorMessage: null };
+		}
+
+		// Handle address field validation specially
+		if (field.field === "address") {
+			// Check if field is required and empty
+			if (field.customData?.required) {
+				if (!value || typeof value !== "object") {
+					return {
+						isValid: false,
+						errorMessage: `${field.customData.text} is required.`,
+					};
+				}
+
+				// Check if all address lines are empty
+				const hasAnyAddressLine =
+					(value.address1 && value.address1.trim()) ||
+					(value.address2 && value.address2.trim()) ||
+					(value.address3 && value.address3.trim());
+
+				if (!hasAnyAddressLine) {
+					return {
+						isValid: false,
+						errorMessage: `${field.customData.text} is required.`,
+					};
+				}
+			}
+
+			// If validation rules exist, process them
+			if (field.validation) {
+				const { validator, options = {} } = field.validation;
+				const validatorFunction = Validators[validator];
+
+				if (!validatorFunction) {
+					console.warn(
+						`Validator '${validator}' not found for field '${field.field}'`
+					);
+					return { isValid: true, errorMessage: null };
+				}
+
+				// Convert address object to array format expected by validator
+				const addressLines = [
+					value.address1 || "",
+					value.address2 || "",
+					value.address3 || "",
+				].filter((line) => line.trim() !== "");
+
+				return validatorFunction(
+					field.validation.validator,
+					addressLines,
+					options
+				);
+			}
+
+			return { isValid: true, errorMessage: null };
+		}
+
+		// Check if field is required and empty (for non-address fields)
+		if (
+			field.customData?.required &&
+			(!value ||
+				(typeof value === "string" && value.trim() === "") ||
+				(typeof value === "object" && !value))
+		) {
+			return {
+				isValid: false,
+				errorMessage: `${field.customData.text} is required.`,
+			};
+		}
+
+		// Skip validation if no validation rules defined
+		if (!field.validation) {
+			return { isValid: true, errorMessage: null };
+		}
+
+		const { validator, options = {} } = field.validation;
+		const validatorFunction = Validators[validator];
+
+		if (!validatorFunction) {
+			console.warn(
+				`Validator '${validator}' not found for field '${field.field}'`
+			);
+			return { isValid: true, errorMessage: null };
+		}
+
+		// Handle special cases for different field types
+		let valueToValidate = value;
+
+		// Handle file field
+		if (field.field === "prooffilename" && value && value.file) {
+			valueToValidate = value.file;
+		}
+
+		// Handle website URL validation
+		if (field.field === "website" && value) {
+			// First check if it's a valid URL format
+			try {
+				new URL(value);
+				// If URL is valid, use the alphanumeric validator for additional checks
+				return { isValid: true, errorMessage: null };
+			} catch {
+				return {
+					isValid: false,
+					errorMessage:
+						"Please enter a valid website URL (e.g., https://example.com)",
+				};
+			}
+		}
+
+		return validatorFunction(field.customData.text, valueToValidate, options);
+	};
+
+	const isFieldValid = (field) => {
+		const value = formData[field.field];
+		const result = validateField(field, value);
+
+		// Update field errors
+		setFieldErrors((prev) => ({
+			...prev,
+			[field.field]: result.isValid ? null : result.errorMessage,
+		}));
+
+		return result.isValid;
+	};
+
+	const areAllCategoryFieldsValid = () => {
+		return currentCategoryData.fields.every((field) => {
+			const value = formData[field.field];
+			const result = validateField(field, value);
+			return result.isValid;
+		});
+	};
+
+	// Get field error message
+	const getFieldError = (fieldName) => {
+		return fieldErrors[fieldName] || null;
+	};
+
+	// Update category completion whenever formData changes
+	useEffect(() => {
+		const category = organizationCategories[currentCategory];
+		const isCompleted = category.fields.every((field) => {
+			const value = formData[field.field];
+			const result = validateField(field, value);
+			console.log("result", result);
+			return result.isValid;
+		});
+
+		setChecklist((prev) => ({
+			...prev,
+			[category.checklistKey]: isCompleted,
+		}));
+	}, [formData, currentCategory]);
+
+	// Event handlers
+	const handleInputChange = (fieldName, value) => {
+		setFormData((prev) => ({
+			...prev,
+			[fieldName]: value,
+		}));
+
+		// Clear error for this field when user starts typing
+		if (fieldErrors[fieldName]) {
+			setFieldErrors((prev) => ({
+				...prev,
+				[fieldName]: null,
+			}));
 		}
 	};
 
-	const handleSubmit = async () => {
-		console.log("Organization Registration Data:", formData);
-		console.log("Completion Checklist:", checklist);
+	const handleNext = () => {
+		// Validate all fields in current category
+		const currentErrors = {};
+		let hasErrors = false;
 
-		// Validate that all required fields are filled
-		const { isValid } = submitForm();
-		if (!isValid) {
-			alert("Please complete all required fields before submitting.");
+		currentCategoryData.fields.forEach((field) => {
+			const value = formData[field.field];
+			const result = validateField(field, value);
+			if (!result.isValid) {
+				currentErrors[field.field] = result.errorMessage;
+				hasErrors = true;
+			}
+		});
+
+		if (hasErrors) {
+			setFieldErrors((prev) => ({
+				...prev,
+				...currentErrors,
+			}));
 			return;
 		}
+
+		setDirection("forward");
+		if (!isLastCategory) {
+			setCurrentCategory((prev) => prev + 1);
+		}
+	};
+
+	const handleBack = () => {
+		setDirection("backward");
+		if (currentCategory > 0) {
+			setCurrentCategory((prev) => prev - 1);
+		}
+	};
+
+	const handleCategoryChange = (categoryIndex) => {
+		if (
+			categoryIndex < 0 ||
+			categoryIndex >= totalCategories ||
+			categoryIndex === currentCategory
+		) {
+			return;
+		}
+
+		setDirection(categoryIndex > currentCategory ? "forward" : "backward");
+		setCurrentCategory(categoryIndex);
+	};
+
+	const handleKeyPress = (e) => {
+		if (e.key === "Enter" && areAllCategoryFieldsValid()) {
+			if (isLastCategory) {
+				handleSubmit();
+			} else {
+				handleNext();
+			}
+		}
+	};
+
+	const resetForm = () => {
+		setCurrentCategory(0);
+		setDirection("forward");
+		setFormData({
+			orgname: "",
+			orgtype: "",
+			website: "",
+			address: {},
+			contactname: "",
+			designation: "",
+			phonenumber: "",
+			prooftype: "",
+			prooffilename: null,
+		});
+		setChecklist({
+			BasicInfoStageCompleted: false,
+			ContactInfoStageCompleted: false,
+			ContactPersonStageCompleted: false,
+			VerificationStageCompleted: false,
+		});
+		setFieldErrors({});
+	};
+
+	const handleSubmit = async () => {
+		// Validate all fields across all categories
+		const allErrors = {};
+		let hasErrors = false;
+		let firstErrorCategoryIndex = null;
+
+		// Track errors by category
+		const errorsByCategory = {};
+
+		organizationCategories.forEach((category, categoryIndex) => {
+			let categoryHasErrors = false;
+
+			category.fields.forEach((field) => {
+				const value = formData[field.field];
+				const result = validateField(field, value);
+				if (!result.isValid) {
+					allErrors[field.field] = result.errorMessage;
+					hasErrors = true;
+					categoryHasErrors = true;
+				}
+			});
+
+			// Track which category has errors and store the first one
+			if (categoryHasErrors) {
+				if (!errorsByCategory[categoryIndex]) {
+					errorsByCategory[categoryIndex] = [];
+				}
+
+				// Store the first category with errors
+				if (firstErrorCategoryIndex === null) {
+					firstErrorCategoryIndex = categoryIndex;
+				}
+			}
+		});
+
+		if (hasErrors) {
+			setFieldErrors(allErrors);
+
+			// Navigate to the first category that has errors
+			if (firstErrorCategoryIndex !== null) {
+				setCurrentCategory(firstErrorCategoryIndex);
+
+				// Set direction for smooth transition
+				setDirection(
+					firstErrorCategoryIndex > currentCategory ? "forward" : "backward"
+				);
+
+				// Get the category name for better user feedback
+				const errorCategoryName =
+					organizationCategories[firstErrorCategoryIndex].category;
+				toast.error(
+					`Please fix validation errors in the "${errorCategoryName}" section before submitting.`,
+					{
+						position: "top-right",
+						autoClose: 10000,
+						hideProgressBar: false,
+						closeOnClick: false,
+						pauseOnHover: true,
+						draggable: false,
+						progress: undefined,
+						theme: "dark",
+						transition: Bounce,
+					}
+				);
+			} else {
+				alert("Please fix all validation errors before submitting.");
+			}
+
+			return;
+		}
+
+		console.log("Organization Registration Data:", formData);
+		console.log("Completion Checklist:", checklist);
 
 		// Prepare form data for backend submission
 		const formDataToSubmit = new FormData();
@@ -347,43 +756,21 @@ function RegisterOrgPage() {
 		formDataToSubmit.append("phonenumber", formData.phonenumber);
 		formDataToSubmit.append("prooftype", formData.prooftype);
 
-		// Handle address array
-		if (Array.isArray(formData.address)) {
+		// Handle address object
+		if (formData.address && typeof formData.address === "object") {
 			formDataToSubmit.append("address", JSON.stringify(formData.address));
 		} else {
-			formDataToSubmit.append("address", formData.address);
+			formDataToSubmit.append("address", formData.address || "");
 		}
 
 		// Handle file upload
 		if (formData.prooffilename && formData.prooffilename.file) {
-			// Add the actual file to FormData
 			formDataToSubmit.append("prooffile", formData.prooffilename.file);
 		}
 
 		// Add completion checklist
 		formDataToSubmit.append("checklist", JSON.stringify(checklist));
 
-		// try {
-		// 	// Submit to backend
-		// 	const response = await fetch("/api/register-organization", {
-		// 		method: "POST",
-		// 		body: formDataToSubmit, // Don't set Content-Type header, let browser set it
-		// 	});
-
-		// 	if (!response.ok) {
-		// 		throw new Error(`HTTP error! status: ${response.status}`);
-		// 	}
-
-		// 	const result = await response.json();
-		// 	console.log("Registration successful:", result);
-		// 	alert("Organization registered successfully!");
-
-		// 	// Reset form or redirect
-		// 	// navigate(ROUTES.SUCCESS);
-		// } catch (error) {
-		// 	console.error("Registration failed:", error);
-		// 	alert("Registration failed. Please try again.");
-		// }
 		// DEBUG: Convert FormData to Object for logging
 		const formDataObject = {};
 		const formDataFiles = {};
@@ -409,13 +796,6 @@ function RegisterOrgPage() {
 		);
 
 		alert("Organization registered successfully!");
-	};
-
-	const handleFormKeyPress = (e) => {
-		const shouldSubmit = handleKeyPress(e);
-		if (shouldSubmit) {
-			handleSubmit();
-		}
 	};
 
 	return (
@@ -488,14 +868,16 @@ function RegisterOrgPage() {
 						formData={formData}
 						onInputChange={handleInputChange}
 						onNext={handleNext}
-						onBack={handlePrevious}
+						onBack={handleBack}
 						onSubmit={handleSubmit}
 						resetForm={resetForm}
-						onKeyPress={handleFormKeyPress}
+						onKeyPress={handleKeyPress}
 						isAllFieldsValid={areAllCategoryFieldsValid()}
-						isCategoryCompleted={isCurrentCategoryCompleted()}
+						isCategoryCompleted={checklist[currentCategoryData.checklistKey]}
 						isLastCategory={isLastCategory}
 						showBackButton={currentCategory > 0}
+						fieldErrors={fieldErrors}
+						getFieldError={getFieldError}
 					/>
 				</div>
 			</div>

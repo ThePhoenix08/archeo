@@ -191,7 +191,7 @@ const PhoneNumberInput = ({
 };
 
 // Enhanced countries data with more countries
-const countries = [
+export const countries = [
 	{ name: "United States", code: "US", dialCode: "+1", flag: "🇺🇸" },
 	{ name: "United Kingdom", code: "GB", dialCode: "+44", flag: "🇬🇧" },
 	{ name: "Canada", code: "CA", dialCode: "+1", flag: "🇨🇦" },

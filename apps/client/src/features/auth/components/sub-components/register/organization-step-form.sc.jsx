@@ -26,6 +26,7 @@ const OrganizationStepForm = ({
 	isLastCategory,
 	showBackButton = false,
 	helperText,
+	fieldErrors,
 	submitButtonText = "Register Organization",
 }) => {
 	const variants = {
@@ -189,12 +190,19 @@ const OrganizationStepForm = ({
 												customData: fieldData.customData || {},
 											})}
 										</div>
+
+										{/* Error Message */}
+										{fieldErrors[fieldData.field] && (
+											<p className="mt-2 text-sm text-destructive">
+												{fieldErrors[fieldData.field]}
+											</p>
+										)}
 									</div>
 								))}
 							</div>
 
 							{/* Navigation Buttons - Prominently placed */}
-							<div className="">
+							<div>
 								{/* Helper text */}
 								<div className="mb-6 text-center">
 									<p className="text-sm text-muted-foreground">

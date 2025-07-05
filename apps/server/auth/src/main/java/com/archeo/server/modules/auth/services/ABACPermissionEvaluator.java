@@ -7,10 +7,12 @@ import com.archeo.server.modules.common.enums.Permission;
 import com.archeo.server.modules.common.enums.Resource;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.List;
 
+@Component
 public class ABACPermissionEvaluator implements PermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {

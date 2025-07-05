@@ -2,8 +2,12 @@ package com.archeo.server.modules.auth.services;
 
 import com.archeo.server.modules.auth.config.JwtProvider;
 import com.archeo.server.modules.auth.dtos.AuthResponse;
+import com.archeo.server.modules.auth.enums.AuthProvider;
+import com.archeo.server.modules.common.enums.USER_ROLE;
 import com.archeo.server.modules.common.models.UsersCommon;
 import com.archeo.server.modules.common.repositories.UsersCommonRepository;
+import com.archeo.server.modules.user.repositories.OrganizationRepo;
+import com.archeo.server.modules.user.repositories.OwnerRepo;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,6 +17,9 @@ import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserServ
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -23,6 +30,8 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     private final JwtProvider jwtProvider;
     private final SessionService sessionService;
     private final AuthLogsService authLogsService;
+    private final OwnerRepo ownerRepo;
+    private final OrganizationRepo organizationRepo;
 
     public AuthResponse processOAuthLogin(OAuth2AuthenticationToken token,
                                           HttpServletRequest servletRequest,
@@ -38,12 +47,24 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                     UsersCommon newUser = new UsersCommon();
                     newUser.setEmail(email);
                     newUser.setUsername(username);
-//                    newUser.setUserRole(USER_ROLE.ROLE_OWNER);
                     newUser.setPassword("");
+                    newUser.setProvider(String.valueOf(AuthProvider.GOOGLE));
+                    newUser.setProviderId((String) attributes.get("sub"));
                     return userRepository.save(newUser);
                 });
 
-        Map<String, Object> claims = Map.of("authorities", null);
+        List<USER_ROLE> userRoles = new ArrayList<>();
+        ownerRepo.findByUser(user).ifPresent(owner -> userRoles.addAll(owner.getUserRole()));
+        organizationRepo.findByUser(user).ifPresent(org -> userRoles.addAll(org.getUserRole()));
+
+        List<String> roleNames = userRoles.isEmpty()
+                ? List.of(USER_ROLE.PENDING.name())
+                : userRoles.stream().map(Enum::name).toList();
+
+        // ✅ Only one claims map, and it's used directly
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("authorities", roleNames);
+
         String accessToken = jwtProvider.generateAccessToken(claims, user.getEmail());
         String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
 
@@ -59,7 +80,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         AuthResponse authResponse = AuthResponse.builder()
                 .accessToken(accessToken)
-//                .userRole(user.getUserRole())
+                .userRole(roleNames)
                 .build();
 
         System.out.println("Access Token: " + accessToken);
@@ -67,5 +88,6 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         return authResponse;
     }
+
 
 }

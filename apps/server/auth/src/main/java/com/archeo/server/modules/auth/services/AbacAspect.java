@@ -1,2 +1,4 @@
-package com.archeo.server.modules.auth.services;public class AbacAspect {
+package com.archeo.server.modules.auth.services;
+
+public class AbacAspect {
 }

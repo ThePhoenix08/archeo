@@ -55,7 +55,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("No roles assigned to the user.");
         }
 
-        return new CustomUserDetails(user, authorities);
+        return new CustomUserDetails(user, authorities, null);
 
     }
 }

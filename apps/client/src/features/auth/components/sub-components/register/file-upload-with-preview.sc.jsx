@@ -23,6 +23,11 @@ const FileUploadWithPreview = ({
 		icon,
 	} = customData;
 
+	const clipPathStyle = {
+		clipPath:
+			"polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px))",
+	};
+
 	// Initialize with existing value if provided
 	useEffect(() => {
 		if (value && value.file) {
@@ -170,6 +175,7 @@ const FileUploadWithPreview = ({
 				<div
 					onClick={handleClick}
 					onDragOver={handleDragOver}
+					style={clipPathStyle}
 					onDragLeave={handleDragLeave}
 					onDrop={handleDrop}
 					className={`cursor-pointer rounded-lg border-2 border-dashed p-10 text-center transition-all duration-200 ease-in-out ${

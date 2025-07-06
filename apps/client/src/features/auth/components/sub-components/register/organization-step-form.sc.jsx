@@ -9,6 +9,7 @@ import ThreeLineAddressInputWithPreview from "@/features/auth/components/sub-com
 import URLInputWithLinkPreview from "@/features/auth/components/sub-components/register/url-input-with-link-preview-.sc.jsx";
 import SelectWithSearch from "@/features/auth/components/sub-components/register/select-with-search.sc.jsx";
 import FileUploadWithPreview from "@/features/auth/components/sub-components/register/file-upload-with-preview.sc.jsx";
+import CustomButton from "@/components/Button/CustomButton.jsx";
 
 const OrganizationStepForm = ({
 	currentCategory,
@@ -42,6 +43,11 @@ const OrganizationStepForm = ({
 			x: dir === "forward" ? -200 : 200,
 			opacity: 0,
 		}),
+	};
+
+	const clipPathStyle = {
+		clipPath:
+			"polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))",
 	};
 
 	const getInputComponent = (fieldData, props) => {
@@ -216,7 +222,8 @@ const OrganizationStepForm = ({
 									{showBackButton && (
 										<button
 											onClick={onBack}
-											className="flex h-11 w-32 cursor-pointer items-center justify-center gap-2 rounded-lg border border-border bg-card text-sm font-medium text-card-foreground shadow-sm transition-all duration-200 hover:border-muted-foreground hover:bg-muted hover:shadow-lg focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
+											style={clipPathStyle}
+											className="flex h-11 w-32 cursor-pointer items-center justify-center gap-2 border border-border bg-card text-sm font-medium text-card-foreground shadow-sm transition-all duration-200 hover:border-muted-foreground hover:bg-muted hover:shadow-lg focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
 										>
 											<ChevronLeft className="size-4" />
 											Previous
@@ -227,7 +234,8 @@ const OrganizationStepForm = ({
 									<button
 										onClick={isLastCategory ? onSubmit : onNext}
 										disabled={!isAllFieldsValid}
-										className={`flex h-11 w-32 items-center justify-center gap-2 rounded-lg text-sm font-medium shadow-sm transition-all duration-200 hover:shadow-lg focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none ${
+										style={clipPathStyle}
+										className={`flex h-11 w-32 items-center justify-center gap-2 text-sm font-medium shadow-sm transition-all duration-200 hover:shadow-lg focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none ${
 											isAllFieldsValid
 												? "cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-md"
 												: "cursor-not-allowed bg-muted text-muted-foreground"

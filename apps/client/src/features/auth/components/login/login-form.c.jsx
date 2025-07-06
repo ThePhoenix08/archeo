@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { getLoginFieldsForRole } from "@/features/auth/constants/getFieldsForRole.constant.js";
 import { useUserAuthFlow } from "@/features/auth/flows/userAuth.flow.js";
+import CustomButton from "@/components/Button/CustomButton.jsx";
 
 export function LoginForm({ className, ...props }) {
 	const [showPassword, setShowPassword] = useState(false);
@@ -135,7 +136,7 @@ export function LoginForm({ className, ...props }) {
 					<span className="bg-gradient-to-r from-pink-400 via-purple-800 to-blue-500 bg-clip-text text-transparent">
 						Login
 					</span>{" "}
-					to your account <LogIn className="inline-block text-black/45" />
+					to your account
 				</h1>
 				<p className="text-sm text-balance text-muted-foreground">
 					Enter your {loginType} below to login to your account
@@ -173,7 +174,6 @@ export function LoginForm({ className, ...props }) {
 						Username
 					</Button>
 				</div>
-
 				{/* Dynamic input field based on login type */}
 				<div className="grid gap-3">
 					<Label htmlFor={loginType}>
@@ -213,7 +213,6 @@ export function LoginForm({ className, ...props }) {
 						</p>
 					)}
 				</div>
-
 				<div className="grid gap-3">
 					<div className="flex items-center">
 						<Label htmlFor="password">
@@ -254,17 +253,26 @@ export function LoginForm({ className, ...props }) {
 					)}
 				</div>
 
-				<Button type="submit" className="w-full cursor-pointer">
-					Login
-				</Button>
+				<CustomButton
+					text="Login"
+					size="small"
+					type="submit"
+					icon={<LogIn />}
+					variant="primary"
+					iconPosition="right"
+					className="cursor-pointer"
+				/>
 
 				<div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
 					<span className="relative z-10 bg-background px-2 text-muted-foreground">
 						Or continue with
 					</span>
 				</div>
-
-				<Button variant="outline" className="w-full cursor-pointer">
+				<Button
+					style={clipPathStyle}
+					variant="outline"
+					className="w-full cursor-pointer"
+				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						viewBox="0 0 533.5 544.3"

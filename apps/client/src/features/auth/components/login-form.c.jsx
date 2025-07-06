@@ -25,6 +25,11 @@ export function LoginForm({ className, ...props }) {
 		password: "",
 	});
 
+	const clipPathStyle = {
+		clipPath:
+			"polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))",
+	};
+
 	// Validation function
 	const validateField = (fieldName, value) => {
 		let error = "";
@@ -185,6 +190,7 @@ export function LoginForm({ className, ...props }) {
 						onChange={(e) => handleInputChange(loginType, e.target.value)}
 						onBlur={(e) => handleInputBlur(loginType, e.target.value)}
 						placeholder={loginType === "email" ? "m@example.com" : "username"}
+						style={clipPathStyle}
 						className={
 							errors[loginType] ? "border-red-500 focus:border-red-500" : ""
 						}
@@ -216,6 +222,7 @@ export function LoginForm({ className, ...props }) {
 						type={getLoginFieldsForRole[role][2].type}
 						value={formdata.password}
 						onChange={(e) => handleInputChange("password", e.target.value)}
+						style={clipPathStyle}
 						className={
 							errors.password ? "border-red-500 focus:border-red-500" : ""
 						}

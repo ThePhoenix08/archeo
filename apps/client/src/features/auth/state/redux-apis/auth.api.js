@@ -23,7 +23,6 @@ export const authApi = apiSlice.injectEndpoints({
 					if (data.agentId) {
 						dispatch(setAgent({
 							agentId: data.agentId,
-							agentType: data.agentType,
 							email: data.email,
 							emailVerifyId: data.emailVerifyId
 						}))

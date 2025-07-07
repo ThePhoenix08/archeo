@@ -8,7 +8,6 @@ import {
 	Validators,
 	validatorsNames,
 } from "@/features/auth/validators/form.validator.js";
-import { countries } from "@/features/auth/components/sub-components/register/phone-number-input.sc.jsx";
 import { toast, Bounce } from "react-toastify";
 import CustomButton from "@/components/Button/CustomButton.jsx";
 
@@ -27,7 +26,6 @@ import {
 	SquareArrowOutUpRight,
 } from "lucide-react";
 
-const countryCodes = countries.map((country) => country.code);
 
 // Organization form categories with their respective fields and validation rules
 const organizationCategories = [
@@ -246,7 +244,7 @@ const organizationCategories = [
 				validation: {
 					validator: validatorsNames.PHONE_NUMBER,
 					options: {
-						country: countryCodes,
+						country: "IN",
 					},
 				},
 			},
@@ -358,7 +356,7 @@ const organizationCategories = [
 					text: "Verification Document",
 					name: "prooffilename",
 					required: true,
-					fileTypes: [".pdf", ".jpg", ".jpeg", ".png"],
+					fileTypes: [".pdf", ".doc", ".docx", ".xls", ".xlsx", ".txt", ".rtf"],
 					maxSize: "5MB",
 				},
 				validation: {
@@ -367,11 +365,22 @@ const organizationCategories = [
 						maxSize: 5 * 1024 * 1024, // 5MB
 						allowedTypes: [
 							"application/pdf",
-							"image/jpeg",
-							"image/jpg",
-							"image/png",
+							"application/msword",
+							"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+							"application/vnd.ms-excel",
+							"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+							"text/plain",
+							"application/rtf",
 						],
-						allowedExtensions: ["pdf", "jpg", "jpeg", "png"],
+						allowedExtensions: [
+							"pdf",
+							"doc",
+							"docx",
+							"xls",
+							"xlsx",
+							"txt",
+							"rtf",
+						],
 					},
 				},
 			},
@@ -402,6 +411,7 @@ function RegisterOrgPage() {
 		VerificationStageCompleted: false,
 	});
 	const [fieldErrors, setFieldErrors] = useState({});
+	const [touchedFields, setTouchedFields] = useState({});
 
 	// Helper functions
 	const currentCategoryData = organizationCategories[currentCategory];
@@ -414,7 +424,7 @@ function RegisterOrgPage() {
 	};
 
 	// Enhanced field validation using external validator
-	const validateField = (field, value) => {
+	const validateField = (field, value, showError = true) => {
 		// Skip validation if field is not required and value is empty
 		if (
 			!field.customData?.required &&
@@ -467,11 +477,7 @@ function RegisterOrgPage() {
 					value.address3 || "",
 				].filter((line) => line.trim() !== "");
 
-				return validatorFunction(
-					field.validation.validator,
-					addressLines,
-					options
-				);
+				return validatorFunction(field.field, addressLines, options);
 			}
 
 			return { isValid: true, errorMessage: null };
@@ -492,6 +498,21 @@ function RegisterOrgPage() {
 
 		// Skip validation if no validation rules defined
 		if (!field.validation) {
+			// Handle website URL validation
+			if (field.field === "website" && value) {
+				// First check if it's a valid URL format
+				try {
+					new URL(value);
+					// If URL is valid, use the alphanumeric validator for additional checks
+					return { isValid: true, errorMessage: null };
+				} catch {
+					return {
+						isValid: false,
+						errorMessage:
+							"Please enter a valid website URL (e.g., https://example.com)",
+					};
+				}
+			}
 			return { isValid: true, errorMessage: null };
 		}
 
@@ -513,36 +534,51 @@ function RegisterOrgPage() {
 			valueToValidate = value.file;
 		}
 
-		// Handle website URL validation
-		if (field.field === "website" && value) {
-			// First check if it's a valid URL format
-			try {
-				new URL(value);
-				// If URL is valid, use the alphanumeric validator for additional checks
-				return { isValid: true, errorMessage: null };
-			} catch {
-				return {
-					isValid: false,
-					errorMessage:
-						"Please enter a valid website URL (e.g., https://example.com)",
-				};
-			}
-		}
-
 		return validatorFunction(field.customData.text, valueToValidate, options);
 	};
 
-	const isFieldValid = (field) => {
-		const value = formData[field.field];
+	// Real-time validation function
+	const validateFieldRealTime = (fieldName, value) => {
+		const field = organizationCategories
+			.flatMap((cat) => cat.fields)
+			.find((f) => f.field === fieldName);
+
+		if (!field) return;
+
 		const result = validateField(field, value);
 
-		// Update field errors
+		// Update field errors immediately
 		setFieldErrors((prev) => ({
 			...prev,
-			[field.field]: result.isValid ? null : result.errorMessage,
+			[fieldName]: result.isValid ? null : result.errorMessage,
 		}));
 
 		return result.isValid;
+	};
+
+	// Check if a specific category is valid
+	const isCategoryValid = (categoryIndex) => {
+		const category = organizationCategories[categoryIndex];
+		return category.fields.every((field) => {
+			const value = formData[field.field];
+			const result = validateField(field, value);
+			return result.isValid;
+		});
+	};
+
+	// Check if navigation to a category is allowed
+	const isNavigationAllowed = (targetCategoryIndex) => {
+		// Can always navigate to the first category
+		if (targetCategoryIndex === 0) return true;
+
+		// Check if all previous categories are valid
+		for (let i = 0; i < targetCategoryIndex; i++) {
+			if (!isCategoryValid(i)) {
+				return false;
+			}
+		}
+
+		return true;
 	};
 
 	const areAllCategoryFieldsValid = () => {
@@ -560,19 +596,15 @@ function RegisterOrgPage() {
 
 	// Update category completion whenever formData changes
 	useEffect(() => {
-		const category = organizationCategories[currentCategory];
-		const isCompleted = category.fields.every((field) => {
-			const value = formData[field.field];
-			const result = validateField(field, value);
-			console.log("result", result);
-			return result.isValid;
+		// Update completion status for all categories
+		organizationCategories.forEach((category, index) => {
+			const isCompleted = isCategoryValid(index);
+			setChecklist((prev) => ({
+				...prev,
+				[category.checklistKey]: isCompleted,
+			}));
 		});
-
-		setChecklist((prev) => ({
-			...prev,
-			[category.checklistKey]: isCompleted,
-		}));
-	}, [formData, currentCategory]);
+	}, [formData]);
 
 	// Event handlers
 	const handleInputChange = (fieldName, value) => {
@@ -581,13 +613,14 @@ function RegisterOrgPage() {
 			[fieldName]: value,
 		}));
 
-		// Clear error for this field when user starts typing
-		if (fieldErrors[fieldName]) {
-			setFieldErrors((prev) => ({
-				...prev,
-				[fieldName]: null,
-			}));
-		}
+		// Mark field as touched
+		setTouchedFields((prev) => ({
+			...prev,
+			[fieldName]: true,
+		}));
+
+		// Validate field in real-time
+		validateFieldRealTime(fieldName, value);
 	};
 
 	const handleNext = () => {
@@ -609,6 +642,17 @@ function RegisterOrgPage() {
 				...prev,
 				...currentErrors,
 			}));
+
+			// Mark all fields in current category as touched
+			const touchedFields = {};
+			currentCategoryData.fields.forEach((field) => {
+				touchedFields[field.field] = true;
+			});
+			setTouchedFields((prev) => ({
+				...prev,
+				...touchedFields,
+			}));
+
 			return;
 		}
 
@@ -631,6 +675,32 @@ function RegisterOrgPage() {
 			categoryIndex >= totalCategories ||
 			categoryIndex === currentCategory
 		) {
+			return;
+		}
+
+		// Check if navigation is allowed
+		if (!isNavigationAllowed(categoryIndex)) {
+			// Show toast message indicating which category needs to be completed
+			const incompleteCategory = organizationCategories.find(
+				(_, index) => index < categoryIndex && !isCategoryValid(index)
+			);
+
+			if (incompleteCategory) {
+				toast.error(
+					`Please complete the "${incompleteCategory.category}" section before proceeding.`,
+					{
+						position: "top-right",
+						autoClose: 5000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: false,
+						progress: undefined,
+						theme: "dark",
+						transition: Bounce,
+					}
+				);
+			}
 			return;
 		}
 
@@ -669,76 +739,38 @@ function RegisterOrgPage() {
 			VerificationStageCompleted: false,
 		});
 		setFieldErrors({});
+		setTouchedFields({});
 	};
 
 	const handleSubmit = async () => {
-		// Validate all fields across all categories
+		// Final validation of all fields
 		const allErrors = {};
 		let hasErrors = false;
-		let firstErrorCategoryIndex = null;
 
-		// Track errors by category
-		const errorsByCategory = {};
-
-		organizationCategories.forEach((category, categoryIndex) => {
-			let categoryHasErrors = false;
-
+		organizationCategories.forEach((category) => {
 			category.fields.forEach((field) => {
 				const value = formData[field.field];
 				const result = validateField(field, value);
 				if (!result.isValid) {
 					allErrors[field.field] = result.errorMessage;
 					hasErrors = true;
-					categoryHasErrors = true;
 				}
 			});
-
-			// Track which category has errors and store the first one
-			if (categoryHasErrors) {
-				if (!errorsByCategory[categoryIndex]) {
-					errorsByCategory[categoryIndex] = [];
-				}
-
-				// Store the first category with errors
-				if (firstErrorCategoryIndex === null) {
-					firstErrorCategoryIndex = categoryIndex;
-				}
-			}
 		});
 
 		if (hasErrors) {
 			setFieldErrors(allErrors);
-
-			// Navigate to the first category that has errors
-			if (firstErrorCategoryIndex !== null) {
-				setCurrentCategory(firstErrorCategoryIndex);
-
-				// Set direction for smooth transition
-				setDirection(
-					firstErrorCategoryIndex > currentCategory ? "forward" : "backward"
-				);
-
-				// Get the category name for better user feedback
-				const errorCategoryName =
-					organizationCategories[firstErrorCategoryIndex].category;
-				toast.error(
-					`Please fix validation errors in the "${errorCategoryName}" section before submitting.`,
-					{
-						position: "top-right",
-						autoClose: 10000,
-						hideProgressBar: false,
-						closeOnClick: false,
-						pauseOnHover: true,
-						draggable: false,
-						progress: undefined,
-						theme: "dark",
-						transition: Bounce,
-					}
-				);
-			} else {
-				alert("Please fix all validation errors before submitting.");
-			}
-
+			toast.error("Please fix all validation errors before submitting.", {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: false,
+				progress: undefined,
+				theme: "dark",
+				transition: Bounce,
+			});
 			return;
 		}
 
@@ -771,32 +803,6 @@ function RegisterOrgPage() {
 
 		// Add completion checklist
 		formDataToSubmit.append("checklist", JSON.stringify(checklist));
-
-		// DEBUG: Convert FormData to Object for logging
-		const formDataObject = {};
-		const formDataFiles = {};
-
-		for (let [key, value] of formDataToSubmit.entries()) {
-			if (value instanceof File) {
-				formDataFiles[key] = {
-					name: value.name,
-					size: value.size,
-					type: value.type,
-					lastModified: value.lastModified,
-				};
-			} else {
-				formDataObject[key] = value;
-			}
-		}
-
-		console.log("FormData as Object:", formDataObject);
-		console.log("FormData Files:", formDataFiles);
-		console.log(
-			"Total FormData entries:",
-			Array.from(formDataToSubmit.entries()).length
-		);
-
-		alert("Organization registered successfully!");
 	};
 
 	return (
@@ -847,20 +853,33 @@ function RegisterOrgPage() {
 
 					{/* Category navigation dots */}
 					<div className="flex justify-center space-x-2">
-						{organizationCategories.map((category, index) => (
-							<button
-								key={category.category}
-								onClick={() => handleCategoryChange(index)}
-								className={`h-3 w-5 rounded-full transition-all duration-200 ${
-									index === currentCategory
-										? "bg-primary"
-										: checklist[category.checklistKey]
-											? "bg-primary/70"
-											: "bg-slate-300 dark:bg-slate-600"
-								}`}
-								title={category.category}
-							/>
-						))}
+						{organizationCategories.map((category, index) => {
+							const isNavigationAllowedToCategory = isNavigationAllowed(index);
+							const isCurrentCategory = index === currentCategory;
+							const isCategoryCompleted = checklist[category.checklistKey];
+
+							return (
+								<button
+									key={category.category}
+									onClick={() => handleCategoryChange(index)}
+									disabled={!isNavigationAllowedToCategory}
+									className={`h-3 w-5 rounded-full transition-all duration-200 ${
+										isCurrentCategory
+											? "bg-primary"
+											: isCategoryCompleted
+												? "bg-primary/70"
+												: isNavigationAllowedToCategory
+													? "bg-slate-300 hover:bg-slate-400 dark:bg-slate-600 dark:hover:bg-slate-500"
+													: "cursor-not-allowed bg-slate-200 opacity-50 dark:bg-slate-700"
+									}`}
+									title={
+										isNavigationAllowedToCategory
+											? category.category
+											: `Complete previous sections to access ${category.category}`
+									}
+								/>
+							);
+						})}
 					</div>
 				</div>
 
@@ -883,6 +902,7 @@ function RegisterOrgPage() {
 						showBackButton={currentCategory > 0}
 						fieldErrors={fieldErrors}
 						getFieldError={getFieldError}
+						touchedFields={touchedFields}
 					/>
 				</div>
 			</div>

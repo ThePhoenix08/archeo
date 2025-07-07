@@ -1,6 +1,11 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, ListRestart } from "lucide-react";
+import {
+	ChevronLeft,
+	ChevronRight,
+	ListRestart,
+	AlertCircle,
+} from "lucide-react";
 import StepContent from "@/features/auth/components/sub-components/register/step-content.sc.jsx";
 import TextInputWithCharacterLimit from "@/features/auth/components/sub-components/register/text-input-with-character-limit.sc.jsx";
 import TextInputWithIcon from "@/features/auth/components/sub-components/register/text-input-with-icon.sc.jsx";
@@ -9,7 +14,6 @@ import ThreeLineAddressInputWithPreview from "@/features/auth/components/sub-com
 import URLInputWithLinkPreview from "@/features/auth/components/sub-components/register/url-input-with-link-preview-.sc.jsx";
 import SelectWithSearch from "@/features/auth/components/sub-components/register/select-with-search.sc.jsx";
 import FileUploadWithPreview from "@/features/auth/components/sub-components/register/file-upload-with-preview.sc.jsx";
-import CustomButton from "@/components/Button/CustomButton.jsx";
 
 const OrganizationStepForm = ({
 	currentCategory,
@@ -28,7 +32,8 @@ const OrganizationStepForm = ({
 	showBackButton = false,
 	helperText,
 	fieldErrors,
-	submitButtonText = "Register Organization",
+	touchedFields,
+	submitButtonText = "Continue",
 }) => {
 	const variants = {
 		enter: (dir) => ({
@@ -51,14 +56,25 @@ const OrganizationStepForm = ({
 	};
 
 	const getInputComponent = (fieldData, props) => {
+		const hasError =
+			fieldErrors[fieldData.field] && touchedFields[fieldData.field];
+		const enhancedProps = {
+			...props,
+			hasError,
+			errorMessage: fieldErrors[fieldData.field],
+			hasError: hasError,
+			onBlur: () => handleFieldBlur(fieldData.field),
+			onFocus: () => handleFieldFocus(fieldData.field),
+		};
+
 		switch (fieldData.field) {
 			case "orgname":
 			case "contactname":
 			case "designation":
-				return <TextInputWithCharacterLimit {...props} />;
+				return <TextInputWithCharacterLimit {...enhancedProps} />;
 
 			case "phonenumber":
-				return <PhoneNumberInput {...props} />;
+				return <PhoneNumberInput {...enhancedProps} />;
 
 			case "address":
 				// Special handling for address field
@@ -78,21 +94,25 @@ const OrganizationStepForm = ({
 							handleAddressChange(fieldData.field, "address3", value)
 						}
 						onKeyPress={onKeyPress}
+						hasError={hasError}
+						errorMessage={fieldErrors[fieldData.field]}
+						onBlur={() => handleFieldBlur(fieldData.field)}
+						onFocus={() => handleFieldFocus(fieldData.field)}
 					/>
 				);
 
 			case "website":
-				return <URLInputWithLinkPreview {...props} />;
+				return <URLInputWithLinkPreview {...enhancedProps} />;
 
 			case "orgtype":
 			case "prooftype":
-				return <SelectWithSearch {...props} />;
+				return <SelectWithSearch {...enhancedProps} />;
 
 			case "prooffilename":
-				return <FileUploadWithPreview {...props} />;
+				return <FileUploadWithPreview {...enhancedProps} />;
 
 			default:
-				return <TextInputWithIcon {...props} />;
+				return <TextInputWithIcon {...enhancedProps} />;
 		}
 	};
 
@@ -103,11 +123,31 @@ const OrganizationStepForm = ({
 	const getHelperText = () => {
 		if (helperText) return helperText;
 
-		if (isLastCategory) {
-			return "Complete all fields and click 'Register Organization' to submit";
+		// Count invalid fields in current category
+		const invalidFields = categoryData.fields.filter((field) => {
+			const fieldError = fieldErrors[field.field];
+			const isEmpty =
+				!formData[field.field] ||
+				(typeof formData[field.field] === "string" &&
+					formData[field.field].trim() === "") ||
+				(field.field === "address" &&
+					(!formData[field.field] ||
+						(!formData[field.field].address1 &&
+							!formData[field.field].address2 &&
+							!formData[field.field].address3)));
+
+			return fieldError || (field.customData?.required && isEmpty);
+		});
+
+		if (invalidFields.length > 0) {
+			return `Please complete ${invalidFields.length} field${invalidFields.length > 1 ? "s" : ""} to continue`;
 		}
 
-		return "Complete all fields in this section to continue to the next step";
+		if (isLastCategory) {
+			return "All fields completed! Click 'Continue' to proceed further.";
+		}
+
+		return "All fields completed! Click 'Next' to continue";
 	};
 
 	const getNextButtonText = () => {
@@ -119,7 +159,7 @@ const OrganizationStepForm = ({
 
 	// Special handler for address field
 	const handleAddressChange = (fieldName, addressLine, value) => {
-		const currentAddress = formData[fieldName];
+		const currentAddress = formData[fieldName] || {};
 		const updatedAddress = {
 			...currentAddress,
 			[addressLine]: value,
@@ -127,9 +167,33 @@ const OrganizationStepForm = ({
 		onInputChange(fieldName, updatedAddress);
 	};
 
+	// Get field validation state
+	const getFieldValidationState = (fieldData) => {
+		const fieldName = fieldData.field;
+		const hasError = fieldErrors[fieldName];
+		const isTouched = touchedFields[fieldName];
+		const isEmpty =
+			!formData[fieldName] ||
+			(typeof formData[fieldName] === "string" &&
+				formData[fieldName].trim() === "") ||
+			(fieldName === "address" &&
+				(!formData[fieldName] ||
+					(!formData[fieldName].address1 &&
+						!formData[fieldName].address2 &&
+						!formData[fieldName].address3)));
+
+		return {
+			hasError: hasError && isTouched,
+			isEmpty: isEmpty && fieldData.customData?.required,
+			isValid: !hasError && !isEmpty,
+			showError:
+				(hasError || (isEmpty && fieldData.customData?.required)) && isTouched,
+		};
+	};
+
 	return (
 		<div className="min-h-screen bg-background">
-			<div className="w-full max-w-4xl">
+			<div className="w-full">
 				<AnimatePresence custom={direction} mode="wait">
 					<motion.div
 						key={currentCategory}
@@ -152,7 +216,8 @@ const OrganizationStepForm = ({
 									<button
 										type="reset"
 										onClick={() => resetForm()}
-										className="flex cursor-pointer items-center gap-1 rounded-md bg-destructive/10 px-2 py-1 text-xs font-medium text-destructive transition-colors duration-200 hover:bg-destructive/20 hover:text-destructive"
+										style={clipPathStyle}
+										className="flex cursor-pointer items-center gap-1 bg-destructive px-2 py-1 text-xs font-medium text-primary-foreground hover:bg-destructive"
 									>
 										Reset Form <ListRestart size={16} />
 									</button>
@@ -166,52 +231,91 @@ const OrganizationStepForm = ({
 
 							{/* All Fields in Category */}
 							<div className="mb-8 space-y-6">
-								{categoryData.fields.map((fieldData, index) => (
-									<div key={fieldData.field} className="space-y-2">
-										{/* Field Label */}
-										<label className="block text-sm font-medium text-foreground">
-											{fieldData.label}
-											{fieldData.customData?.required && (
-												<span className="ml-1 text-destructive">*</span>
+								{categoryData.fields.map((fieldData, index) => {
+									const validationState = getFieldValidationState(fieldData);
+
+									return (
+										<div key={fieldData.field} className="space-y-2">
+											{/* Field Label */}
+											<label className="block text-sm font-medium text-foreground">
+												{fieldData.label}
+												{fieldData.customData?.required && (
+													<span className="ml-1 text-destructive">*</span>
+												)}
+												{/* Field validation indicator */}
+												{validationState.isValid &&
+													formData[fieldData.field] && (
+														<span className="ml-2 inline-flex items-center text-xs text-green-600">
+															✓
+														</span>
+													)}
+											</label>
+
+											{/* Field Description */}
+											{fieldData.description && (
+												<p className="mb-2 text-sm text-muted-foreground">
+													{fieldData.description}
+												</p>
 											)}
-										</label>
 
-										{/* Field Description */}
-										{fieldData.description && (
-											<p className="mb-2 text-sm text-muted-foreground">
-												{fieldData.description}
-											</p>
-										)}
+											{/* Input Field */}
+											<div className="relative">
+												{getInputComponent(fieldData, {
+													value: formData[fieldData.field],
+													onChange: (value) =>
+														handleFieldChange(fieldData.field, value),
+													onKeyPress: onKeyPress,
+													placeholder: fieldData.placeholder,
+													options: fieldData.customData?.options,
+													autoFocus: index === 0, // Only focus first field
+													customData: fieldData.customData || {},
+												})}
+											</div>
 
-										{/* Input Field */}
-										<div className="max-w-2xl">
-											{getInputComponent(fieldData, {
-												value: formData[fieldData.field],
-												onChange: (value) =>
-													handleFieldChange(fieldData.field, value),
-												onKeyPress: onKeyPress,
-												placeholder: fieldData.placeholder,
-												options: fieldData.customData?.options,
-												autoFocus: index === 0, // Only focus first field
-												customData: fieldData.customData || {},
-											})}
+											{/* Error Message */}
+											{validationState.showError && (
+												<div className="mt-2 flex items-center gap-1 text-sm text-destructive">
+													<AlertCircle className="h-3 w-3" />
+													<span>
+														{fieldErrors[fieldData.field] ||
+															`${fieldData.customData?.text || fieldData.label} is required`}
+													</span>
+												</div>
+											)}
+
+											{/* Field requirements hint */}
+											{fieldData.customData?.maxLength &&
+												!validationState.showError && (
+													<div className="mt-1 text-xs text-muted-foreground">
+														{fieldData.customData.minLength && (
+															<span>
+																{fieldData.customData.minLength}-
+																{fieldData.customData.maxLength} characters
+															</span>
+														)}
+														{!fieldData.customData.minLength && (
+															<span>
+																Max {fieldData.customData.maxLength} characters
+															</span>
+														)}
+													</div>
+												)}
 										</div>
-
-										{/* Error Message */}
-										{fieldErrors[fieldData.field] && (
-											<p className="mt-2 text-sm text-destructive">
-												{fieldErrors[fieldData.field]}
-											</p>
-										)}
-									</div>
-								))}
+									);
+								})}
 							</div>
 
 							{/* Navigation Buttons - Prominently placed */}
 							<div>
 								{/* Helper text */}
 								<div className="mb-6 text-center">
-									<p className="text-sm text-muted-foreground">
+									<p
+										className={`text-sm ${
+											isAllFieldsValid
+												? "text-green-600"
+												: "text-muted-foreground"
+										}`}
+									>
 										{getHelperText()}
 									</p>
 								</div>
@@ -238,11 +342,11 @@ const OrganizationStepForm = ({
 										className={`flex h-11 w-32 items-center justify-center gap-2 text-sm font-medium shadow-sm transition-all duration-200 hover:shadow-lg focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none ${
 											isAllFieldsValid
 												? "cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-md"
-												: "cursor-not-allowed bg-muted text-muted-foreground"
+												: "cursor-not-allowed bg-muted text-muted-foreground opacity-50"
 										}`}
 									>
 										{getNextButtonText()}
-										{!isLastCategory && <ChevronRight className="size-4" />}
+										<ChevronRight className="size-4" />
 									</button>
 								</div>
 							</div>

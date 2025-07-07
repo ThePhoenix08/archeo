@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { Upload, X, Check } from "lucide-react";
+import { toast, Bounce } from "react-toastify";
 
 const FileUploadWithPreview = ({
 	value,
@@ -18,7 +19,7 @@ const FileUploadWithPreview = ({
 	const fileInputRef = useRef(null);
 
 	const {
-		fileTypes = [".pdf", ".jpg", ".jpeg", ".png"],
+		fileTypes = [".pdf", ".doc", ".docx", ".xls", ".xlsx", ".txt", ".rtf"],
 		maxSize = "5MB",
 		icon,
 	} = customData;
@@ -74,7 +75,17 @@ const FileUploadWithPreview = ({
 		// Validate file size
 		const maxSizeBytes = parseMaxSize(maxSize);
 		if (file.size > maxSizeBytes) {
-			alert(`File size must be less than ${maxSize}`);
+			toast.error(`File size must be less than ${maxSize}`, {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: false,
+				progress: undefined,
+				theme: "dark",
+				transition: Bounce,
+			});
 			return;
 		}
 

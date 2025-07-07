@@ -88,13 +88,9 @@ dummy request base example
 ## Authentication
 ### [🔗 Schema in Client](../apps/client/src/features/auth/validators/authApi.validator.js)
 
-### Login
-
-`POST /auth/login`
+### Login: `POST /auth/login`
 
 #### Request
-
-
 ```json
 {
   "identifier": "john.doe@example.com", // or johndoe123
@@ -189,12 +185,9 @@ dummy request base example
 
 ### Register
 
-#### Agent Registration (Initial Step)
-
-`POST /auth/register`
+#### Agent Registration: `POST /auth/register`
 
 ##### Request
-
 ```json
 {
   "username": "vighnesh123",
@@ -204,7 +197,6 @@ dummy request base example
 ```
 
 ##### Response
-
 ```json
 {
   "success": true,
@@ -216,12 +208,9 @@ dummy request base example
 }
 ```
 
-#### Individual Registration
-
-`POST /auth/register/individual`
+#### Individual Registration: `POST /auth/register/individual`
 
 ##### Request
-
 ```json
 {
   "agentId": "6b93fe49-47b6-46c0-8d16-78b20bcb231a",
@@ -233,7 +222,6 @@ dummy request base example
 ```
 
 ##### Response
-
 ```json
 {
   "success": true,
@@ -266,12 +254,9 @@ dummy request base example
 }
 ```
 
-#### Organization Registration
-
-`POST /auth/register/organization`
+#### Organization Registration: `POST /auth/register/organization`
 
 ##### Request
-
 ```json
 {
   "agentId": "41f8d50c-3497-47aa-a59a-ff8be84a3a9e",
@@ -293,7 +278,6 @@ dummy request base example
 ```
 
 ##### Response
-
 ```json
 {
   "success": true,

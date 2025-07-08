@@ -195,54 +195,13 @@ export const Validators = Object.freeze({
 		const country = options.country || "IN";
 
 		if (country === "IN") {
-			// Clean the input - remove spaces, dashes, parentheses
-			const cleanValue = value.replace(/[\s\-\(\)]/g, "");
-
-			// Indian phone number validation - supports multiple formats:
-			// 1. 9876543210 (10 digits starting with 6,7,8,9)
-			// 2. +919876543210 (with +91 prefix)
-			// 3. 919876543210 (with 91 prefix)
-			// 4. 09876543210 (with leading 0)
-			// 5. 0919876543210 (with 091 prefix)
-
-			let isValid = false;
-			let actualNumber = "";
-
-			// Check different formats
-			if (/^[6789]\d{9}$/.test(cleanValue)) {
-				// Format: 9876543210
-				isValid = true;
-				actualNumber = cleanValue;
-			} else if (/^\+91[6789]\d{9}$/.test(cleanValue)) {
-				// Format: +919876543210
-				isValid = true;
-				actualNumber = cleanValue.substring(3);
-			} else if (/^91[6789]\d{9}$/.test(cleanValue)) {
-				// Format: 919876543210
-				isValid = true;
-				actualNumber = cleanValue.substring(2);
-			} else if (/^0[6789]\d{9}$/.test(cleanValue)) {
-				// Format: 09876543210
-				isValid = true;
-				actualNumber = cleanValue.substring(1);
-			} else if (/^091[6789]\d{9}$/.test(cleanValue)) {
-				// Format: 0919876543210
-				isValid = true;
-				actualNumber = cleanValue.substring(3);
-			}
-
-			if (!isValid) {
+			// Indian phone number validation
+			const indianPhoneRegex = /^(\+91[-\s]?)?[0]?(91)?[6789]\d{9}$/;
+			if (!indianPhoneRegex.test(value)) {
 				return {
 					isValid: false,
-					errorMessage: `Please enter a valid Indian phone number. Accepted formats: 9876543210, +91-9876543210, 91-9876543210, 0-9876543210`,
-				};
-			}
-
-			// Additional validation: ensure the number starts with 6,7,8,9
-			if (!/^[6789]/.test(actualNumber)) {
-				return {
-					isValid: false,
-					errorMessage: `Indian mobile numbers must start with 6, 7, 8, or 9.`,
+					errorMessage:
+						"Please enter a valid Indian phone number (10 digits starting with 6, 7, 8, or 9).",
 				};
 			}
 		} else {
@@ -251,7 +210,7 @@ export const Validators = Object.freeze({
 			if (!genericPhoneRegex.test(value)) {
 				return {
 					isValid: false,
-					errorMessage: `Please enter a valid phone number.`,
+					errorMessage: "Please enter a valid phone number.",
 				};
 			}
 		}

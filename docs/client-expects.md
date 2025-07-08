@@ -4,60 +4,314 @@
 
 This document outlines the expected requests and responses from the client to the server. This is a living document and will be updated as the project evolves.
 
-## Requests
-
-dummy request base example
-
-```json
-{
-  "method": "GET",
-  "url": "/api/v1/users",
-  "headers": {
-    "Authorization": "Bearer <token>"
-  }
-}
-```
-
-## Responses
+## Global Response Format
 
 ### Success Response
-
-[Schema in Client](../apps/client/src/shared/validators/apiResponse.validator.js)
 
 ```json
 {
   "success": true,
-  "statusCode": 200,
+  "statusCode": 200, // 100-399
   "message": "Success Message specifies the success of the request",
   "data": {
-    // data requested
-    "id": 1,
-    "name": "John Doe",
-    "email": "john.doe@example.com"
+    // data requested (varies by endpoint)
   }
 }
 ```
 
 ### Error Response
 
-[Schema in Client](../apps/client/src/shared/validators/apiResponse.validator.js)
-
 ```json
 {
   "success": false,
-  "statusCode": 400,
+  "statusCode": 400, // 400-599
   "message": "Error Message specifies the error of the request",
   "errorType": "Error Type specifies the type of error",
   "slug": "Error Slug specifies the slug of the error",
-  "errors": [{}, {}] // array of error objects: DEV ONLY
+  "errors": [{}, {}] // optional array of errors
+}
+```
+
+## Authentication
+
+### Login: `POST /auth/login`
+
+#### Request
+
+```json
+{
+  "identifier": "john.doe@example.com", // required, min 1 char
+  "type": "email", // required, enum: ["email", "username"]
+  "password": "password123", // required, min 6 chars
+  "rememberMe": false, // optional, boolean, default: false
+  "loginMethod": "password" // optional, enum: ["password", "google"]
+}
+```
+
+#### Response (Individual)
+
+```json
+{
+  "success": true,
+  "statusCode": 200,
+  "message": "Login successful",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...", // JWT token
+    "agentType": "individual",
+    "user": {
+      "userId": "e7a9859a-489c-4f92-927c-fc0097aa9a2e", // UUID
+      "username": "vighnesh123", // min 2 chars
+      "email": "vighnesh@example.com", // valid email
+      "fullName": "Vighnesh Brahme", // min 2 chars
+      "dateOfBirth": "2000-01-01", // optional, ISO date
+      "gender": "male", // optional, enum: ["male", "female", "other"]
+      "address": "Pune, Maharashtra", // optional, min 1 char
+      "phone": "+919999999999", // optional, min 10, max 15 chars
+      "avatar": "https://cdn.domain.com/avatars/e7a9859a.png", // optional, URL
+      "profession": "Software Engineer", // optional, min 1 char
+      "bio": "Building systems that scale", // optional, min 1 char
+      "roles": ["owner", "user"], // required, non-empty array of enums
+      "mfaRequired": false, // boolean, default: false
+      "registerIncomplete": false, // boolean, default: false
+      "lastLoginAt": "2025-07-07T10:30:00Z", // optional, datetime
+      "createdAt": "2025-07-06T14:00:00Z" // optional, datetime
+    }
+  }
+}
+```
+
+**Roles Enum:** `["agent", "user", "owner", "issuer", "verifier", "verifier api consumer", "admin"]`
+
+### Agent Registration: `POST /auth/register/agent`
+
+#### Request
+
+```json
+{
+  "username": "vighnesh123", // required, min 1 char
+  "email": "vighnesh@example.com", // required, valid email
+  "password": "password123" // required, min 6 chars
+}
+```
+
+#### Response
+
+```json
+{
+  "success": true,
+  "statusCode": 201,
+  "message": "Agent registered successfully",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." // JWT token
+  }
+}
+```
+
+### Individual Registration: `POST /auth/register/individual`
+
+#### Request
+
+```json
+{
+  "agentType": "individual", // required, literal: "individual"
+  "fullName": "Vighnesh Brahme", // required, min 1 char
+  "dateOfBirth": "2000-01-01", // required, ISO date
+  "roles": ["owner", "user"] // required, non-empty array of role enums
+}
+```
+
+#### Response
+
+```json
+{
+  "success": true,
+  "statusCode": 201,
+  "message": "Individual registration completed successfully",
+  "data": {
+    "agentType": "individual",
+    "user": {
+      // Same structure as individual login response user object
+    }
+  }
+}
+```
+
+### Organization Registration: `POST /auth/register/organization`
+
+#### Request
+
+```json
+{
+  "agentType": "organization", // required, literal: "organization"
+  "organizationName": "Mumbai Central HealthLab", // required, min 1 char
+  "organizationType": "accredited lab / testing facility", // required, enum (see below)
+  "website": "https://healthlab.org", // optional, valid URL
+  "officeAddress": ["HealthLab Building", "Central Mumbai", "Mumbai, Maharashtra"], // required, array of 3 strings, each min 1 char
+  "contactPersonName": "Dr. Priya Sharma", // optional, min 1 char
+  "contactPhone": "+912233445566", // optional, min 10, max 15 chars
+  "contactDesignation": "Lab Director", // optional, min 1 char
+  "proofDocType": "Operational License", // required, enum (see below)
+  "roles": ["issuer", "agent"] // required, non-empty array of role enums
+}
+```
+
+**Organization Type Enum:**
+- `"government"`
+- `"educational institution"`
+- `"commercial entity"`
+- `"non-governmental organization"`
+- `"hospital / medical institution"`
+- `"financial institution"`
+- `"legal / judicial authority"`
+- `"research & development body"`
+- `"regulatory authority"`
+- `"military / defense"`
+- `"embassy / diplomatic mission"`
+- `"accredited lab / testing facility"`
+- `"utility / infrastructure provider"`
+- `"training & certification body"`
+
+**Proof Document Type Enum:**
+- `"GST Certificate"`
+- `"Company Incorporation Certificate"`
+- `"Organization PAN Card"`
+- `"Udyam / MSME Certificate"`
+- `"NGO Registration Certificate"`
+- `"Government Issuance Letter"`
+- `"Operational License"`
+- `"Tax Registration Document"`
+- `"MOU with Government Body"`
+- `"Regulatory Registration Certificate"`
+- `"Insurance Certificate"`
+- `"Letter of Consent / Authorization"`
+- `"Identity Proof of Authorized Signatory"`
+- `"Address Proof (Utility Bill, Rent Agreement)"`
+- `"Business Registration Number Proof"`
+
+#### Response
+
+```json
+{
+  "success": true,
+  "statusCode": 201,
+  "message": "Organization registration completed successfully",
+  "data": {
+    "agentType": "organization",
+    "user": {
+      "orgId": "d142f338-cc58-4a52-8a7d-778fb0d7a0b4", // UUID
+      "username": "healthlab_mumbai", // min 2 chars
+      "email": "admin@healthlab.org", // valid email
+      "organizationName": "Mumbai Central HealthLab", // min 1 char
+      "organizationType": "accredited lab / testing facility", // enum
+      "organizationIdNumber": "HL12345", // optional, min 1 char
+      "purpose": "Medical testing and diagnostics", // optional, min 1 char
+      "description": "Accredited laboratory providing comprehensive medical testing services", // optional, min 1 char
+      "logo": "https://cdn.domain.com/logos/healthlab.png", // optional, URL
+      "website": "https://healthlab.org", // optional, URL
+      "officeAddress": ["HealthLab Building", "Central Mumbai", "Mumbai, Maharashtra"], // array of 3 strings
+      "contactPersonName": "Dr. Priya Sharma", // optional, min 1 char
+      "contactPhone": "+912233445566", // optional, min 10, max 15 chars
+      "contactDesignation": "Lab Director", // optional, min 1 char
+      "approvalStatus": "pending", // enum: ["approved", "pending", "rejected"]
+      "approvalDate": "2025-07-07T09:15:00Z", // optional, datetime
+      "proofDocType": "Operational License", // enum
+      "proofFileName": "operational_license.pdf", // optional, min 1 char
+      "proofFileUrl": "https://cdn.domain.com/proofs/operational_license.pdf", // optional, URL
+      "roles": ["issuer", "agent"], // required, non-empty array of role enums
+      "mfaRequired": false, // boolean, default: false
+      "registerIncomplete": true, // boolean, default: false
+      "lastLoginAt": "2025-07-07T09:15:00Z", // optional, datetime
+      "createdAt": "2025-07-07T09:15:00Z" // optional, datetime
+    }
+  }
+}
+```
+
+### Refresh Token: `POST /auth/refresh`
+
+#### Response
+
+```json
+{
+  "success": true,
+  "statusCode": 200,
+  "message": "Token refreshed successfully",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." // JWT token
+  }
+}
+```
+
+### Request OTP: `POST /auth/otp/send`
+
+#### Request
+
+```json
+{
+  "identifier": "vighnesh@example.com", // required, min 1 char
+  "purpose": "emailVerification" // required, enum: ["emailVerification", "passwordReset", "multiFactor"]
+}
+```
+
+#### Response
+
+```json
+{
+  "success": true,
+  "statusCode": 200,
+  "message": "OTP sent successfully",
+  "data": {
+    "verifyToken": "temp_verify_token_123" // min 1 char
+  }
+}
+```
+
+### Verify OTP: `POST /auth/otp/verify`
+
+#### Request
+
+```json
+{
+  "verifyToken": "temp_verify_token_123", // required, min 1 char
+  "code": "123456" // required, exactly 6 chars
+}
+```
+
+#### Response
+
+```json
+{
+  "success": true,
+  "statusCode": 200,
+  "message": "OTP verified successfully",
+  "data": {
+    "verifyToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." // JWT token
+  }
+}
+```
+
+### Username Availability: `GET /auth/verify/username`
+
+#### Query Parameters
+
+- `username` (required, min 1 char)
+
+#### Response
+
+```json
+{
+  "success": true,
+  "statusCode": 200,
+  "message": "Username availability checked",
+  "data": {
+    "available": true // boolean
+  }
 }
 ```
 
 ## Global
 
-### Health Check
-
-`GET /health`
+### Health Check: `GET /health`
 
 #### Response
 
@@ -67,10 +321,7 @@ dummy request base example
   "statusCode": 200,
   "message": "Server is healthy",
   "data": {
-    // server status
-    "status": "UP", // or DOWN
-
-    // health status and details components
+    "status": "UP", // or "DOWN"
     "details": {
       "diskSpace": {
         "status": "UP",
@@ -79,244 +330,7 @@ dummy request base example
       "db": {
         "status": "UP",
         "details": {}
-      },
-    }
-  }
-}
-```
-
-## Authentication
-### [🔗 Schema in Client](../apps/client/src/features/auth/validators/authApi.validator.js)
-
-### Login: `POST /auth/login`
-
-#### Request
-```json
-{
-  "identifier": "john.doe@example.com", // or johndoe123
-  "type": "email", // or username
-  "password": "password",
-  "rememberMe": true, // auto login (optional)
-  "loginMethod": "password" // Manual or Google (optional)
-}
-```
-
-#### Response
-
-#### Individual
-```json
-{
-  "success": true,
-  "statusCode": 200,
-  "message": "Login successful",
-  "data": {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "user": {
-      "userId": "e7a9859a-489c-4f92-927c-fc0097aa9a2e",
-      "username": "vighnesh123",
-      "email": "vighnesh@example.com",
-      "fullName": "Vighnesh Brahme",
-      "dateOfBirth": "2000-01-01",
-      "gender": "male",
-      "address": "Pune, Maharashtra",
-      "phone": "+919999999999",
-      "avatar": "https://cdn.domain.com/avatars/e7a9859a.png",
-      "profession": "Software Engineer",
-      "bio": "Building systems that scale",
-      "roles": ["owner", "user"],
-      "mfaRequired": false,
-      "registerIncomplete": false,
-      "lastLoginAt": "2025-07-07T10:30:00Z",
-      "createdAt": "2025-07-06T14:00:00Z"
-    },
-    "agent": {
-      "agentId": "6b93fe49-47b6-46c0-8d16-78b20bcb231a",
-      "agentType": "individual"
-    }
-  }
-}
-```
-
-#### Organization
-```json
-{
-  "success": true,
-  "statusCode": 200,
-  "message": "Login successful",
-  "data": {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "user": {
-      "orgId": "3f2f2602-2681-43ef-9370-1cf27c204df4",
-      "username": "gov_pune",
-      "email": "admin@gov.in",
-      "organizationName": "Pune Municipal Corporation",
-      "organizationType": "government",
-      "organizationIdNumber": "PMC12345",
-      "purpose": "Issue birth & death certificates",
-      "description": "City civic body managing public services",
-      "logo": "https://cdn.domain.com/logos/pmc.png",
-      "website": "https://pmc.gov.in",
-      "officeAddress": [
-        "PMC Building",
-        "Shivajinagar",
-        "Pune, Maharashtra"
-      ],
-      "contactPersonName": "Rajesh Patil",
-      "contactPhone": "+912022020202",
-      "contactDesignation": "IT Head",
-      "approvalStatus": "approved",
-      "approvalDate": "2025-07-06T12:00:00Z",
-      "proofDocType": "GST Certificate",
-      "proofFileName": "gst_pmc.pdf",
-      "proofFileUrl": "https://cdn.domain.com/proofs/gst_pmc.pdf",
-      "roles": ["issuer", "admin"],
-      "mfaRequired": true,
-      "registerIncomplete": false,
-      "lastLoginAt": "2025-07-07T08:20:00Z",
-      "createdAt": "2025-07-05T10:00:00Z"
-    },
-    "agent": {
-      "agentId": "baf9aa4d-f29c-4cf2-9492-f2cb71e3474b",
-      "agentType": "individual"
-    }
-  }
-}
-```
-
-### Register
-
-#### Agent Registration: `POST /auth/register`
-
-##### Request
-```json
-{
-  "username": "vighnesh123",
-  "email": "vighnesh@example.com",
-  "password": "password123"
-}
-```
-
-##### Response
-```json
-{
-  "success": true,
-  "statusCode": 201,
-  "message": "Agent registered successfully",
-  "data": {
-    "agentId": "6b93fe49-47b6-46c0-8d16-78b20bcb231a"
-  }
-}
-```
-
-#### Individual Registration: `POST /auth/register/individual`
-
-##### Request
-```json
-{
-  "agentId": "6b93fe49-47b6-46c0-8d16-78b20bcb231a",
-  "agentType": "individual",
-  "fullName": "Vighnesh Brahme",
-  "dateOfBirth": "2000-01-01",
-  "roles": ["owner", "user"]
-}
-```
-
-##### Response
-```json
-{
-  "success": true,
-  "statusCode": 201,
-  "message": "Individual registration completed successfully",
-  "data": {
-    "user": {
-      "userId": "cb7a59f6-c8c1-4dcd-ae71-7f2015b2f6ab",
-      "username": "vighnesh123",
-      "email": "vighnesh@example.com",
-      "fullName": "Vighnesh Brahme",
-      "dateOfBirth": "2000-01-01",
-      "gender": "male",
-      "address": "Pune, Maharashtra",
-      "phone": "+919999999999",
-      "avatar": "https://cdn.domain.com/avatars/cb7a59f6.png",
-      "profession": "Software Engineer",
-      "bio": "Building systems that scale",
-      "roles": ["owner", "user"],
-      "mfaRequired": false,
-      "registerIncomplete": false,
-      "lastLoginAt": "2025-07-07T09:00:00Z",
-      "createdAt": "2025-07-07T09:00:00Z"
-    },
-    "agent": {
-      "agentId": "6b93fe49-47b6-46c0-8d16-78b20bcb231a",
-      "agentType": "individual"
-    }
-  }
-}
-```
-
-#### Organization Registration: `POST /auth/register/organization`
-
-##### Request
-```json
-{
-  "agentId": "41f8d50c-3497-47aa-a59a-ff8be84a3a9e",
-  "agentType": "organization",
-  "organizationName": "Mumbai Central HealthLab",
-  "organizationType": "accredited lab / testing facility",
-  "website": "https://healthlab.org",
-  "officeAddress": [
-    "HealthLab Building",
-    "Central Mumbai",
-    "Mumbai, Maharashtra"
-  ],
-  "contactPersonName": "Dr. Priya Sharma",
-  "contactPhone": "+912233445566",
-  "contactDesignation": "Lab Director",
-  "proofDocType": "Operational License",
-  "roles": ["issuer", "agent"]
-}
-```
-
-##### Response
-```json
-{
-  "success": true,
-  "statusCode": 201,
-  "message": "Organization registration completed successfully",
-  "data": {
-    "user": {
-      "orgId": "d142f338-cc58-4a52-8a7d-778fb0d7a0b4",
-      "username": "healthlab_mumbai",
-      "email": "admin@healthlab.org",
-      "organizationName": "Mumbai Central HealthLab",
-      "organizationType": "accredited lab / testing facility",
-      "organizationIdNumber": "HL12345",
-      "purpose": "Medical testing and diagnostics",
-      "description": "Accredited laboratory providing comprehensive medical testing services",
-      "logo": "https://cdn.domain.com/logos/healthlab.png",
-      "website": "https://healthlab.org",
-      "officeAddress": [
-        "HealthLab Building",
-        "Central Mumbai",
-        "Mumbai, Maharashtra"
-      ],
-      "contactPersonName": "Dr. Priya Sharma",
-      "contactPhone": "+912233445566",
-      "contactDesignation": "Lab Director",
-      "approvalStatus": "pending",
-      "approvalDate": "2025-07-07T09:15:00Z",
-      "proofDocType": "Operational License",
-      "proofFileName": "operational_license.pdf",
-      "proofFileUrl": "https://cdn.domain.com/proofs/operational_license.pdf",
-      "roles": ["issuer", "agent"],
-      "mfaRequired": false,
-      "registerIncomplete": true,
-      "lastLoginAt": "2025-07-07T09:15:00Z",
-      "createdAt": "2025-07-07T09:15:00Z"
-    },
-    "agent": {
-      "agentId": "41f8d50c-3497-47aa-a59a-ff8be84a3a9e",
-      "agentType": "individual"
+      }
     }
   }
 }

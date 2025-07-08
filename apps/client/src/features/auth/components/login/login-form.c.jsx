@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +18,7 @@ import {
 import { getLoginFieldsForRole } from "@/features/auth/constants/getFieldsForRole.constant.js";
 import { useUserAuthFlow } from "@/features/auth/flows/userAuth.flow.js";
 import CustomButton from "@/components/Button/CustomButton.jsx";
+import { loginRequestSchema } from "../../validators/authApi.validator.js";
 
 export function LoginForm({ className, ...props }) {
 	const [showPassword, setShowPassword] = useState(false);
@@ -106,13 +108,37 @@ export function LoginForm({ className, ...props }) {
 			return;
 		}
 
-		const loginData = {
-			[loginType]: formdata[loginType],
+		const formData = {
+			identifier: formdata[loginType],
+			type: loginType,
 			password: formdata.password,
+			// rememberMe: false,
+			// loginMethod: "password",
 		};
 
+		console.log("Form Data:", formData);
+
+		// Validate form data using zod schema
+		const zodResult = loginRequestSchema.safeParse(formData);
+
+		if (!zodResult.success) {
+			const zodError = zodResult.error.flatten().fieldErrors;
+			console.error(`[${loginType.toUpperCase()} ERROR]:`, zodError);
+			return;
+		}
+
+		console.log(zodResult);
+
+		// If validation passes, create FormData
+		const formDataToSubmit = new FormData();
+		formDataToSubmit.append("identifier", formdata[loginType]);
+		formDataToSubmit.append("type", loginType);
+		formDataToSubmit.append("password", formdata.password);
+		formDataToSubmit.append("rememberMe", false);
+		formDataToSubmit.append("loginMethod", "password");
+
 		try {
-			flow("login", loginData);
+			// flow("login", formDataToSubmit);
 		} catch (error) {
 			console.error(`[${loginType.toUpperCase()} ERROR]:`, error);
 			return { error: error.message || "Something went wrong" };

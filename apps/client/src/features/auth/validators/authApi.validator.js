@@ -3,14 +3,14 @@ import { z } from "zod";
 import {
 	individualSchema,
 	organizationSchema,
-} from "@/shared/validators/object.model.js";
+} from "@/shared/validators/object.validator.js";
 
 // LOGIN: GET /auth/login
 export const loginRequestSchema = z.object({
 	identifier: z.string().min(1),
 	type: z.enum(["email", "username"]),
 	password: z.string().min(6), // thoroughly validated at form level
-	rememberMe: z.boolean().default(false), // quick login
+	rememberMe: z.boolean().default(false),	 // quick login
 	loginMethod: z.enum(["password", "google"]).optional(),
 });
 
@@ -36,7 +36,7 @@ export const agentRegisterResponseSchema = z.object({
 export const registerIndividualRequestSchema = z.object({
 	agentType: z.literal("individual").default("individual"),
 	fullName: z.string().min(1),
-	dateOfBirth: z.iso.date(),
+	dateOfBirth: z.coerce.date().optional(), // ✅ works with "YYYY-MM-DD" strings
 	roles: z
 		.array(
 			z.enum([

@@ -6,6 +6,11 @@ This document outlines the expected requests and responses from the client to th
 
 ## Global Response Format
 
+### Validators
+API RESPONSE FORMAT: `../apps/client/src/shared/validators/apiResponse.validator.js`
+ENTITIES: `../apps/client/src/shared/validators/object.validator.js`
+AUTH: `../apps/client/src/features/auth/validators/authApi.validator.js`
+
 ### Success Response
 
 ```json

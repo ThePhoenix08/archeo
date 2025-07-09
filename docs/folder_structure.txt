@@ -36,6 +36,8 @@
 │   │   │   ├── App.css
 │   │   │   ├── App.jsx
 │   │   │   ├── components/
+│   │   │   │   ├── Button/
+│   │   │   │   │   └── CustomButton.jsx
 │   │   │   │   ├── brand/
 │   │   │   │   │   └── logoText.sc.jsx
 │   │   │   │   └── ui/
@@ -72,28 +74,27 @@
 │   │   │   │   │       └── Usage.page.jsx
 │   │   │   │   ├── auth/
 │   │   │   │   │   ├── components/
-│   │   │   │   │   │   ├── EnhancedLoginLeftSection.c.jsx
-│   │   │   │   │   │   ├── login-form.c.jsx
-│   │   │   │   │   │   ├── sub-components/
-│   │   │   │   │   │   │   ├── register/
-│   │   │   │   │   │   │   │   ├── CustomLabel.sc.jsx
-│   │   │   │   │   │   │   │   ├── OTP-input-double.sc.jsx
-│   │   │   │   │   │   │   │   ├── date-of-birth-input.sc.jsx
-│   │   │   │   │   │   │   │   ├── email-input-with-verification.sc.jsx
-│   │   │   │   │   │   │   │   ├── file-upload-with-preview.sc.jsx
-│   │   │   │   │   │   │   │   ├── organization-step-form.sc.jsx
-│   │   │   │   │   │   │   │   ├── password-input-with-validation.sc.jsx
-│   │   │   │   │   │   │   │   ├── phone-number-input.sc.jsx
-│   │   │   │   │   │   │   │   ├── select-with-search.sc.jsx
-│   │   │   │   │   │   │   │   ├── step-content.sc.jsx
-│   │   │   │   │   │   │   │   ├── text-input-with-character-limit.sc.jsx
-│   │   │   │   │   │   │   │   ├── text-input-with-icon.sc.jsx
-│   │   │   │   │   │   │   │   ├── three-line-address-input-with-preview.sc.jsx
-│   │   │   │   │   │   │   │   ├── url-input-with-link-preview-.sc.jsx
-│   │   │   │   │   │   │   │   └── username-input-with-availability.sc.jsx
-│   │   │   │   │   │   │   └── theme-toggle.c.jsx
-│   │   │   │   │   │   └── utils/
-│   │   │   │   │   │       └── useMultiStepOrganizationForm.hook.js
+│   │   │   │   │   │   ├── login/
+│   │   │   │   │   │   │   ├── EnhancedLoginLeftSection.c.jsx
+│   │   │   │   │   │   │   └── login-form.c.jsx
+│   │   │   │   │   │   └── sub-components/
+│   │   │   │   │   │       ├── register/
+│   │   │   │   │   │       │   ├── CustomLabel.sc.jsx
+│   │   │   │   │   │       │   ├── OTP-input-double.sc.jsx
+│   │   │   │   │   │       │   ├── date-of-birth-input.sc.jsx
+│   │   │   │   │   │       │   ├── email-input-with-verification.sc.jsx
+│   │   │   │   │   │       │   ├── file-upload-with-preview.sc.jsx
+│   │   │   │   │   │       │   ├── organization-step-form.sc.jsx
+│   │   │   │   │   │       │   ├── password-input-with-validation.sc.jsx
+│   │   │   │   │   │       │   ├── phone-number-input.sc.jsx
+│   │   │   │   │   │       │   ├── select-with-search.sc.jsx
+│   │   │   │   │   │       │   ├── step-content.sc.jsx
+│   │   │   │   │   │       │   ├── text-input-with-character-limit.sc.jsx
+│   │   │   │   │   │       │   ├── text-input-with-icon.sc.jsx
+│   │   │   │   │   │       │   ├── three-line-address-input-with-preview.sc.jsx
+│   │   │   │   │   │       │   ├── url-input-with-link-preview-.sc.jsx
+│   │   │   │   │   │       │   └── username-input-with-availability.sc.jsx
+│   │   │   │   │   │       └── theme-toggle.c.jsx
 │   │   │   │   │   ├── constants/
 │   │   │   │   │   │   ├── featurePreview.constant.js
 │   │   │   │   │   │   ├── flow.constant.js
@@ -111,7 +112,6 @@
 │   │   │   │   │   │   ├── AgentType.page.jsx
 │   │   │   │   │   │   ├── BasicCreds.page.jsx
 │   │   │   │   │   │   ├── Login.page.jsx
-│   │   │   │   │   │   ├── Register.page.jsx
 │   │   │   │   │   │   ├── RegisterOrg.page.jsx
 │   │   │   │   │   │   ├── RegisterUser.page.jsx
 │   │   │   │   │   │   └── SelectRoles.page.jsx
@@ -124,6 +124,7 @@
 │   │   │   │   │   ├── utils/
 │   │   │   │   │   │   └── address.utils.js
 │   │   │   │   │   ├── validators/
+│   │   │   │   │   │   ├── authApi.validator.js
 │   │   │   │   │   │   └── form.validator.js
 │   │   │   │   │   └── wrappers/
 │   │   │   │   │       ├── AuthLayout.wrapper.jsx
@@ -182,6 +183,9 @@
 │   │   │       │       └── store.js
 │   │   │       ├── utils/
 │   │   │       │   └── routes.util.js
+│   │   │       ├── validators/
+│   │   │       │   ├── apiResponse.validator.js
+│   │   │       │   └── object.validator.js
 │   │   │       └── wrappers/
 │   │   │           └── AppLayout.wrapper.jsx
 │   │   ├── tailwind.config.js
@@ -227,6 +231,8 @@
 │       │       │   │           └── server/
 │       │       │   │               └── modules/
 │       │       │   │                   └── auth/
+│       │       │   │                       ├── components/
+│       │       │   │                       │   └── RolePermissionMapping.java
 │       │       │   │                       ├── config/
 │       │       │   │                       │   ├── AppConfig.java
 │       │       │   │                       │   ├── CustomUserDetails.java
@@ -242,6 +248,7 @@
 │       │       │   │                       │   ├── AuthController.java
 │       │       │   │                       │   └── LinkPreviewController.java
 │       │       │   │                       ├── dtos/
+│       │       │   │                       │   ├── AbacCheck.java
 │       │       │   │                       │   ├── AuthResponse.java
 │       │       │   │                       │   ├── LinkPreviewRequest.java
 │       │       │   │                       │   ├── LoginRequest.java
@@ -250,6 +257,8 @@
 │       │       │   │                       │   ├── OwnerRegisterRequest.java
 │       │       │   │                       │   ├── OwnerRegisterResponse.java
 │       │       │   │                       │   └── UserCommonRegisterRequest.java
+│       │       │   │                       ├── enums/
+│       │       │   │                       │   └── AuthProvider.java
 │       │       │   │                       ├── mapper/
 │       │       │   │                       │   ├── OrganizationMapper.java
 │       │       │   │                       │   ├── OwnerMapper.java
@@ -262,6 +271,7 @@
 │       │       │   │                       │   └── SessionRedisRepository.java
 │       │       │   │                       └── services/
 │       │       │   │                           ├── ABACPermissionEvaluator.java
+│       │       │   │                           ├── AbacAspect.java
 │       │       │   │                           ├── AuthLogsService.java
 │       │       │   │                           ├── AuthService.java
 │       │       │   │                           ├── CustomUserDetailsService.java
@@ -497,13 +507,17 @@
 │       │       │   │                       ├── config/
 │       │       │   │                       │   └── MailConfig.java
 │       │       │   │                       ├── controllers/
+│       │       │   │                       │   ├── ForgotPasswordController.java
 │       │       │   │                       │   ├── OtpController.java
 │       │       │   │                       │   ├── ProfileController.java
 │       │       │   │                       │   └── SettingsController.java
 │       │       │   │                       ├── dtos/
 │       │       │   │                       │   ├── EmailRequest.java
+│       │       │   │                       │   ├── ForgotPasswordRequest.java
 │       │       │   │                       │   ├── OrganizationProfileDTO.java
+│       │       │   │                       │   ├── OtpVerifyRequest.java
 │       │       │   │                       │   ├── OwnerProfileDTO.java
+│       │       │   │                       │   ├── ResetPasswordRequest.java
 │       │       │   │                       │   ├── SettingsDTO.java
 │       │       │   │                       │   ├── UpdateOrganizationProfileRequest.java
 │       │       │   │                       │   └── UpdateOwnerProfileRequest.java
@@ -522,8 +536,10 @@
 │       │       │   │                       ├── repositories/
 │       │       │   │                       │   ├── OrganizationRepo.java
 │       │       │   │                       │   ├── OwnerRepo.java
-│       │       │   │                       │   └── SettingsRepo.java
+│       │       │   │                       │   ├── SettingsRepo.java
+│       │       │   │                       │   └── UsersCommonRepo.java
 │       │       │   │                       └── services/
+│       │       │   │                           ├── ForgotPasswordService.java
 │       │       │   │                           ├── OtpService.java
 │       │       │   │                           ├── ProfileService.java
 │       │       │   │                           ├── SettingsService.java
@@ -581,4 +597,4 @@
 └── tests/
     └── .gitkeep
 
-288 directories, 294 files
+292 directories, 306 files

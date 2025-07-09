@@ -19,6 +19,7 @@ import { getLoginFieldsForRole } from "@/features/auth/constants/getFieldsForRol
 import { useUserAuthFlow } from "@/features/auth/flows/userAuth.flow.js";
 import CustomButton from "@/components/Button/CustomButton.jsx";
 import { loginRequestSchema } from "../../validators/authApi.validator.js";
+import { zodValidator } from "@/shared/validators/zod.validator.js";
 
 export function LoginForm({ className, ...props }) {
 	const [showPassword, setShowPassword] = useState(false);
@@ -118,23 +119,26 @@ export function LoginForm({ className, ...props }) {
 
 		console.log("Form Data:", formData);
 
-		// Validate form data using zod schema
-		const zodResult = loginRequestSchema.safeParse(formData);
+		// // Validate form data using zod schema
+		// const zodResult = loginRequestSchema.safeParse(formData);
 
-		if (!zodResult.success) {
-			const zodError = zodResult.error.flatten().fieldErrors;
-			console.error(`[${loginType.toUpperCase()} ERROR]:`, zodError);
-			return;
-		}
+		// if (!zodResult.success) {
+		// 	const zodError = zodResult.error.flatten().fieldErrors;
+		// 	console.error(`[${loginType.toUpperCase()} ERROR]:`, zodError);
+		// 	return;
+		// }
 
-		console.log(zodResult);
+		// console.log(zodResult);
+
+		const validFormData = zodValidator(loginRequestSchema, formData, "login request object");
+
 
 		// If validation passes, create FormData
 		const formDataToSubmit = new FormData();
-		formDataToSubmit.append("identifier", formdata[loginType]);
-		formDataToSubmit.append("type", loginType);
-		formDataToSubmit.append("password", formdata.password);
-		formDataToSubmit.append("rememberMe", false);
+		formDataToSubmit.append("identifier", validFormData.identifier);
+		formDataToSubmit.append("type", validFormData.type);
+		formDataToSubmit.append("password", validFormData.password);
+		formDataToSubmit.append("rememberMe", false); // TODO: Add rememberMe functionality
 		formDataToSubmit.append("loginMethod", "password");
 
 		try {

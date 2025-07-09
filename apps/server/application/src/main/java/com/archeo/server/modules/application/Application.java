@@ -47,11 +47,11 @@ public class Application {
 	@Autowired
 	DataSource dataSource;
 
-	@PostConstruct
-	public void testConnection() throws SQLException {
-		System.out.println("=====================================================================================================================");
-		System.out.println(">>> Connecting to: " + dataSource.getConnection().getMetaData().getURL());
-	}
+//	@PostConstruct
+//	public void testConnection() throws SQLException {
+//		System.out.println("=====================================================================================================================");
+//		System.out.println(">>> Connecting to: " + dataSource.getConnection().getMetaData().getURL());
+//	}
 
 
 	public static class DotenvInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

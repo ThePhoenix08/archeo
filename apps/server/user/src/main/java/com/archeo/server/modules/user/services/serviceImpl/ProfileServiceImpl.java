@@ -2,8 +2,8 @@ package com.archeo.server.modules.user.services.serviceImpl;
 
 import com.archeo.server.modules.common.exceptions.InvalidCredentialsException;
 import com.archeo.server.modules.common.exceptions.UserNotFoundException;
-import com.archeo.server.modules.common.models.UsersCommon;
-import com.archeo.server.modules.common.repositories.UsersCommonRepository;
+import com.archeo.server.modules.common.models.Agent;
+import com.archeo.server.modules.common.repositories.AgentRepository;
 import com.archeo.server.modules.user.dtos.OrganizationProfileDTO;
 import com.archeo.server.modules.user.dtos.OwnerProfileDTO;
 import com.archeo.server.modules.user.dtos.UpdateOrganizationProfileRequest;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 public class ProfileServiceImpl implements ProfileService {
 
 
-    private final UsersCommonRepository usersCommonRepository;
+    private final AgentRepository agentRepository;
     private final OwnerRepo ownerRepo;
     private final OwnerProfileMapper ownerMapper;
     private final OrgProfileMapper organizationMapper;
@@ -34,9 +34,9 @@ public class ProfileServiceImpl implements ProfileService {
 
 
     @Override
-    public OwnerProfileDTO getOwnerProfile(UsersCommon user) {
+    public OwnerProfileDTO getOwnerProfile(Agent agent) {
 
-        Owner existingOwner= (Owner) ownerRepo.findByUser(user)
+        Owner existingOwner= (Owner) ownerRepo.findByUser(agent)
                 .orElseThrow(() -> new InvalidCredentialsException("User not found"));
 
 

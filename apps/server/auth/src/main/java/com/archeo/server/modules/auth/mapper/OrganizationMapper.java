@@ -1,8 +1,8 @@
 package com.archeo.server.modules.auth.mapper;
 
 
-import com.archeo.server.modules.user.dtos.OrganizationRegisterRequest;
-import com.archeo.server.modules.user.dtos.OrganizationRegisterResponse;
+import com.archeo.server.modules.auth.dtos.OrganizationRegisterRequest;
+import com.archeo.server.modules.auth.dtos.OrganizationRegisterResponse;
 import com.archeo.server.modules.user.models.Organization;
 import org.mapstruct.*;
 

@@ -1,6 +1,6 @@
 package com.archeo.server.modules.user.models;
 
-import com.archeo.server.modules.common.models.UsersCommon;
+import com.archeo.server.modules.common.models.Agent;
 import com.archeo.server.modules.user.enums.NotificationType;
 import com.archeo.server.modules.user.enums.ThemePreference;
 import jakarta.persistence.*;
@@ -25,8 +25,8 @@ public class Settings {
     private UUID id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private UsersCommon user;
+    @JoinColumn(name = "agent_id", nullable = false, unique = true)
+    private Agent agent;
 
     @Column(length = 10)
     private String language = "English";

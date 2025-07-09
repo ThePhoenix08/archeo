@@ -2,9 +2,9 @@
 
 package com.archeo.server.modules.user.models;
 
+import com.archeo.server.modules.common.enums.AGENT_ROLE;
 import com.archeo.server.modules.common.enums.Permission;
-import com.archeo.server.modules.common.enums.USER_ROLE;
-import com.archeo.server.modules.common.models.UsersCommon;
+import com.archeo.server.modules.common.models.Agent;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -36,8 +36,8 @@ public class Owner {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "owner_roles", joinColumns = @JoinColumn(name = "owner_id"))
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_role", nullable = false)
-    private List<USER_ROLE> userRole;
+    @Column(name = "agent_role", nullable = false)
+    private List<AGENT_ROLE> agentRole;
 
 
     @Column(name = "dob")
@@ -48,8 +48,8 @@ public class Owner {
 
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private UsersCommon user;
+    @JoinColumn(name = "agent_id", nullable = false, unique = true)
+    private Agent agent;
 
     @Column(name = "avatar_url")
     private String avatarUrl;

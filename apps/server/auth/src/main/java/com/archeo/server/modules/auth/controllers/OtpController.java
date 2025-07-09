@@ -1,4 +1,4 @@
-package com.archeo.server.modules.user.controllers;
+package com.archeo.server.modules.auth.controllers;
 
 import com.archeo.server.modules.common.dto.ApiResponse;
 import com.archeo.server.modules.user.dtos.EmailRequest;
@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/otp")
+@RequestMapping("/api/auth")
 public class OtpController {
 
     private final OtpService otpService;
 
-    @PostMapping("/send")
+    @PostMapping("/otp/send")
     public ResponseEntity<ApiResponse<String>> sendOtp(@RequestBody @Valid EmailRequest emailRequest) {
         otpService.sendOtp(emailRequest.getEmail());
 
@@ -29,7 +29,7 @@ public class OtpController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/verify")
+    @PostMapping("/otp/verify")
     public ResponseEntity<ApiResponse<String>> verifyOtp(@RequestParam("otp") String otp,
                                                          @RequestParam("email") String email) {
 

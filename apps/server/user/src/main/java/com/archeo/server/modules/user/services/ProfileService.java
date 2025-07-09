@@ -1,6 +1,6 @@
 package com.archeo.server.modules.user.services;
 
-import com.archeo.server.modules.common.models.UsersCommon;
+import com.archeo.server.modules.common.models.Agent;
 import com.archeo.server.modules.user.dtos.OrganizationProfileDTO;
 import com.archeo.server.modules.user.dtos.OwnerProfileDTO;
 import com.archeo.server.modules.user.dtos.UpdateOrganizationProfileRequest;
@@ -14,7 +14,7 @@ public interface ProfileService {
 
     void updateOrganizationProfile(UpdateOrganizationProfileRequest updateOrganizationProfileRequest, String orgEmail);
 
-    OwnerProfileDTO getOwnerProfile(UsersCommon user);
+    OwnerProfileDTO getOwnerProfile(Agent agent);
 
 
     void updateOwnerProfile(String userEmail, UpdateOwnerProfileRequest updateOwnerProfile);

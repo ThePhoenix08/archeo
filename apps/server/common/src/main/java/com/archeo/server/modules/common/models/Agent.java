@@ -12,8 +12,8 @@ import java.util.UUID;
 
 @Entity
 @Data
-@Table(name = "users_common")
-public class UsersCommon {
+@Table(name = "agent")
+public class Agent {
 
     @Id
     @GeneratedValue

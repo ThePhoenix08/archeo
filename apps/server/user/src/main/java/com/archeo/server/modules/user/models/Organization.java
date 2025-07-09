@@ -1,8 +1,8 @@
 package com.archeo.server.modules.user.models;
 
+import com.archeo.server.modules.common.enums.AGENT_ROLE;
 import com.archeo.server.modules.common.enums.Permission;
-import com.archeo.server.modules.common.enums.USER_ROLE;
-import com.archeo.server.modules.common.models.UsersCommon;
+import com.archeo.server.modules.common.models.Agent;
 import com.archeo.server.modules.user.enums.VERIFICATION_STATUS;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -27,8 +27,8 @@ public class Organization {
 
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private UsersCommon user;
+    @JoinColumn(name = "agent_id", nullable = false, unique = true)
+    private Agent agent;
 
 
     @Enumerated(EnumType.STRING)
@@ -36,10 +36,10 @@ public class Organization {
     private List<Permission> permissions;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "owner_roles", joinColumns = @JoinColumn(name = "owner_id"))
+    @CollectionTable(name = "owner_roles", joinColumns = @JoinColumn(name = "organization_id"))
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_role", nullable = false)
-    private List<USER_ROLE> userRole;
+    @Column(name = "sgent_role", nullable = false)
+    private List<AGENT_ROLE> agentRole;
 
 
     @Column(name = "organization_name", nullable = false, length = 100)
@@ -48,8 +48,8 @@ public class Organization {
     @Column(name = "organization_type", length = 50)
     private String organizationType;
 
-    @Column(name="org_identification_number")
-    private String organizationIdentificationNumber;
+//    @Column(name="org_identification_number")
+//    private String organizationIdentificationNumber;
 
     @ElementCollection
     @CollectionTable(name = "organization_domains", joinColumns = @JoinColumn(name = "organization_id"))

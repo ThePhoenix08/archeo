@@ -1,7 +1,7 @@
 package com.archeo.server.modules.user.services;
 
-import com.archeo.server.modules.common.models.UsersCommon;
-import com.archeo.server.modules.common.repositories.UsersCommonRepository;
+import com.archeo.server.modules.common.models.Agent;
+import com.archeo.server.modules.common.repositories.AgentRepository;
 import com.archeo.server.modules.user.dtos.SettingsDTO;
 import com.archeo.server.modules.user.models.Settings;
 import com.archeo.server.modules.user.repositories.SettingsRepo;
@@ -15,28 +15,28 @@ public class SettingsService {
     private SettingsRepo settingsRepository;
 
     @Autowired
-    private UsersCommonRepository usersCommonRepository;
+    private AgentRepository agentRepository;
 
-    private UsersCommon getCurrentUser() {
+    private Agent getCurrentAgent() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return usersCommonRepository.findByEmail(email)
+        return agentRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     public Settings getUserSettings() {
-        UsersCommon user = getCurrentUser();
+        Agent agent=getCurrentAgent();
 
-        return settingsRepository.findByUser(user)
+        return settingsRepository.findByUser(agent)
                 .orElseThrow(() -> new RuntimeException("Settings not found for user"));
     }
 
     public Settings updateUserSettings(SettingsDTO dto) {
-        UsersCommon user = getCurrentUser();
+        Agent agent = getCurrentAgent();
 
-        Settings settings = settingsRepository.findByUser(user)
+        Settings settings = settingsRepository.findByUser(agent)
                 .orElseGet(() -> {
                     Settings s = new Settings();
-                    s.setUser(user);
+                    s.setAgent(agent);
                     return s;
                 });
 

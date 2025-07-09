@@ -11,7 +11,7 @@ import org.mapstruct.MappingTarget;
 public interface OwnerProfileMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "agent", ignore = true)
     void updateOwnerFromDto(UpdateOwnerProfileRequest dto, @MappingTarget Owner entity);
 
 

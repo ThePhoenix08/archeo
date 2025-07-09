@@ -1,7 +1,8 @@
 package com.archeo.server.modules.auth.config;
 
 import com.archeo.server.modules.common.enums.Permission;
-import com.archeo.server.modules.common.models.UsersCommon;
+import com.archeo.server.modules.common.models.Agent;
+
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
@@ -12,9 +13,9 @@ public class CustomUserDetails extends org.springframework.security.core.userdet
     private final UUID userId;
     private final List<Permission> permission;
 
-    public CustomUserDetails(UsersCommon user, Collection<? extends GrantedAuthority> authorities, List<Permission> permission) {
-        super(user.getEmail(), user.getPassword(), authorities);
-        this.userId = user.getId();
+    public CustomUserDetails(Agent agent, Collection<? extends GrantedAuthority> authorities, List<Permission> permission) {
+        super(agent.getEmail(), agent.getPassword(), authorities);
+        this.userId = agent.getId();
         this.permission = permission;
     }
 

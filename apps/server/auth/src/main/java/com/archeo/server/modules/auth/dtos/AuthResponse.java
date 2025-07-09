@@ -15,7 +15,9 @@ public class AuthResponse {
 
 
     private String accessToken;
-    private List<String> userRole;
+    private List<String> agentRole;
+    private OwnerLoginResponse owner;
+    private OrganizationLoginResponse organization;
 
 
 }

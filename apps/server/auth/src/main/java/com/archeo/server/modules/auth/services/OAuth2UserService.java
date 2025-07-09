@@ -3,9 +3,10 @@ package com.archeo.server.modules.auth.services;
 import com.archeo.server.modules.auth.config.JwtProvider;
 import com.archeo.server.modules.auth.dtos.AuthResponse;
 import com.archeo.server.modules.auth.enums.AuthProvider;
-import com.archeo.server.modules.common.enums.USER_ROLE;
-import com.archeo.server.modules.common.models.UsersCommon;
-import com.archeo.server.modules.common.repositories.UsersCommonRepository;
+import com.archeo.server.modules.common.enums.AGENT_ROLE;
+
+import com.archeo.server.modules.common.models.Agent;
+import com.archeo.server.modules.common.repositories.AgentRepository;
 import com.archeo.server.modules.user.repositories.OrganizationRepo;
 import com.archeo.server.modules.user.repositories.OwnerRepo;
 import jakarta.servlet.http.Cookie;
@@ -26,7 +27,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OAuth2UserService extends DefaultOAuth2UserService {
 
-    private final UsersCommonRepository userRepository;
+    private final AgentRepository agentRepository;
     private final JwtProvider jwtProvider;
     private final SessionService sessionService;
     private final AuthLogsService authLogsService;
@@ -42,31 +43,32 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         String email = (String) attributes.get("email");
         String username = ((String) attributes.get("name")).replaceAll("\\s+", "").toLowerCase();
 
-        UsersCommon user = userRepository.findByEmail(email)
+        Agent agent = agentRepository.findByEmail(email)
                 .orElseGet(() -> {
-                    UsersCommon newUser = new UsersCommon();
-                    newUser.setEmail(email);
-                    newUser.setUsername(username);
-                    newUser.setPassword("");
-                    newUser.setProvider(String.valueOf(AuthProvider.GOOGLE));
-                    newUser.setProviderId((String) attributes.get("sub"));
-                    return userRepository.save(newUser);
+                    Agent newAgent=new Agent();
+
+                    newAgent.setEmail(email);
+                    newAgent.setUsername(username);
+                    newAgent.setPassword("");
+                    newAgent.setProvider(String.valueOf(AuthProvider.GOOGLE));
+                    newAgent.setProviderId((String) attributes.get("sub"));
+                    return agentRepository.save(newAgent);
                 });
 
-        List<USER_ROLE> userRoles = new ArrayList<>();
-        ownerRepo.findByUser(user).ifPresent(owner -> userRoles.addAll(owner.getUserRole()));
-        organizationRepo.findByUser(user).ifPresent(org -> userRoles.addAll(org.getUserRole()));
+        List<AGENT_ROLE> userRoles = new ArrayList<>();
+        ownerRepo.findByUser(agent).ifPresent(owner -> userRoles.addAll(owner.getAgentRole()));
+        organizationRepo.findByUser(agent).ifPresent(org -> userRoles.addAll(org.getAgentRole()));
 
         List<String> roleNames = userRoles.isEmpty()
-                ? List.of(USER_ROLE.PENDING.name())
+                ? List.of(AGENT_ROLE.PENDING.name())
                 : userRoles.stream().map(Enum::name).toList();
 
         // ✅ Only one claims map, and it's used directly
         Map<String, Object> claims = new HashMap<>();
         claims.put("authorities", roleNames);
 
-        String accessToken = jwtProvider.generateAccessToken(claims, user.getEmail());
-        String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
+        String accessToken = jwtProvider.generateAccessToken(claims, agent.getEmail());
+        String refreshToken = jwtProvider.generateRefreshToken(agent.getEmail());
 
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
@@ -75,12 +77,12 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         refreshTokenCookie.setMaxAge(3 * 24 * 60 * 60);
         servletResponse.addCookie(refreshTokenCookie);
 
-        sessionService.saveSession(user, refreshToken, servletRequest);
-        authLogsService.log(user, refreshToken, servletRequest);
+        sessionService.saveSession(agent, refreshToken, servletRequest);
+        authLogsService.log(agent, refreshToken, servletRequest);
 
         AuthResponse authResponse = AuthResponse.builder()
                 .accessToken(accessToken)
-                .userRole(roleNames)
+                .agentRole(roleNames)
                 .build();
 
         System.out.println("Access Token: " + accessToken);

@@ -1,7 +1,7 @@
 package com.archeo.server.modules.auth.models;
 
 
-import com.archeo.server.modules.common.models.UsersCommon;
+import com.archeo.server.modules.common.models.Agent;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,7 +27,7 @@ public class AuthLogs {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private UsersCommon usersCommon;
+    private Agent agent;
 
     @Column(name = "refresh_token", nullable = false, length = 255)
     private String refreshTokenHash;

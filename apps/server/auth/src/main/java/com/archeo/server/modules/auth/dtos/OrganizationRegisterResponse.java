@@ -1,7 +1,6 @@
-package com.archeo.server.modules.user.dtos;
+package com.archeo.server.modules.auth.dtos;
 
-import com.archeo.server.modules.common.enums.Permission;
-import com.archeo.server.modules.common.models.UsersCommon;
+import com.archeo.server.modules.common.models.Agent;
 import com.archeo.server.modules.user.enums.VERIFICATION_STATUS;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +14,7 @@ public class OrganizationRegisterResponse {
 
     private UUID id;
 
-    private UsersCommon user;
+    private Agent agent;
 
     private String organizationName;
 
@@ -43,7 +42,6 @@ public class OrganizationRegisterResponse {
 
     private String purpose;
 
-    private List<Permission> permissions;
 
     private boolean isOwner;
     private boolean isIssuer;

@@ -1,8 +1,8 @@
 package com.archeo.server.modules.auth.services;
 
 import com.archeo.server.modules.auth.repositories.SessionRedisRepository;
+import com.archeo.server.modules.common.models.Agent;
 import com.archeo.server.modules.common.models.Session;
-import com.archeo.server.modules.common.models.UsersCommon;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +22,11 @@ public class SessionService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final SessionRedisRepository sessionRedisRepository;
 
-    public void saveSession(UsersCommon user, String refreshToken, HttpServletRequest request) {
+    public void saveSession(Agent agent, String refreshToken, HttpServletRequest request) {
         Session session = new Session();
 
         session.setId(UUID.randomUUID());
-        session.setUserId(user.getId());
+        session.setUserId(agent.getId());
         session.setRefreshTokenHash(passwordEncoder.encode(refreshToken));
         session.setIpAddress(request.getRemoteAddr());
         session.setUserAgent(request.getHeader("User-Agent"));

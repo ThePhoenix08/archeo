@@ -1,6 +1,6 @@
 package com.archeo.server.modules.common.enums;
 
-public enum USER_ROLE{
+public enum AGENT_ROLE{
 
     ROLE_OWNER,
     ROLE_ISSUER,

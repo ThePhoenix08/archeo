@@ -1,7 +1,8 @@
 package com.archeo.server.modules.auth.config;
 
-import com.archeo.server.modules.common.models.UsersCommon;
-import com.archeo.server.modules.common.repositories.UsersCommonRepository;
+
+import com.archeo.server.modules.common.models.Agent;
+import com.archeo.server.modules.common.repositories.AgentRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -32,7 +33,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtTokenValidator extends OncePerRequestFilter {
 
-    private final UsersCommonRepository usersCommonRepository;
+    private final AgentRepository agentRepository;
 
     private static final List<String> EXCLUDED_PATHS = List.of(
             "/api/auth/login",
@@ -68,10 +69,10 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                 List<String> roles = (List<String>) claims.get("authorities");
                 List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList(roles.toArray(new String[0]));
 
-                UsersCommon userEntity = usersCommonRepository.findByEmail(email)
+                Agent agentEntity = agentRepository.findByEmail(email)
                         .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-                CustomUserDetails customUserDetails = new CustomUserDetails(userEntity, authorityList, null);
+                CustomUserDetails customUserDetails = new CustomUserDetails(agentEntity, authorityList, null);
 
                 Authentication auth = new UsernamePasswordAuthenticationToken(
                         customUserDetails,

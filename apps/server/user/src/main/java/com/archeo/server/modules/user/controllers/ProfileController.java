@@ -1,8 +1,8 @@
 package com.archeo.server.modules.user.controllers;
 
 import com.archeo.server.modules.common.dto.ApiResponse;
-import com.archeo.server.modules.common.models.UsersCommon;
-import com.archeo.server.modules.common.repositories.UsersCommonRepository;
+import com.archeo.server.modules.common.models.Agent;
+import com.archeo.server.modules.common.repositories.AgentRepository;
 import com.archeo.server.modules.user.dtos.OrganizationProfileDTO;
 import com.archeo.server.modules.user.dtos.OwnerProfileDTO;
 import com.archeo.server.modules.user.dtos.UpdateOrganizationProfileRequest;
@@ -22,16 +22,16 @@ import java.security.Principal;
 @RequestMapping("/api/profile")
 public class ProfileController {
 
-    private final UsersCommonRepository usersCommonRepository;
+    private final AgentRepository agentRepository;
     private final ProfileService profileService;
 
     @GetMapping("/getOwner")
     public ResponseEntity<ApiResponse<OwnerProfileDTO>> getOwnerProfile() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        UsersCommon user = usersCommonRepository.findByEmail(email)
+        Agent agent = agentRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        OwnerProfileDTO profileDTO = profileService.getOwnerProfile(user);
+        OwnerProfileDTO profileDTO = profileService.getOwnerProfile(agent);
         return ResponseEntity.ok(
                 ApiResponse.<OwnerProfileDTO>builder()
                         .statusCode(HttpStatus.OK.value())

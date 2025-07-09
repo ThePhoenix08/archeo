@@ -1,8 +1,9 @@
 package com.archeo.server.modules.auth.mapper;
 
 
+import com.archeo.server.modules.auth.dtos.OwnerRegisterRequest;
 import com.archeo.server.modules.auth.dtos.OwnerRegisterResponse;
-import com.archeo.server.modules.user.dtos.OwnerRegisterRequest;
+
 import com.archeo.server.modules.user.models.Owner;
 import org.mapstruct.*;
 
@@ -10,10 +11,10 @@ import org.mapstruct.*;
 public interface OwnerMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "user", ignore = true)
-    @Mapping(target = "userRole", source = "userRole")  // Add this line
+    @Mapping(target = "agent", ignore = true)
+    @Mapping(target = "agentRole", source = "agentRole")  // Add this line
     void mapOwnerRegisterRequestToOwner(OwnerRegisterRequest request, @MappingTarget Owner owner);
 
-    @Mapping(target = "email", source = "user.email")
+    @Mapping(target = "email", source = "agent.email")
     OwnerRegisterResponse mapOwnerToResponse(Owner owner);
 }

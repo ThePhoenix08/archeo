@@ -1,7 +1,7 @@
-package com.archeo.server.modules.user.dtos;
+package com.archeo.server.modules.auth.dtos;
 
+import com.archeo.server.modules.common.enums.AGENT_ROLE;
 import com.archeo.server.modules.common.enums.Permission;
-import com.archeo.server.modules.common.enums.USER_ROLE;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -20,7 +20,7 @@ public class OrganizationRegisterRequest {
     private String organizationType;
 
     @NotNull(message = "User role must be specified")
-    private List<USER_ROLE> userRole;
+    private List<AGENT_ROLE> agentRole;
 
     private String organizationIdentificationNumber;
 

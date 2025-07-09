@@ -12,7 +12,7 @@ import org.mapstruct.MappingTarget;
 public interface OrgProfileMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "agent", ignore = true)
     void updateOrgFromUpdateOrgRequest(UpdateOrganizationProfileRequest organizationProfileRequest
     , @MappingTarget Organization organization);
 

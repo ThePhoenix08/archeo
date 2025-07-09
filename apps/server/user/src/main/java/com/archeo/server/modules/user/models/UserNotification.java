@@ -1,7 +1,7 @@
 package com.archeo.server.modules.user.models;
 
 
-import com.archeo.server.modules.common.models.UsersCommon;
+import com.archeo.server.modules.common.models.Agent;
 import com.archeo.server.modules.user.enums.NotificationType;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -23,8 +23,8 @@ public class UserNotification {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private UsersCommon user;
+    @JoinColumn(name = "agent_id", nullable = false)
+    private Agent agent;
 
     private String title;
 

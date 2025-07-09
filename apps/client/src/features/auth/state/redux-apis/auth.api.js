@@ -219,10 +219,9 @@ export const authApi = apiSlice.injectEndpoints({
 			keepUnusedDataFor: 0,
 		}),
 
-		// CHECK EMAIL AVAILABILITY
-		checkEmailAvailability: builder.query({
-			query: (email) => `/auth/check-email?email=${encodeURIComponent(email)}`,
-			// Don't cache email checks
+		// CHECK USERNAME AVAILABILITY
+		checkUsernameAvailability: builder.query({
+			query: ({ username }) => `/auth/verify/username?username=${encodeURIComponent(username)}`,
 			keepUnusedDataFor: 0,
 		}),
 	}),
@@ -252,7 +251,7 @@ export const {
 	useResetPasswordMutation,
 
 	// Utility hooks
-	useCheckEmailAvailabilityQuery,
+	useLazyCheckUsernameAvailabilityQuery,
 } = authApi;
 
 export const {

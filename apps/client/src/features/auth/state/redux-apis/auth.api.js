@@ -73,11 +73,11 @@ export const authApi = apiSlice.injectEndpoints({
 		}),
 
 		// EMAIL VERIFICATION
-		verifyEmail: builder.mutation({
-			query: (email) => ({
-				url: "/auth/verify-email",
+		sendOTPforVerification: builder.mutation({
+			query: ({ identifier, purpose}) => ({
+				url: "/otp/send",
 				method: "POST",
-				body: { email },
+				body: { identifier, purpose },
 			}),
 			// No cache needed for verification endpoints
 			keepUnusedDataFor: 0,
@@ -85,7 +85,7 @@ export const authApi = apiSlice.injectEndpoints({
 
 		verifyOTP: builder.mutation({
 			query: ({ email, otp }) => ({
-				url: "/auth/verify-otp",
+				url: "/otp/verify",
 				method: "POST",
 				body: { email, otp },
 			}),

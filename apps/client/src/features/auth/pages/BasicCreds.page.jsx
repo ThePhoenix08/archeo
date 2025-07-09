@@ -16,7 +16,7 @@ import {
 	useLazyCheckUsernameAvailabilityQuery,
 	useRegisterAgentMutation,
 } from "@/features/auth/state/redux-apis/auth.api.js";
-import { agentRegisterRequestSchema } from "@/features/auth/validators/authApi.validator.js";
+import { agentRegisterRequestSchema, usernameAvailabilitySchema } from "@/features/auth/validators/authApi.validator.js";
 import { formatZodError } from "@/features/auth/utils/formatZodError.util.js";
 
 const FORMDATA_BLUEPRINT = {
@@ -69,8 +69,11 @@ export default function BasicCredsPage() {
 	const handleUsernameAvailabilityCheck = async (username) => {
 		console.log("Checking username availability:", username);
 		let isAvailable = false;
+		
+		const reqBody = usernameAvailabilitySchema.parse({ username });
+
 		try {
-			const response = await checkUsernameAvailability({ username }).unwrap();
+			const response = await checkUsernameAvailability(reqBody).unwrap();
 			console.log("response", response);
 			isAvailable = response.statusCode === 200;
 		} catch (error) {
@@ -84,6 +87,9 @@ export default function BasicCredsPage() {
 
 	const handleEmailVerify = async (email) => {
 		console.log("Verifying email:", email);
+		// let isVerified = false;
+		
+
 		setIsEmailVerified(true);
 		return true;
 	};

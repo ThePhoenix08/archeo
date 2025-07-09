@@ -124,6 +124,7 @@
 │   │   │   │   │   ├── utils/
 │   │   │   │   │   │   └── address.utils.js
 │   │   │   │   │   ├── validators/
+│   │   │   │   │   │   ├── authApi.validator.js
 │   │   │   │   │   │   └── form.validator.js
 │   │   │   │   │   └── wrappers/
 │   │   │   │   │       ├── AuthLayout.wrapper.jsx
@@ -182,6 +183,9 @@
 │   │   │       │       └── store.js
 │   │   │       ├── utils/
 │   │   │       │   └── routes.util.js
+│   │   │       ├── validators/
+│   │   │       │   ├── apiResponse.validator.js
+│   │   │       │   └── object.validator.js
 │   │   │       └── wrappers/
 │   │   │           └── AppLayout.wrapper.jsx
 │   │   ├── tailwind.config.js
@@ -503,13 +507,17 @@
 │       │       │   │                       ├── config/
 │       │       │   │                       │   └── MailConfig.java
 │       │       │   │                       ├── controllers/
+│       │       │   │                       │   ├── ForgotPasswordController.java
 │       │       │   │                       │   ├── OtpController.java
 │       │       │   │                       │   ├── ProfileController.java
 │       │       │   │                       │   └── SettingsController.java
 │       │       │   │                       ├── dtos/
 │       │       │   │                       │   ├── EmailRequest.java
+│       │       │   │                       │   ├── ForgotPasswordRequest.java
 │       │       │   │                       │   ├── OrganizationProfileDTO.java
+│       │       │   │                       │   ├── OtpVerifyRequest.java
 │       │       │   │                       │   ├── OwnerProfileDTO.java
+│       │       │   │                       │   ├── ResetPasswordRequest.java
 │       │       │   │                       │   ├── SettingsDTO.java
 │       │       │   │                       │   ├── UpdateOrganizationProfileRequest.java
 │       │       │   │                       │   └── UpdateOwnerProfileRequest.java
@@ -528,8 +536,10 @@
 │       │       │   │                       ├── repositories/
 │       │       │   │                       │   ├── OrganizationRepo.java
 │       │       │   │                       │   ├── OwnerRepo.java
-│       │       │   │                       │   └── SettingsRepo.java
+│       │       │   │                       │   ├── SettingsRepo.java
+│       │       │   │                       │   └── UsersCommonRepo.java
 │       │       │   │                       └── services/
+│       │       │   │                           ├── ForgotPasswordService.java
 │       │       │   │                           ├── OtpService.java
 │       │       │   │                           ├── ProfileService.java
 │       │       │   │                           ├── SettingsService.java
@@ -587,4 +597,4 @@
 └── tests/
     └── .gitkeep
 
-291 directories, 297 files
+292 directories, 306 files

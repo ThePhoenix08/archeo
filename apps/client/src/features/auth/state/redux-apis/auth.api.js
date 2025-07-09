@@ -2,9 +2,10 @@ import { apiSlice } from "@/shared/state/redux-apis/slice.barrel.js";
 import {
 	setCredentials,
 	clearCredentials,
-	setAgent,
 	setLoading,
-	setError
+	setError,
+	updateTokens,
+	// setAgent,
 } from "@/features/auth/state/slices/auth.slice.js";
 
 export const authApi = apiSlice.injectEndpoints({
@@ -12,7 +13,7 @@ export const authApi = apiSlice.injectEndpoints({
 		// REGISTER
 		registerAgent: builder.mutation({
 			query: (agentData) => ({
-				url: "/auth/register/agent",
+				url: "/auth/register-userCommon",
 				method: "POST",
 				body: agentData,
 			}),
@@ -20,26 +21,23 @@ export const authApi = apiSlice.injectEndpoints({
 				dispatch(setLoading(true));
 				try {
 					const { data } = await queryFulfilled;
-					if (data.agentId) {
-						dispatch(setAgent({
-							agentId: data.agentId,
-							email: data.email,
-							emailVerifyId: data.emailVerifyId
-						}))
+					console.log("data", data); // DEBUG
+					if (data.accessToken /* && data.email && data.username */) {
+						dispatch(updateTokens({ accessToken: data.accessToken }));
+						// dispatch(setAgent({ email: data.email, username: data.username }));
 					}
-				} catch (error) {
-					dispatch(setError({ message: "Registration failed!", error }));
+				} catch (errors) {
+					dispatch(setError({ message: "Registration failed!", error: errors?.error?.data }));
 				} finally {
 					dispatch(setLoading(false));
 				}
 			},
-			invalidatesTags: ['agent']
 		}),
 		registerIndividual: builder.mutation({
 			query: (individualData) => ({
 				url: "/auth/register/user",
 				method: "POST",
-				body: { ...individualData, agentType: 'individual' },
+				body: { ...individualData, agentType: "individual" },
 			}),
 			async onQueryStarted(_, { dispatch, queryFulfilled }) {
 				dispatch(setLoading(true));
@@ -51,25 +49,27 @@ export const authApi = apiSlice.injectEndpoints({
 					dispatch(setLoading(false));
 				}
 			},
-			invalidatesTags: ['user']
+			invalidatesTags: ["user"],
 		}),
 		registerOrganization: builder.mutation({
 			query: (orgData) => ({
 				url: "/auth/register/user",
 				method: "POST",
-				body: { ...orgData, userType: 'organization' },
+				body: { ...orgData, userType: "organization" },
 			}),
 			async onQueryStarted(_, { dispatch, queryFulfilled }) {
 				dispatch(setLoading(true));
 				try {
 					await queryFulfilled;
 				} catch (error) {
-					dispatch(setError(error.error?.data?.message || 'Registration failed'));
+					dispatch(
+						setError(error.error?.data?.message || "Registration failed")
+					);
 				} finally {
 					dispatch(setLoading(false));
 				}
 			},
-			invalidatesTags: ['User', 'Organization'],
+			invalidatesTags: ["User", "Organization"],
 		}),
 
 		// EMAIL VERIFICATION
@@ -105,12 +105,12 @@ export const authApi = apiSlice.injectEndpoints({
 					const { data } = await queryFulfilled;
 					dispatch(setCredentials(data));
 				} catch (error) {
-					dispatch(setError(error.error?.data?.message || 'Login failed'));
+					dispatch(setError(error.error?.data?.message || "Login failed"));
 				} finally {
 					dispatch(setLoading(false));
 				}
 			},
-			invalidatesTags: ['Auth', 'CurrentUser'],
+			invalidatesTags: ["Auth", "CurrentUser"],
 		}),
 
 		// LOGOUT
@@ -129,13 +129,13 @@ export const authApi = apiSlice.injectEndpoints({
 					dispatch(clearCredentials());
 				}
 			},
-			invalidatesTags: ['Auth', 'CurrentUser', 'UserProfile'],
+			invalidatesTags: ["Auth", "CurrentUser", "UserProfile"],
 		}),
 
 		// GET CURRENT USER
 		getCurrentUser: builder.query({
 			query: () => "/auth/current-user",
-			providesTags: ['CurrentUser'],
+			providesTags: ["CurrentUser"],
 			// Transform response to ensure consistency
 			transformResponse: (response) => {
 				// Ensure we have all required fields
@@ -144,7 +144,7 @@ export const authApi = apiSlice.injectEndpoints({
 					email: response.email,
 					role: response.role,
 					profile: response.profile,
-					...response
+					...response,
 				};
 			},
 			// Keep user data cached for 5 minutes
@@ -162,14 +162,22 @@ export const authApi = apiSlice.injectEndpoints({
 				try {
 					const { data } = await queryFulfilled;
 					// Optimistically update the current user data
-					dispatch(apiSlice.util.updateQueryData('getCurrentUser', undefined, (draft) => {
-						Object.assign(draft, data);
-					}));
+					dispatch(
+						apiSlice.util.updateQueryData(
+							"getCurrentUser",
+							undefined,
+							(draft) => {
+								Object.assign(draft, data);
+							}
+						)
+					);
 				} catch (error) {
-					dispatch(setError(error.error?.data?.message || 'Profile update failed'));
+					dispatch(
+						setError(error.error?.data?.message || "Profile update failed")
+					);
 				}
 			},
-			invalidatesTags: ['CurrentUser', 'UserProfile'],
+			invalidatesTags: ["CurrentUser", "UserProfile"],
 		}),
 
 		// CHANGE PASSWORD
@@ -184,7 +192,9 @@ export const authApi = apiSlice.injectEndpoints({
 					await queryFulfilled;
 					// Password changed successfully, could show success message
 				} catch (error) {
-					dispatch(setError(error.error?.data?.message || 'Password change failed'));
+					dispatch(
+						setError(error.error?.data?.message || "Password change failed")
+					);
 				}
 			},
 		}),
@@ -246,9 +256,5 @@ export const {
 } = authApi;
 
 export const {
-	endpoints: {
-		getCurrentUser,
-		logout,
-		login,
-	}
+	endpoints: { getCurrentUser, logout, login },
 } = authApi;

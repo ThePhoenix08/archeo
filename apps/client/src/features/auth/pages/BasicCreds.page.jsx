@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from "react"
-import { User, Mail, LockKeyhole } from "lucide-react"
+import { User, Mail, LockKeyhole, LoaderCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import EmailInputWithOTPVerification from "@/features/auth/components/sub-components/register/email-input-with-verification.sc.jsx"
 import PasswordInputWithValidation from "@/features/auth/components/sub-components/register/password-input-with-validation.sc.jsx"
@@ -9,6 +9,9 @@ import { Validators, validatorsNames } from "@/features/auth/validators/form.val
 import { ROUTES } from "@/shared/constants/routes.constant.js"
 import LogoText from "@/components/brand/LogoText.sc.jsx"
 import { Link, useNavigate } from "react-router"
+import { useRegisterAgentMutation } from "@/features/auth/state/redux-apis/auth.api.js"
+import { agentRegisterRequestSchema } from "@/features/auth/validators/authApi.validator.js"
+import { formatZodError } from "@/features/auth/utils/formatZodError.util.js"
 
 const FORMDATA_BLUEPRINT = {
   username: "",
@@ -46,6 +49,8 @@ export default function BasicCredsPage() {
 
   const [isSubmitAllowed, setSubmitToAllowed] = useState(false)
 	const navigate = useNavigate();
+
+  const [registerAgent, { isLoading, data: responseData }] = useRegisterAgentMutation();
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
@@ -128,19 +133,31 @@ export default function BasicCredsPage() {
     })
 
     return {
-      isValid: isFormDataValid && isUsernameAvailable === true && isEmailVerified && isPasswordValid,
+      // isValid: isFormDataValid && isUsernameAvailable === true && isEmailVerified && isPasswordValid,
+      isValid: isFormDataValid,
       errorsSet,
     }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const { isValid, errorsSet } = getFormValidationResult()
     setErrors((prev) => ({ ...prev, ...errorsSet }))
     if (isValid) {
-      console.log("Basic Credentials Data:", formData)
-      alert("Basic credentials saved successfully!")
-      navigate(ROUTES.AGENT_TYPE);
+      console.info("Basic Credentials Data:", formData)
+
+      const result = agentRegisterRequestSchema.safeParse(formData);
+      console.info("validReqBody", result);
+      if (!result.success) {
+        const zodError = formatZodError(result.error);
+        console.error("ZodError", zodError);
+        return;
+      }
+
+      await registerAgent(result.data);
+
+      // alert("Basic credentials saved successfully!")
+      // navigate(ROUTES.AGENT_TYPE);
     }
   }
 
@@ -227,13 +244,14 @@ export default function BasicCredsPage() {
               <div className="pt-6">
                 <Button
                   type="submit"
-                  disabled={!isSubmitAllowed}
+                  disabled={!isSubmitAllowed || isLoading}
                   size="lg"
                   className="w-full px-8 py-4 text-xl font-medium"
                   style={{
                     clipPath: "polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px))",
                   }}
                 >
+                  {isLoading ? <LoaderCircle className="animate-spin" /> : ""}
                   Create Account
                 </Button>
               </div>

@@ -1,16 +1,17 @@
 package com.archeo.server.modules.auth.components;
 
-import com.archeo.server.modules.common.enums.AGENT_ROLE;
+
+import com.archeo.server.modules.common.enums.AgentRole;
 import com.archeo.server.modules.common.enums.Permission;
 
 import java.util.*;
 
 public class RolePermissionMapping {
 
-    private static final Map<AGENT_ROLE, List<Permission>> roleToPermissions = new EnumMap<>(AGENT_ROLE.class);
+    private static final Map<AgentRole, List<Permission>> roleToPermissions = new EnumMap<>(AgentRole.class);
 
     static {
-        roleToPermissions.put(AGENT_ROLE.ROLE_OWNER, List.of(
+        roleToPermissions.put(AgentRole.OWNER, List.of(
                 Permission.PROFILE_CREATE_OWN,
                 Permission.PROFILE_READ_OWN,
                 Permission.PROFILE_UPDATE_OWN,
@@ -35,7 +36,7 @@ public class RolePermissionMapping {
                 Permission.DOCUMENT_BULK_FAVORITE_OWN
         ));
 
-        roleToPermissions.put(AGENT_ROLE.ROLE_ISSUER, List.of(
+        roleToPermissions.put(AgentRole.ISSUER, List.of(
                 Permission.TEMPLATE_BULK_READ_OWN,
                 Permission.TEMPLATE_UPDATE_OWN,
                 Permission.TEMPLATE_CREATE_OWN,
@@ -64,7 +65,7 @@ public class RolePermissionMapping {
                 Permission.DOMAIN_ADD_TEMPLATE_OWN
         ));
 
-        roleToPermissions.put(AGENT_ROLE.ROLE_VERIFIER, List.of(
+        roleToPermissions.put(AgentRole.VERIFIER, List.of(
                 Permission.DOCUMENT_METADATA_READ_SHARED,
                 Permission.DOCUMENT_BULK_READ_SHARED,
                 Permission.DOCUMENT_BULK_SHARED_DOWNLOAD_ALLOWED,
@@ -78,7 +79,7 @@ public class RolePermissionMapping {
                 Permission.DOCUMENT_BULK_CUSTOM_REQUEST
         ));
 
-        roleToPermissions.put(AGENT_ROLE.ROLE_API_CONSUMER, List.of(
+        roleToPermissions.put(AgentRole.VERIFIER_API_CONSUMER, List.of(
                 Permission.API_CONFIG_CREATE,
                 Permission.API_CONFIG_UPDATE,
                 Permission.API_CONFIG_DESTROY,
@@ -92,15 +93,15 @@ public class RolePermissionMapping {
         // You can include other roles such as ADMIN or SUPERADMIN similarly.
     }
 
-    public static List<Permission> getPermissionsForRoles(Collection<AGENT_ROLE> roles) {
+    public static List<Permission> getPermissionsForRoles(Collection<AgentRole> roles) {
         Set<Permission> permissionSet = new HashSet<>();
-        for (AGENT_ROLE role : roles) {
+        for (AgentRole role : roles) {
             permissionSet.addAll(roleToPermissions.getOrDefault(role, List.of()));
         }
         return List.copyOf(permissionSet);
     }
 
-    public static boolean hasPermission(Collection<AGENT_ROLE> roles, Permission requiredPermission) {
+    public static boolean hasPermission(Collection<AgentRole> roles, Permission requiredPermission) {
         return getPermissionsForRoles(roles).contains(requiredPermission);
     }
 }

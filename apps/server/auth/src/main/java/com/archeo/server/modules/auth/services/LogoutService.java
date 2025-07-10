@@ -2,7 +2,7 @@ package com.archeo.server.modules.auth.services;
 
 import com.archeo.server.modules.auth.models.AuthLogs;
 import com.archeo.server.modules.auth.repositories.AuthLogsRepo;
-import com.archeo.server.modules.common.dto.ApiResponse;
+import com.archeo.server.modules.common.dto.ApiSuccessResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,15 +19,14 @@ public class LogoutService {
 
     private final AuthLogsRepo authLogsRepository;
 
-    public ResponseEntity<ApiResponse<String>> logout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<ApiSuccessResponse<String>> logout(HttpServletRequest request, HttpServletResponse response) {
 
         String refreshToken = extractRefreshTokenFromCookie(request);
 
         if (refreshToken == null || refreshToken.isBlank()) {
-            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+            ApiSuccessResponse<String> errorResponse = ApiSuccessResponse.<String>builder()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
                     .message("Refresh token is missing")
-                    .slug("token_missing")
                     .data(null)
                     .build();
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -35,10 +34,9 @@ public class LogoutService {
 
         Optional<AuthLogs> authLogOpt = authLogsRepository.findByRefreshToken(refreshToken);
         if (authLogOpt.isEmpty()) {
-            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+            ApiSuccessResponse<String> errorResponse = ApiSuccessResponse.<String>builder()
                     .statusCode(HttpStatus.NOT_FOUND.value())
                     .message("No session found for the given refresh token")
-                    .slug("session_not_found")
                     .data(null)
                     .build();
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
@@ -53,10 +51,9 @@ public class LogoutService {
         cookie.setMaxAge(0);
         response.addCookie(cookie);
 
-        ApiResponse<String> successResponse = ApiResponse.<String>builder()
+        ApiSuccessResponse<String> successResponse = ApiSuccessResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("Logged out successfully.")
-                .slug("logout_success")
                 .data(null)
                 .build();
 

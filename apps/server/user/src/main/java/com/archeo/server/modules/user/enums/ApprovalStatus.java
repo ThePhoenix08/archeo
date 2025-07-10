@@ -1,6 +1,6 @@
 package com.archeo.server.modules.user.enums;
 
-public enum VERIFICATION_STATUS {
+public enum ApprovalStatus {
 
     PENDING,
     APPROVED,

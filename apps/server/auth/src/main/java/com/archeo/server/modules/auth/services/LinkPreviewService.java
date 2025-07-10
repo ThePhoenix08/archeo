@@ -1,8 +1,8 @@
 package com.archeo.server.modules.auth.services;
 
 
-import com.archeo.server.modules.auth.dtos.LinkPreviewRequest;
 import com.archeo.server.modules.auth.models.LinkPreviewResponse;
+import com.archeo.server.modules.auth.requests.LinkPreviewRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

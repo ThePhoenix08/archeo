@@ -781,19 +781,19 @@ function RegisterOrgPage() {
 		const formDataToSubmit = new FormData();
 
 		// Add all text fields to FormData
-		formDataToSubmit.append("orgname", formData.orgname);
-		formDataToSubmit.append("orgtype", formData.orgtype);
+		formDataToSubmit.append("organizationName", formData.orgname);
+		formDataToSubmit.append("organizationType", formData.orgtype);
 		formDataToSubmit.append("website", formData.website);
-		formDataToSubmit.append("contactname", formData.contactname);
-		formDataToSubmit.append("designation", formData.designation);
-		formDataToSubmit.append("phonenumber", formData.phonenumber);
-		formDataToSubmit.append("prooftype", formData.prooftype);
+		formDataToSubmit.append("contactPersonName", formData.contactname);
+		formDataToSubmit.append("contactDesignation", formData.designation);
+		formDataToSubmit.append("contactPhone", formData.phonenumber);
+		formDataToSubmit.append("proofDocType", formData.prooftype);
 
 		// Handle address object
 		if (formData.address && typeof formData.address === "object") {
-			formDataToSubmit.append("address", JSON.stringify(formData.address));
+			formDataToSubmit.append("officeAddress", JSON.stringify(formData.address));
 		} else {
-			formDataToSubmit.append("address", formData.address || "");
+			formDataToSubmit.append("officeAddress", formData.address || "");
 		}
 
 		// Handle file upload

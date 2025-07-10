@@ -22,14 +22,14 @@ const ProtectedRoute = ({
 }) => {
 	const location = useLocation();
 	// const user = useSelector(selectCurrentUser);
-	const user = { role: ROLES.USER };
-	if (!user || !user.role)
+	const user = { roles: [ROLES.USER] };
+	if (!user || !user.roles || !user.roles.length > 0)
 		throw new Error("User or user role is undefined.");
-	const { role: userRole } = user;
+	const { roles: userRoles } = user;
 
-	if (!allowedRoles.includes(userRole)) {
+	if (allowedRoles.filter(value => userRoles.includes(value))) {
 		return showMessageFlag ? (
-			<AccessDeniedPage allowedRoles={allowedRoles} userRole={userRole} />
+			<AccessDeniedPage allowedRoles={allowedRoles} userRoles={userRoles} requestedRoute={location.pathname} />
 		) : (
 			<Navigate
 				to={fallbackRoute}
@@ -44,4 +44,5 @@ const ProtectedRoute = ({
 
 	return children;
 };
+
 export default ProtectedRoute;

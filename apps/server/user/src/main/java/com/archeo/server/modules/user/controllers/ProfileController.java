@@ -1,12 +1,13 @@
 package com.archeo.server.modules.user.controllers;
 
-import com.archeo.server.modules.common.dto.ApiResponse;
+import com.archeo.server.modules.common.dto.ApiSuccessResponse;
 import com.archeo.server.modules.common.models.Agent;
-import com.archeo.server.modules.common.repositories.AgentRepository;
+import com.archeo.server.modules.user.dtos.IndividualProfileDTO;
+import com.archeo.server.modules.user.dtos.UpdateIndividualProfileRequest;
+import com.archeo.server.modules.user.models.Individual;
+import com.archeo.server.modules.user.repositories.AgentRepository;
 import com.archeo.server.modules.user.dtos.OrganizationProfileDTO;
-import com.archeo.server.modules.user.dtos.OwnerProfileDTO;
 import com.archeo.server.modules.user.dtos.UpdateOrganizationProfileRequest;
-import com.archeo.server.modules.user.dtos.UpdateOwnerProfileRequest;
 import com.archeo.server.modules.user.services.ProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,14 +27,14 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @GetMapping("/getOwner")
-    public ResponseEntity<ApiResponse<OwnerProfileDTO>> getOwnerProfile() {
+    public ResponseEntity<ApiSuccessResponse<IndividualProfileDTO>> getOwnerProfile() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Agent agent = agentRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        OwnerProfileDTO profileDTO = profileService.getOwnerProfile(agent);
+        IndividualProfileDTO profileDTO = profileService.getIndividualProfile(agent);
         return ResponseEntity.ok(
-                ApiResponse.<OwnerProfileDTO>builder()
+                ApiSuccessResponse.<IndividualProfileDTO>builder()
                         .statusCode(HttpStatus.OK.value())
                         .message("Owner profile fetched successfully")
                         .data(profileDTO)
@@ -42,25 +43,25 @@ public class ProfileController {
     }
 
     @PutMapping("/updateOwner")
-    public ResponseEntity<ApiResponse<String>> updateOwnerProfile(
-            @Valid @RequestBody UpdateOwnerProfileRequest updateOwnerProfile,
+    public ResponseEntity<ApiSuccessResponse<String>> updateOwnerProfile(
+            @Valid @RequestBody UpdateIndividualProfileRequest updateOwnerProfile,
             Principal principal) {
 
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                    ApiResponse.<String>builder()
+                    ApiSuccessResponse.<String>builder()
                             .statusCode(HttpStatus.UNAUTHORIZED.value())
                             .message("Unauthorized")
-                            .errorType("AUTH_ERROR")
+//                            .errorType("AUTH_ERROR")
                             .build()
             );
         }
 
         String userEmail = principal.getName();
-        profileService.updateOwnerProfile(userEmail, updateOwnerProfile);
+        profileService.updateIndividualProfile(userEmail, updateOwnerProfile);
 
         return ResponseEntity.ok(
-                ApiResponse.<String>builder()
+                ApiSuccessResponse.<String>builder()
                         .statusCode(HttpStatus.OK.value())
                         .message("Owner profile updated successfully")
                         .data("Updated profile for: " + userEmail)
@@ -69,13 +70,13 @@ public class ProfileController {
     }
 
     @GetMapping("/getOrganization")
-    public ResponseEntity<ApiResponse<OrganizationProfileDTO>> getOrganizationProfile(Principal principal) {
+    public ResponseEntity<ApiSuccessResponse<OrganizationProfileDTO>> getOrganizationProfile(Principal principal) {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                    ApiResponse.<OrganizationProfileDTO>builder()
+                    ApiSuccessResponse.<OrganizationProfileDTO>builder()
                             .statusCode(HttpStatus.UNAUTHORIZED.value())
                             .message("Unauthorized")
-                            .errorType("AUTH_ERROR")
+//                            .errorType("AUTH_ERROR")
                             .build()
             );
         }
@@ -84,7 +85,7 @@ public class ProfileController {
         OrganizationProfileDTO profileDTO = profileService.getOrganizationProfile(orgEmail);
 
         return ResponseEntity.ok(
-                ApiResponse.<OrganizationProfileDTO>builder()
+                ApiSuccessResponse.<OrganizationProfileDTO>builder()
                         .statusCode(HttpStatus.OK.value())
                         .message("Organization profile fetched successfully")
                         .data(profileDTO)
@@ -93,16 +94,16 @@ public class ProfileController {
     }
 
     @PutMapping("/updateOrganization")
-    public ResponseEntity<ApiResponse<String>> updateOrganizationProfile(
+    public ResponseEntity<ApiSuccessResponse<String>> updateOrganizationProfile(
             @Valid @RequestBody UpdateOrganizationProfileRequest updateRequest,
             Principal principal) {
 
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                    ApiResponse.<String>builder()
+                    ApiSuccessResponse.<String>builder()
                             .statusCode(HttpStatus.UNAUTHORIZED.value())
                             .message("Unauthorized")
-                            .errorType("AUTH_ERROR")
+//                            .errorType("AUTH_ERROR")
                             .build()
             );
         }
@@ -111,7 +112,7 @@ public class ProfileController {
         profileService.updateOrganizationProfile(updateRequest, orgEmail);
 
         return ResponseEntity.ok(
-                ApiResponse.<String>builder()
+                ApiSuccessResponse.<String>builder()
                         .statusCode(HttpStatus.OK.value())
                         .message("Organization profile updated successfully")
                         .data("Updated profile for: " + orgEmail)

@@ -1,6 +1,6 @@
 package com.archeo.server.modules.user.dtos;
 
-import com.archeo.server.modules.user.enums.VERIFICATION_STATUS;
+import com.archeo.server.modules.user.enums.ApprovalStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,7 +27,7 @@ public class OrganizationProfileDTO {
     private String webUrl;
     private String address;
 
-    private VERIFICATION_STATUS verificationStatus;
+    private ApprovalStatus approvalStatus;
 
     private String avatarUrl;
     private String bio;

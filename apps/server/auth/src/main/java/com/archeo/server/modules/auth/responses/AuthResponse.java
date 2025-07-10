@@ -1,11 +1,9 @@
-package com.archeo.server.modules.auth.dtos;
+package com.archeo.server.modules.auth.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @Builder
@@ -13,11 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 public class AuthResponse {
 
-
     private String accessToken;
-    private List<String> agentRole;
-    private OwnerLoginResponse owner;
-    private OrganizationLoginResponse organization;
-
-
 }

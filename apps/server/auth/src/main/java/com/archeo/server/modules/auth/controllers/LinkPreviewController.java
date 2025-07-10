@@ -1,7 +1,7 @@
 package com.archeo.server.modules.auth.controllers;
 
-import com.archeo.server.modules.auth.dtos.LinkPreviewRequest;
 import com.archeo.server.modules.auth.models.LinkPreviewResponse;
+import com.archeo.server.modules.auth.requests.LinkPreviewRequest;
 import com.archeo.server.modules.auth.services.LinkPreviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

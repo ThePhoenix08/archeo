@@ -19,7 +19,7 @@ public class AuthLogsService {
 
         AuthLogs authLogs=AuthLogs.builder()
                 .agent(agent)
-                .refreshTokenHash(passwordEncoder.encode(refreshToken))
+                .refreshToken(passwordEncoder.encode(refreshToken))
                 .ipAddress(request.getRemoteAddr())
                 .userAgent(request.getHeader("User-Agent"))
                 .build();

@@ -1,4 +1,4 @@
-package com.archeo.server.modules.auth.dtos;
+package com.archeo.server.modules.auth.requests;
 
 
 import jakarta.validation.constraints.Email;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AgentRegisterRequest {
+public class    AgentRegisterRequest {
 
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")

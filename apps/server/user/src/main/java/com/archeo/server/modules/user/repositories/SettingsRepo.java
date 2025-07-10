@@ -8,5 +8,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface SettingsRepo extends JpaRepository<Settings, UUID> {
-    Optional<Settings> findByUser(Agent agent);
+    Optional<Settings> findByAgent(Agent agent);
 }

@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateOwnerProfileRequest {
+public class UpdateIndividualProfileRequest {
 
     @NotBlank(message = "Full name is required")
     @Size(max = 100, message = "Full name must be under 100 characters")

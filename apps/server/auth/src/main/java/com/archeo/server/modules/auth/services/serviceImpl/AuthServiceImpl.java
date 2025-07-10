@@ -1,34 +1,44 @@
 package com.archeo.server.modules.auth.services.serviceImpl;
 
 import com.archeo.server.modules.auth.config.JwtProvider;
-import com.archeo.server.modules.auth.dtos.*;
+import com.archeo.server.modules.auth.dtos.IndividualInfo;
+import com.archeo.server.modules.auth.mapper.IndividualMapper;
 import com.archeo.server.modules.auth.mapper.LoginMapper;
 import com.archeo.server.modules.auth.mapper.OrganizationMapper;
-import com.archeo.server.modules.auth.mapper.OwnerMapper;
 import com.archeo.server.modules.auth.repositories.AuthLogsRepo;
+import com.archeo.server.modules.auth.requests.AgentRegisterRequest;
+import com.archeo.server.modules.auth.requests.IndividualRegisterRequest;
+import com.archeo.server.modules.auth.requests.LoginRequest;
+import com.archeo.server.modules.auth.requests.OrganizationRegisterRequest;
+import com.archeo.server.modules.auth.responses.AuthResponse;
+import com.archeo.server.modules.auth.responses.IndividualRegisterResponse;
+import com.archeo.server.modules.auth.responses.LoginResponse;
+import com.archeo.server.modules.auth.responses.OrganizationRegisterResponse;
 import com.archeo.server.modules.auth.services.AuthLogsService;
 import com.archeo.server.modules.auth.services.AuthService;
 import com.archeo.server.modules.auth.services.IdentityProofStorageService;
-import com.archeo.server.modules.common.enums.AGENT_ROLE;
+import com.archeo.server.modules.common.dto.ApiSuccessResponse;
+import com.archeo.server.modules.common.enums.AgentRole;
 import com.archeo.server.modules.common.exceptions.InvalidCredentialsException;
 import com.archeo.server.modules.common.exceptions.InvalidTokenException;
 import com.archeo.server.modules.common.exceptions.UserNotFoundException;
 import com.archeo.server.modules.common.models.Agent;
-import com.archeo.server.modules.common.repositories.AgentRepository;
+import com.archeo.server.modules.user.models.Individual;
+import com.archeo.server.modules.user.repositories.AgentRepository;
 import com.archeo.server.modules.user.models.Organization;
-import com.archeo.server.modules.user.models.Owner;
+import com.archeo.server.modules.user.repositories.IndividualRepo;
 import com.archeo.server.modules.user.repositories.OrganizationRepo;
-import com.archeo.server.modules.user.repositories.OwnerRepo;
-import com.archeo.server.modules.auth.dtos.OrganizationRegisterResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -38,14 +48,14 @@ public class AuthServiceImpl implements AuthService {
     private final JwtProvider jwtProvider;
     private final AuthLogsService authLogsService;
     private final AgentRepository agentRepository;
-    private final OwnerRepo ownerRepo;
     private final OrganizationRepo organizationRepo;
-    private final OwnerMapper ownerMapper;
+    private final IndividualMapper individualMapper;
     private final OrganizationMapper organizationMapper;
     private final BCryptPasswordEncoder passwordEncoder;
     private final IdentityProofStorageService identityProofStorageService;
     private final LoginMapper loginMapper;
     private final AuthLogsRepo authLogsRepo;
+    private final IndividualRepo individualRepo;
 
 
     @Override
@@ -82,84 +92,114 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
-
     @Override
-    @Transactional
-    public OwnerRegisterResponse registerOwner(OwnerRegisterRequest request, Agent agent) {
+    public ApiSuccessResponse<LoginResponse.LoginData<?>> login(
+            LoginRequest loginRequest,
+            HttpServletRequest servletRequest,
+            HttpServletResponse servletResponse) {
 
-        Owner owner = new Owner();
-        ownerMapper.mapOwnerRegisterRequestToOwner(request, owner);
-        owner.setAgentRole(request.getAgentRole());
-        owner.setAgent(agent);
-
-        Owner savedOwner=ownerRepo.save(owner);
-        OwnerRegisterResponse registerResponse=ownerMapper.mapOwnerToResponse(savedOwner);
-
-        return registerResponse;
-    }
-
-
-
-
-
-    @Override
-    public Optional<AuthResponse> login(LoginRequest loginRequest,
-                                        HttpServletRequest servletRequest,
-                                        HttpServletResponse response) {
-
-        if ((loginRequest.getEmail() == null || loginRequest.getEmail().isBlank()) &&
-                (loginRequest.getUsername() == null || loginRequest.getUsername().isBlank())) {
-            throw new InvalidCredentialsException("Email or username must be provided");
-        }
-
-        Agent agent = agentRepository.findByEmail(loginRequest.getEmail())
-                .or(() -> agentRepository.findByUsername(loginRequest.getUsername()))
-                .orElseThrow(() -> new UserNotFoundException("Invalid credentials"));
+        String identifier = loginRequest.getIdentifier();
+        Agent agent = (loginRequest.getType() == LoginRequest.LoginType.EMAIL)
+                ? agentRepository.findByEmail(identifier).orElseThrow(() -> new UserNotFoundException("Agent not found"))
+                : agentRepository.findByUsername(identifier).orElseThrow(() -> new UserNotFoundException("Agent not found"));
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), agent.getPassword())) {
             throw new InvalidCredentialsException("Incorrect password");
         }
 
-        List<String> roles = determineAgentRoles(agent);
+        List<String> roles = determineRoles(agent);
         Map<String, Object> claims = Map.of("authorities", roles);
 
         String accessToken = jwtProvider.generateAccessToken(claims, agent.getEmail());
         String refreshToken = jwtProvider.generateRefreshToken(agent.getEmail());
 
-        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(3 * 24 * 60 * 60);
-        response.addCookie(refreshTokenCookie);
+        Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(true);
+        refreshCookie.setPath("/");
+        refreshCookie.setMaxAge(3 * 24 * 60 * 60);
+        servletResponse.addCookie(refreshCookie);
 
-//        sessionService.saveSession(user, refreshToken, servletRequest);
         authLogsService.log(agent, refreshToken, servletRequest);
 
-        OwnerLoginResponse ownerDto = null;
-        OrganizationLoginResponse orgDto = null;
+        Optional<Individual> individualOpt = individualRepo.findByAgent(agent);
+        Optional<Organization> orgOpt = organizationRepo.findByAgent(agent);
 
-        if (roles.contains("ROLE_OWNER")) {
-            ownerDto = ownerRepo.findByUser(agent)
-                    .map(loginMapper::toDto)
-                    .orElse(null);
+        LoginResponse.LoginData<?> loginData;
+
+        if (individualOpt.isPresent()) {
+            loginData = LoginResponse.LoginData.builder()
+                    .token(accessToken)
+                    .agentType("individual")
+                    .user(loginMapper.toIndividualInfo(individualOpt.get()))
+                    .build();
+        } else if (orgOpt.isPresent()) {
+            loginData = LoginResponse.LoginData.builder()
+                    .token(accessToken)
+                    .agentType("organization")
+                    .user(loginMapper.toOrganizationInfo(orgOpt.get()))
+                    .build();
+        } else {
+            throw new InvalidCredentialsException("User has no valid role assigned.");
         }
 
-        if (roles.contains("ROLE_ISSUER") || roles.contains("ROLE_VERIFIER")) {
-            orgDto = organizationRepo.findByUser(agent)
-                    .map(loginMapper::toDto)
-                    .orElse(null);
-        }
-
-        AuthResponse authResponse = AuthResponse.builder()
-                .accessToken(accessToken)
-                .agentRole(roles)
-                .owner(ownerDto)
-                .organization(orgDto)
+        return ApiSuccessResponse.<LoginResponse.LoginData<?>>builder()
+                .success(true)
+                .statusCode(HttpStatus.OK.value())
+                .message("Login successful")
+                .data(loginData)
                 .build();
-
-        return Optional.of(authResponse);
     }
+
+
+    private List<String> determineRoles(Agent agent) {
+        List<String> roles = new ArrayList<>();
+
+        individualRepo.findByAgent(agent).ifPresent(owner -> {
+            if (owner.getAgentRole() != null) {
+                roles.addAll(
+                        owner.getAgentRole()
+                                .stream()
+                                .map(AgentRole::name)
+                                .toList()
+                );
+            }
+        });
+
+        organizationRepo.findByAgent(agent).ifPresent(org -> {
+            if (org.isOwner()) roles.add(AgentRole.OWNER.name());
+            if (org.isIssuer()) roles.add(AgentRole.ISSUER.name());
+            if (org.isVerifier()) roles.add(AgentRole.VERIFIER.name());
+        });
+
+        if (roles.isEmpty()) roles.add("PENDING");
+
+        return roles;
+    }
+
+
+
+    @Override
+    @Transactional
+    public IndividualRegisterResponse registerIndividual(IndividualRegisterRequest request, Agent agent) {
+
+        Individual newIndividual=new Individual();
+        individualMapper.mapIndividualRegisterRequestToIndividual(request, newIndividual);
+
+        newIndividual.setAgentRole(request.getAgentRole());
+        newIndividual.setAgent(agent);
+        newIndividual.setRegisterIncomplete(false);
+        Individual savedIndividual=individualRepo.save(newIndividual);
+
+        IndividualInfo individualInfo = individualMapper.toIndividualInfo(savedIndividual);
+
+        return IndividualRegisterResponse.builder()
+                .agentType("individual")
+                .user(individualInfo)
+                .build();
+    }
+
+
 
 
 
@@ -169,23 +209,20 @@ public class AuthServiceImpl implements AuthService {
                                                              Agent agent) {
 
 
-        String proofPath=identityProofStorageService.uploadProof(file);
+        String proofPath = identityProofStorageService.uploadProof(file);
 
         Organization organization = new Organization();
         organizationMapper.mapRequestToOrganization(organization, request);
 
-        List<AGENT_ROLE> roles = new ArrayList<>(organization.getAgentRole());
-        organization.setAgentRole(null);
-
         organization.setAgent(agent);
-        organization.setIdentityProof(proofPath);
+        organization.setProofFileUrl(proofPath);
+
+
+        System.out.println("roles: "+ organization.getAgentRole());
 
         Organization savedOrg = organizationRepo.save(organization);
 
-        savedOrg.setAgentRole(roles);
-        organizationRepo.save(savedOrg);  // second save to persist the roles
-
-        return organizationMapper.mapToResponse(savedOrg);
+        return organizationMapper.toOrganizationRegisterResponse(savedOrg);
 
 
 
@@ -238,25 +275,30 @@ public class AuthServiceImpl implements AuthService {
         List<String> roles = new ArrayList<>();
 
         // From Owner table
-        ownerRepo.findByUser(agent).ifPresent(owner -> {
-            roles.addAll(owner.getAgentRole()
-                    .stream()
-                    .map(AGENT_ROLE::name)
-                    .toList());
+        individualRepo.findByAgent(agent).ifPresent(individual -> {
+            if (individual.getAgentRole() != null) {
+                roles.addAll(
+                        individual.getAgentRole()
+                                .stream()
+                                .map(AgentRole::name)
+                                .toList()
+                );
+            }
         });
 
         // From Organization table
-        organizationRepo.findByUser(agent).ifPresent(org -> {
-            if (org.isOwner()) roles.add(AGENT_ROLE.ROLE_OWNER.name());
-            if (org.isIssuer()) roles.add(AGENT_ROLE.ROLE_ISSUER.name());
-            if (org.isVerifier()) roles.add(AGENT_ROLE.ROLE_VERIFIER.name());
+        organizationRepo.findByAgent(agent).ifPresent(org -> {
+            if (org.getAgentRole() != null) {
+                roles.addAll(
+                        org.getAgentRole()
+                                .stream()
+                                .map(AgentRole::name)
+                                .toList()
+                );
+            }
         });
 
-
-
-        if (roles.isEmpty()) {
-            roles.add("ROLE_PENDING");
-        }
+        if (roles.isEmpty()) roles.add("PENDING");
 
         return roles;
     }

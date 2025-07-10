@@ -6,10 +6,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ApiResponse<T> {
+public class ApiSuccessResponse<T> {
+
+    private boolean success;
     private int statusCode;
     private String message;
-    private String errorType;
-    private String slug;
     private T data;
 }

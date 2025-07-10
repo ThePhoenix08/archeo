@@ -3,17 +3,24 @@ package com.archeo.server.modules.auth.controllers;
 
 import com.archeo.server.modules.auth.config.CustomUserDetails;
 import com.archeo.server.modules.auth.dtos.*;
+import com.archeo.server.modules.auth.requests.AgentRegisterRequest;
+import com.archeo.server.modules.auth.requests.IndividualRegisterRequest;
+import com.archeo.server.modules.auth.requests.LoginRequest;
+import com.archeo.server.modules.auth.requests.OrganizationRegisterRequest;
+import com.archeo.server.modules.auth.responses.AuthResponse;
+import com.archeo.server.modules.auth.responses.IndividualRegisterResponse;
+import com.archeo.server.modules.auth.responses.LoginResponse;
+import com.archeo.server.modules.auth.responses.OrganizationRegisterResponse;
 import com.archeo.server.modules.auth.services.*;
-import com.archeo.server.modules.common.dto.ApiResponse;
-import com.archeo.server.modules.common.exceptions.InvalidCredentialsException;
+import com.archeo.server.modules.common.dto.ApiSuccessResponse;
 import com.archeo.server.modules.common.exceptions.UserAlreadyExistsException;
 import com.archeo.server.modules.common.exceptions.UserNotFoundException;
 import com.archeo.server.modules.common.models.Agent;
 
 
-import com.archeo.server.modules.common.repositories.AgentRepository;
+import com.archeo.server.modules.user.repositories.AgentRepository;
+import com.archeo.server.modules.user.repositories.IndividualRepo;
 import com.archeo.server.modules.user.repositories.OrganizationRepo;
-import com.archeo.server.modules.user.repositories.OwnerRepo;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,7 +39,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -45,12 +51,12 @@ public class AuthController {
     private final AgentRepository agentRepository;
     private final SessionService sessionService;
     private final OAuth2UserService oAuth2UserService;
-    private final OwnerRepo ownerRepo;
+    private final IndividualRepo individualRepo;
     private final OrganizationRepo organizationRepo;
     private final LogoutService logoutService;
 
-    @PostMapping("/register/userCommon")
-    public ResponseEntity<ApiResponse<AuthResponse>> registerUserCommon(
+    @PostMapping("/register/agent")
+    public ResponseEntity<ApiSuccessResponse<AuthResponse>> registerUserCommon(
             @Valid @RequestBody AgentRegisterRequest registerRequest,
             HttpServletRequest servletRequest,
             HttpServletResponse servletResponse
@@ -60,10 +66,10 @@ public class AuthController {
             throw new UserAlreadyExistsException("Email already registered.");
         }
         AuthResponse authResponse=authService.registerAgent(registerRequest, servletRequest, servletResponse);
-        ApiResponse<AuthResponse> response = ApiResponse.<AuthResponse>builder()
+        ApiSuccessResponse<AuthResponse> response = ApiSuccessResponse.<AuthResponse>builder()
+                .success(true)
                 .statusCode(HttpStatus.CREATED.value())
-                .message("Registration successful.")
-                .slug("registration_success")
+                .message("Agent registered successfully")
                 .data(authResponse)
                 .build();
 
@@ -73,30 +79,29 @@ public class AuthController {
     }
 
 
-    @PostMapping("/register/owner")
-    public ResponseEntity<ApiResponse<OwnerRegisterResponse>> registerOwner(
-            @Valid @ModelAttribute OwnerRegisterRequest registerRequest,
+    @PostMapping("/register/individual")
+    public ResponseEntity<ApiSuccessResponse<IndividualRegisterResponse>> registerIndividual(
+            @Valid @ModelAttribute IndividualRegisterRequest registerRequest,
             @AuthenticationPrincipal CustomUserDetails principal
             )
 
     {
 
-        System.out.println("Roles from controller: "+ registerRequest.getAgentRole());
         String email = principal.getUsername();
 
         Agent agent = agentRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("Authenticated user not found"));
 
-        if (ownerRepo.existsByAgent(agent)) {
+        if (individualRepo.existsByAgent(agent)) {
             throw new UserAlreadyExistsException("Owner already registered");
         }
 
 
-        OwnerRegisterResponse registerResponse=authService.registerOwner(registerRequest, agent);
-        ApiResponse<OwnerRegisterResponse> response = ApiResponse.<OwnerRegisterResponse>builder()
+        IndividualRegisterResponse registerResponse=authService.registerIndividual(registerRequest, agent);
+        ApiSuccessResponse<IndividualRegisterResponse> response = ApiSuccessResponse.<IndividualRegisterResponse>builder()
+                .success(true)
                 .statusCode(HttpStatus.CREATED.value())
                 .message("Owner Registration successful.")
-                .slug("registration_success")
                 .data(registerResponse)
                 .build();
 
@@ -105,53 +110,42 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AuthResponse>> login(@RequestBody LoginRequest loginRequest,
-                                              HttpServletRequest servletRequest,
-                                              HttpServletResponse servletResponse){
+    public ResponseEntity<ApiSuccessResponse<LoginResponse.LoginData<?>>> login(
+            @Valid @RequestBody LoginRequest loginRequest,
+            HttpServletRequest request,
+            HttpServletResponse response) {
 
-        if(!agentRepository.existsByEmail(loginRequest.getEmail())
-                && !agentRepository.existsByUsername(loginRequest.getUsername())){
-                throw new InvalidCredentialsException("Invalid email or username");
-        }
+        ApiSuccessResponse<LoginResponse.LoginData<?>> loginResponse =
+                authService.login(loginRequest, request, response);
 
-        AuthResponse authResponse = authService.login(loginRequest, servletRequest, servletResponse)
-                .orElseThrow(() -> new InvalidCredentialsException("Login failed"));
-
-        ApiResponse<AuthResponse> response = ApiResponse.<AuthResponse>builder()
-                .statusCode(HttpStatus.FOUND.value())
-                .message("Login successful.")
-                .slug("login_success")
-                .data(authResponse)
-                .build();
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-
-
+        return ResponseEntity.ok(loginResponse);
     }
 
+
     @PostMapping(value = "/register/organization", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<OrganizationRegisterResponse>> registerOrganization(
+    public ResponseEntity<ApiSuccessResponse<OrganizationRegisterResponse>> registerOrganization(
             @RequestPart("data") @Valid OrganizationRegisterRequest registerRequest,
-            @RequestPart("identityProofFile") MultipartFile identityProofFile,
+            @RequestPart("proofDocFile") MultipartFile identityProofFile,
             @AuthenticationPrincipal User principal
 
     ) {
 
+        System.out.println("file:"+ identityProofFile);
         String email = principal.getUsername();
 
         Agent agent = agentRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("Authenticated user not found"));
 
-        if (organizationRepo.existsByUser(agent)) {
+        if (organizationRepo.existsByAgent(agent)) {
             throw new UserAlreadyExistsException("Organization already registered");
         }
 
 
         OrganizationRegisterResponse registerResponse=authService.registerOrganization(registerRequest, identityProofFile, agent);
-        ApiResponse<OrganizationRegisterResponse> response = ApiResponse.<OrganizationRegisterResponse>builder()
+        ApiSuccessResponse<OrganizationRegisterResponse> response = ApiSuccessResponse.<OrganizationRegisterResponse>builder()
+                .success(true)
                 .statusCode(HttpStatus.CREATED.value())
                 .message("Organization Registration successful.")
-                .slug("registration_success")
                 .data(registerResponse)
                 .build();
 
@@ -161,7 +155,7 @@ public class AuthController {
 
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<String>> logout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<ApiSuccessResponse<String>> logout(HttpServletRequest request, HttpServletResponse response) {
         return logoutService.logout(request, response);
     }
 
@@ -178,8 +172,8 @@ public class AuthController {
     }
 
     @GetMapping("/oauth2/success")
-    public ResponseEntity<ApiResponse<AuthResponse>> oauth2LoginSuccess(HttpServletRequest request,
-                                                                        HttpServletResponse response) {
+    public ResponseEntity<ApiSuccessResponse<AuthResponse>> oauth2LoginSuccess(HttpServletRequest request,
+                                                                               HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (!(authentication instanceof OAuth2AuthenticationToken token)) {
@@ -188,10 +182,10 @@ public class AuthController {
 
         AuthResponse authResponse = oAuth2UserService.processOAuthLogin(token, request, response);
 
-        ApiResponse<AuthResponse> apiResponse = ApiResponse.<AuthResponse>builder()
+        ApiSuccessResponse<AuthResponse> apiResponse = ApiSuccessResponse.<AuthResponse>builder()
                 .statusCode(200)
                 .message("OAuth2 login successful")
-                .slug("oauth2_login_success")
+//                .slug("oauth2_login_success")
                 .data(authResponse)
                 .build();
 
@@ -205,18 +199,18 @@ public class AuthController {
     }
 
     @GetMapping("/verify/username")
-    public ResponseEntity<ApiResponse<String>> verifyUsername(@RequestParam String username){
+    public ResponseEntity<ApiSuccessResponse<UsernameAvailable>> verifyUsername(@RequestParam String username){
         Optional<Agent> user=agentRepository.findByUsername(username);
 
         if(user.isPresent()){
             throw new UserAlreadyExistsException("Username already exists");
         }
 
-        ApiResponse<String> successResponse = ApiResponse.<String>builder()
+        ApiSuccessResponse<UsernameAvailable> successResponse = ApiSuccessResponse.<UsernameAvailable>builder()
+                .success(true)
                 .statusCode(HttpStatus.OK.value())
                 .message("Valid username.")
-                .slug("valid_username")
-                .data(null)
+                .data(UsernameAvailable.builder().available(true).build())
                 .build();
 
         return new ResponseEntity<>(successResponse, HttpStatus.OK);

@@ -1,7 +1,6 @@
 package com.archeo.server.modules.user.controllers;
 
 import com.archeo.server.modules.user.dtos.ForgotPasswordRequest;
-import com.archeo.server.modules.user.dtos.OtpVerifyRequest;
 import com.archeo.server.modules.user.dtos.ResetPasswordRequest;
 import com.archeo.server.modules.user.services.ForgotPasswordService;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +23,15 @@ public class ForgotPasswordController {
         return ResponseEntity.ok(forgotPasswordService.initiateOtp(request));
     }
 
-    @PostMapping("/emailOptVerify")
-    public ResponseEntity<?> emailVerify(@RequestBody OtpVerifyRequest request) {
-        boolean verified = forgotPasswordService.verifyOtp(request);
-        if (verified) {
-            return ResponseEntity.ok("OTP verified. Reset allowed.");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid OTP.");
-        }
-    }
+//    @PostMapping("/emailOptVerify")
+//    public ResponseEntity<?> emailVerify(@RequestBody OtpVerifyRequest request) {
+//        boolean verified = forgotPasswordService.verifyOtp(request);
+//        if (verified) {
+//            return ResponseEntity.ok("OTP verified. Reset allowed.");
+//        } else {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid OTP.");
+//        }
+//    }
 
     @PostMapping("/resetPassword")
     public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {

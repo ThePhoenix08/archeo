@@ -12,10 +12,12 @@ import java.util.UUID;
 public interface OrganizationRepo extends JpaRepository<Organization, UUID> {
 
 
-    @Query("SELECT o FROM Organization o WHERE o.user.email = :email")
-    Optional<Organization> findByUserEmail(@Param("email") String email);
+    @Query("SELECT o FROM Organization o WHERE o.agent.email = :email")
+    Optional<Organization> findByAgentEmail(@Param("email") String email);
 
-    Optional<Organization> findByUser(Agent agent);
+    Optional<Organization> findByAgent(Agent agent);
 
-    boolean existsByUser(Agent agent);
+
+    boolean existsByAgent(Agent agent);
 }
+

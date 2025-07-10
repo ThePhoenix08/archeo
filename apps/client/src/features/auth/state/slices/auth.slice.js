@@ -2,10 +2,11 @@ import { ENVS } from "@/shared/constants/env.constant.js";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+	agent: {
+		email: null,
+		username: null,
+	},
 	agentType: null,
-	agentId: null,
-	email: null,
-	emailVerifyId: null,
 	user: null,
 	isAuthenticated: false,
 	isLoading: false,
@@ -21,35 +22,28 @@ const authSlice = createSlice({
 	initialState,
 	reducers: {
 		setCredentials: (state, action) => {
-			const { accessToken, ...userData } = action.payload;
-			state.user = { ...userData, accessToken }
+			const { user } = action.payload;
+			state.user = user;
 			state.isAuthenticated = true;
 			state.error = null;
-			state.accessToken = accessToken;
-			state.tokenExpiryEstimate = Date.now() + ENVS.ACCESS_TOKEN_EXPIRY;
 		},
 		updateTokens: (state, action) => {
 			const { accessToken } = action.payload;
-			if (state.user) {
-				state.user.accessToken = accessToken;
-				state.tokenExpiryEstimate = Date.now() + ENVS.ACCESS_TOKEN_EXPIRY;
-			}
+			state.accessToken = accessToken;
+			state.tokenExpiryEstimate = Date.now() + ENVS.ACCESS_TOKEN_EXPIRY;
 		},
 		clearCredentials: () => initialState,
 		setAgent: (state, { payload }) => {
-			const { agentId, email, emailVerifyId } = payload;
-			state.agentId = agentId;
-			state.email = email;
-			state.emailVerifyId = emailVerifyId;
+			const { email, username } = payload;
+			state.agent.email = email;
+			state.agent.username = username;
 		},
 		setAgentType: (state, { payload }) => {
 			state.agentType = payload;
 		},
 		clearAgent: (state) => {
 			state.agentType = initialState.agentType;
-			state.agentId = initialState.agentId;
-			state.email = initialState.email;
-			state.emailVerifyId = initialState.emailVerifyId;
+			state.agent = initialState.agent;
 		},
 		setLoading: (state, { payload }) => {
 			state.isLoading = payload;
@@ -59,7 +53,6 @@ const authSlice = createSlice({
 		},
 		setError: (state, { payload }) => {
 			state.error = payload;
-			state.isLoading = false;
 		},
 		clearError: (state) => {
 			state.error = null;
@@ -72,7 +65,7 @@ const authSlice = createSlice({
 		setPreferences: (state, { payload }) => {
 			state.prefersDarkMode = payload;
 		},
-	}
+	},
 });
 
 export const {
@@ -104,4 +97,5 @@ export const selectPreferences = (state) => state.auth.prefersThemeMode;
 
 // Token selectors
 export const selectAccessToken = (state) => state.auth.accessToken;
-export const selecttokenExpiryEstimate = (state) => state.auth.tokenExpiryEstimate;
+export const selecttokenExpiryEstimate = (state) =>
+	state.auth.tokenExpiryEstimate;

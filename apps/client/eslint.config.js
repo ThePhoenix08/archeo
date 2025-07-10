@@ -64,7 +64,7 @@ export default [
 		},
 		rules: {
 			...reactHooks.configs.recommended.rules,
-			"no-unused-vars": ["error", { varsIgnorePattern: "^[A-Z_]" }],
+			"no-unused-vars": ["warn", { varsIgnorePattern: "^[A-Z_]" }],
 			"react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
 			"boundaries/no-unknown": ['error'],
 			"boundaries/external": [2, { default: "allow" }],

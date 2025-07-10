@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,7 +17,7 @@ import {
 import { getLoginFieldsForRole } from "@/features/auth/constants/getFieldsForRole.constant.js";
 import { useUserAuthFlow } from "@/features/auth/flows/userAuth.flow.js";
 import CustomButton from "@/components/Button/CustomButton.jsx";
-import { loginRequestSchema } from "../../validators/authApi.validator.js";
+import { loginRequestSchema } from "@/features/auth/validators/authApi.validator.js";
 
 export function LoginForm({ className, ...props }) {
 	const [showPassword, setShowPassword] = useState(false);
@@ -131,10 +130,10 @@ export function LoginForm({ className, ...props }) {
 
 		// If validation passes, create FormData
 		const formDataToSubmit = new FormData();
-		formDataToSubmit.append("identifier", formdata[loginType]);
-		formDataToSubmit.append("type", loginType);
-		formDataToSubmit.append("password", formdata.password);
-		formDataToSubmit.append("rememberMe", false);
+		formDataToSubmit.append("identifier", zodResult.identifier);
+		formDataToSubmit.append("type", zodResult.type);
+		formDataToSubmit.append("password", zodResult.password);
+		formDataToSubmit.append("rememberMe", false); // TODO: Add rememberMe functionality
 		formDataToSubmit.append("loginMethod", "password");
 
 		try {

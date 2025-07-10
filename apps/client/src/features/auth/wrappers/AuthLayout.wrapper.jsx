@@ -5,6 +5,8 @@ function AuthLayout() {
 	const auth = false;
 	// useSelector(selectIsAuthenticated)
 
+	// throw new Error("Dummy Error for development only.");
+
 	return auth ? <Navigate to={ROUTES.DASHBOARD} /> : <Outlet />;
 }
 export default AuthLayout;

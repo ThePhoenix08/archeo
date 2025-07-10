@@ -35,95 +35,88 @@ import AgentTypePage from "@/features/auth/pages/AgentType.page.jsx";
 import SelectRolesPage from "@/features/auth/pages/SelectRoles.page.jsx";
 import AgentDetailsFormPage from "@/features/auth/pages/AgentDetailsForm.page.jsx";
 import { useTheme } from "@/hooks/useTheme.hook.js";
+import ErrorBoundary from "@/shared/wrappers/ErrorBoundary.wrapper.jsx";
 
 function App() {
 	useTheme();
 
 	return (
 		<BrowserRouter>
-			<Routes>
-				<Route index element={<LandingPage />} />
-				<Route path="about" element={<AboutPage />} />
-
-				<Route element={<AuthLayout />}>
-					<Route path="login/:role?" element={<LoginPage />} />
-					<Route path="register">
-						<Route index element={<BasicCredsPage />} />
-						<Route path="select-agent-type" element={<AgentTypePage />} />
-						<Route path="details-form/:agentType?" element={<AgentDetailsFormPage />} />
-						<Route path="select-roles" element={<SelectRolesPage />} />
+			<ErrorBoundary>
+				<Routes>
+					<Route index element={<LandingPage />} />
+					<Route path="about" element={<AboutPage />} />
+					<Route element={<AuthLayout />}>
+						<Route path="login/:role?" element={<LoginPage />} />
+						<Route path="register">
+							<Route index element={<BasicCredsPage />} />
+							<Route path="select-agent-type" element={<AgentTypePage />} />
+							<Route path="details-form/:agentType?" element={<AgentDetailsFormPage />} />
+							<Route path="select-roles" element={<SelectRolesPage />} />
+						</Route>
 					</Route>
-				</Route>
-
-				<Route path="app" element={<AppLayout />}>
-					<Route index element={<DashboardPage />} />
-
-					<Route path="library" element={<LibrarySection />}>
-						{/* templatesList only for issuer */}
+					<Route path="app" element={<AppLayout />}>
+						<Route index element={<DashboardPage />} />
+						<Route path="library" element={<LibrarySection />}>
+							{/* templatesList only for issuer */}
+							<Route
+								path="templates"
+								element={<RouteGuard routeComponent={<TemplatesListPage />} />}
+							/>
+							<Route path="documents" element={<DocumentsListPage />} />
+						</Route>
+						<Route path="account" element={<AccountSection />}>
+							<Route index element={<ProfilePage />} />
+							<Route path="settings" element={<SettingsPage />} />
+							<Route path="activity" element={<ActivityLogPage />} />
+							<Route path="contacts" element={<ContactsPage />} />
+						</Route>
+						<Route path="document" element={<DocumentLayout />}>
+							<Route path=":documentId/view?" element={<DocumentPage />} />
+						</Route>
+						{/* complete template section only for issuers */}
 						<Route
-							path="templates"
-							element={<RouteGuard routeComponent={<TemplatesListPage />} />}
-						/>
-						<Route path="documents" element={<DocumentsListPage />} />
+							path="template"
+							element={<RouteGuard routeComponent={<TemplateLayout />} />}
+						>
+							<Route
+								path=":templateId/view?"
+								element={<RouteGuard routeComponent={<TemplatePage />} />}
+							/>
+							<Route
+								path=":templateId/edit"
+								element={<RouteGuard routeComponent={<EditTemplatePage />} />}
+							/>
+						</Route>
+						{/* complete api section only for verifiers */}
+						<Route
+							path="api"
+							element={<RouteGuard routeComponent={<APILayout />} />}
+						>
+							<Route
+								index
+								element={<RouteGuard routeComponent={<AnalyticsPage />} />}
+							/>
+							<Route
+								path="usage"
+								element={<RouteGuard routeComponent={<UsagePage />} />}
+							/>
+							<Route
+								path="config"
+								element={<RouteGuard routeComponent={<ConfigPage />} />}
+							/>
+							<Route
+								path="requests"
+								element={<RouteGuard routeComponent={<RequestsPage />} />}
+							/>
+						</Route>
 					</Route>
-
-					<Route path="account" element={<AccountSection />}>
-						<Route index element={<ProfilePage />} />
-						<Route path="settings" element={<SettingsPage />} />
-						<Route path="activity" element={<ActivityLogPage />} />
-						<Route path="contacts" element={<ContactsPage />} />
-					</Route>
-
-					<Route path="document" element={<DocumentLayout />}>
-						<Route path=":documentId/view?" element={<DocumentPage />} />
-					</Route>
-
-					{/* complete template section only for issuers */}
-					<Route
-						path="template"
-						element={<RouteGuard routeComponent={<TemplateLayout />} />}
-					>
-						<Route
-							path=":templateId/view?"
-							element={<RouteGuard routeComponent={<TemplatePage />} />}
-						/>
-						<Route
-							path=":templateId/edit"
-							element={<RouteGuard routeComponent={<EditTemplatePage />} />}
-						/>
-					</Route>
-
-					{/* complete api section only for verifiers */}
-					<Route
-						path="api"
-						element={<RouteGuard routeComponent={<APILayout />} />}
-					>
-						<Route
-							index
-							element={<RouteGuard routeComponent={<AnalyticsPage />} />}
-						/>
-						<Route
-							path="usage"
-							element={<RouteGuard routeComponent={<UsagePage />} />}
-						/>
-						<Route
-							path="config"
-							element={<RouteGuard routeComponent={<ConfigPage />} />}
-						/>
-						<Route
-							path="requests"
-							element={<RouteGuard routeComponent={<RequestsPage />} />}
-						/>
-					</Route>
-				</Route>
-
-				<Route path="verify/:qr_url" element={<VerificationPage />} />
-
-				{/* TEST ONLY ROUTE */}
-				{/* <Route path="test/:role?" element={<RegisterPage />} /> */}
-
-				<Route path="*" element={<NotFoundPage />} />
-			</Routes>
+					<Route path="verify/:qr_url" element={<VerificationPage />} />
+					{/* TEST ONLY ROUTE */}
+					{/* <Route path="test" element={<></>} /> */}
+					<Route path="*" element={<NotFoundPage />} />
+				</Routes>
+			</ErrorBoundary>
 			<ToastContainer
 				position="top-right"
 				autoClose={5000}

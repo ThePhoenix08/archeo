@@ -1,6 +1,9 @@
+import { ROUTES } from "@/shared/constants/routes.constant.js";
+import { Link } from "react-router";
+
 function LogoText() {
 	return (
-		<a href="/" className="focus:outline-none relative w-fit z-10 flex items-center gap-3">
+		<Link to={ROUTES.HOME} className="focus:outline-none relative w-fit z-10 flex items-center gap-3">
 			<div className="w-10">
 				<img src="/assets/svg/logo_SVG.svg" alt="logo" className="w-full" />
 			</div>
@@ -12,7 +15,7 @@ function LogoText() {
 					Document Management
 				</span>
 			</div>
-		</a>
+		</Link>
 	);
 }
 export default LogoText;

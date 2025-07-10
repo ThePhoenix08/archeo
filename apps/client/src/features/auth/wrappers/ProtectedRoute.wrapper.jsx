@@ -1,7 +1,6 @@
 import { Navigate, useLocation } from "react-router";
 import { ROUTES } from "@/shared/constants/routes.constant";
 import AccessDeniedPage from "@/shared/pages/AccessDenied.page";
-import ErrorPage from "@/shared/pages/Error.page.jsx";
 import { ROLES } from "@/shared/constants/roles.constant.js";
 
 /**
@@ -25,7 +24,7 @@ const ProtectedRoute = ({
 	// const user = useSelector(selectCurrentUser);
 	const user = { role: ROLES.USER };
 	if (!user || !user.role)
-		return <ErrorPage message="User or user role is undefined." />;
+		throw new Error("User or user role is undefined.");
 	const { role: userRole } = user;
 
 	if (!allowedRoles.includes(userRole)) {

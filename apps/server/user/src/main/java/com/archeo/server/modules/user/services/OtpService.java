@@ -49,13 +49,13 @@ public class OtpService {
 
 
     private String generateOtp(){
-        int otp=new Random().nextInt(9000)+1000;
+        int otp = new Random().nextInt(900000) + 100000;
         return String.valueOf(otp);
     }
 
     public String verifyOtp(String verifyToken, String code) {
 
-        String key="verify"+verifyToken;
+        String key="verify:"+verifyToken;
         String hashedOtp= redisTemplate.opsForValue().get(key);
 
         if(passwordEncoder.matches(code, hashedOtp)){

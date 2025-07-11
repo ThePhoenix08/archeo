@@ -47,7 +47,7 @@ public class AppConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/otp/**","/oauth2/**", "/login/oauth2/**",  "/error").permitAll()
+                        .requestMatchers("/api/auth/**", "/health", "/actuator/health", "/actuator/info", "/api/otp/**","/oauth2/**", "/login/oauth2/**",  "/error").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth -> oauth

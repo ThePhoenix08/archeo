@@ -1,5 +1,6 @@
 import { authApi } from "@/features/auth/state/redux-apis/auth.api.js";
 import { clearCredentials, updateTokens } from "@/features/auth/state/slices/auth.slice.js";
+import { API_ROUTES } from "@/shared/constants/api.constant.js";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query";
 
 export const refreshApi = createApi({
@@ -12,7 +13,7 @@ export const refreshApi = createApi({
     // REFRESH TOKEN
     refreshToken: builder.mutation({
       query: () => ({
-        url: "/refresh-token",
+        url: API_ROUTES.REFRESH_TOKEN,
         method: "POST",
       }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {

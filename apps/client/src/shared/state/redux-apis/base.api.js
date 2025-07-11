@@ -29,7 +29,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 	if (result?.error?.status === 401) {
 		console.log("Access token expired, attempting refresh...");
 		const refreshResult = await refreshQuery({
-			url: "/refresh",
+			url: "/refresh-token",
 			method: "POST",
 		},
 			api,

@@ -2,12 +2,17 @@ export const ROUTES = {
   // Public routes
   HOME: '/',
   ABOUT: '/about',
+  CONTACT: '/contact',
+  HELP: '/help',
+  SITEMAP: '/sitemap',
   
   LOGIN: '/login',
   REGISTER_BASIC_CREDS: '/register',
   REGISTER_AGENT_TYPE: '/register/select-agent-type',
   REGISTER_AGENT_DETAILS: '/register/details-form',
   REGISTER_SELECT_ROLES: '/register/select-roles',
+  FORGOT_PASSWORD: '/forgot-password',
+  ACCOUNT_RECOVERY: '/account-recovery',
 
   // Dynamic routes
   VERIFY_QR: (qrUrl) => `/verify/${qrUrl}`,

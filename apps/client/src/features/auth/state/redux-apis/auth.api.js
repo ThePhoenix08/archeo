@@ -7,13 +7,14 @@ import {
 	updateTokens,
 	// setAgent,
 } from "@/features/auth/state/slices/auth.slice.js";
+import { API_ROUTES } from "@/shared/constants/api.constant.js";
 
 export const authApi = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
 		// REGISTER
 		registerAgent: builder.mutation({
 			query: (agentData) => ({
-				url: "/auth/register-userCommon",
+				url: API_ROUTES.REGISTER_AGENT,
 				method: "POST",
 				body: agentData,
 			}),
@@ -35,7 +36,7 @@ export const authApi = apiSlice.injectEndpoints({
 		}),
 		registerIndividual: builder.mutation({
 			query: (individualData) => ({
-				url: "/auth/register/user",
+				url: API_ROUTES.REGISTER_USER,
 				method: "POST",
 				body: { ...individualData, agentType: "individual" },
 			}),
@@ -53,7 +54,7 @@ export const authApi = apiSlice.injectEndpoints({
 		}),
 		registerOrganization: builder.mutation({
 			query: (orgData) => ({
-				url: "/auth/register/user",
+				url: API_ROUTES.REGISTER_ORG,
 				method: "POST",
 				body: { ...orgData, userType: "organization" },
 			}),
@@ -75,7 +76,7 @@ export const authApi = apiSlice.injectEndpoints({
 		// EMAIL VERIFICATION
 		sendOTPforVerification: builder.mutation({
 			query: ({ identifier, purpose}) => ({
-				url: "/otp/send",
+				url: API_ROUTES.SEND_OTP,
 				method: "POST",
 				body: { identifier, purpose },
 			}),
@@ -85,7 +86,7 @@ export const authApi = apiSlice.injectEndpoints({
 
 		verifyOTP: builder.mutation({
 			query: ({ email, otp }) => ({
-				url: "/otp/verify",
+				url: API_ROUTES.VERIFY_OTP,
 				method: "POST",
 				body: { email, otp },
 			}),
@@ -95,7 +96,7 @@ export const authApi = apiSlice.injectEndpoints({
 		// LOGIN
 		login: builder.mutation({
 			query: (authCredentials) => ({
-				url: "/auth/login",
+				url: API_ROUTES.LOGIN,
 				method: "POST",
 				body: authCredentials,
 			}),
@@ -116,7 +117,7 @@ export const authApi = apiSlice.injectEndpoints({
 		// LOGOUT
 		logout: builder.mutation({
 			query: () => ({
-				url: "/auth/logout",
+				url: API_ROUTES.LOGOUT,
 				method: "POST",
 			}),
 			async onQueryStarted(_, { dispatch, queryFulfilled }) {
@@ -134,7 +135,7 @@ export const authApi = apiSlice.injectEndpoints({
 
 		// GET CURRENT USER
 		getCurrentUser: builder.query({
-			query: () => "/auth/current-user",
+			query: () => API_ROUTES.GET_CURRENT_USER,
 			providesTags: ["CurrentUser"],
 			// Transform response to ensure consistency
 			transformResponse: (response) => {
@@ -154,7 +155,7 @@ export const authApi = apiSlice.injectEndpoints({
 		// UPDATE USER PROFILE
 		updateProfile: builder.mutation({
 			query: (profileData) => ({
-				url: "/auth/profile",
+				url: API_ROUTES.UPDATE_PROFILE,
 				method: "PATCH",
 				body: profileData,
 			}),
@@ -183,7 +184,7 @@ export const authApi = apiSlice.injectEndpoints({
 		// CHANGE PASSWORD
 		changePassword: builder.mutation({
 			query: ({ currentPassword, newPassword }) => ({
-				url: "/auth/change-password",
+				url: API_ROUTES.CHANGE_PASSWORD,
 				method: "POST",
 				body: { currentPassword, newPassword },
 			}),
@@ -202,19 +203,9 @@ export const authApi = apiSlice.injectEndpoints({
 		// FORGOT PASSWORD
 		forgotPassword: builder.mutation({
 			query: (email) => ({
-				url: "/auth/forgot-password",
+				url: API_ROUTES.FORGOT_PASSWORD,
 				method: "POST",
 				body: { email },
-			}),
-			keepUnusedDataFor: 0,
-		}),
-
-		// RESET PASSWORD
-		resetPassword: builder.mutation({
-			query: ({ token, newPassword }) => ({
-				url: "/auth/reset-password",
-				method: "POST",
-				body: { token, newPassword },
 			}),
 			keepUnusedDataFor: 0,
 		}),
@@ -248,7 +239,6 @@ export const {
 
 	// Password recovery hooks
 	useForgotPasswordMutation,
-	useResetPasswordMutation,
 
 	// Utility hooks
 	useLazyCheckUsernameAvailabilityQuery,

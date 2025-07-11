@@ -22,6 +22,8 @@ import { loginRequestSchema } from "@/features/auth/validators/authApi.validator
 export function LoginForm({ className, ...props }) {
 	const [showPassword, setShowPassword] = useState(false);
 	let { role } = useParams();
+	if (!role) role = "user";
+
 	const { flow } = useUserAuthFlow();
 	const [loginType, setLoginType] = useState("email"); // "email" or "username"
 	const [formdata, setFormdata] = useState({

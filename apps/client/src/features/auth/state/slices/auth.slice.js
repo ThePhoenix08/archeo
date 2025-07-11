@@ -8,7 +8,7 @@ const initialState = {
 	},
 	agentType: null,
 	user: null,
-	isAuthenticated: true,
+	isAuthenticated: false,
 	isLoading: false,
 	isRefreshing: false,
 	error: null,

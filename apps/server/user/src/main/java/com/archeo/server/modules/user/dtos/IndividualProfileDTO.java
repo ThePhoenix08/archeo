@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OwnerProfileDTO {
+public class IndividualProfileDTO {
 
 //    private String username;
 

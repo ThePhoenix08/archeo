@@ -1,14 +1,14 @@
 package com.archeo.server.modules.auth.services;
 
 import com.archeo.server.modules.auth.config.JwtProvider;
-import com.archeo.server.modules.auth.dtos.AuthResponse;
 import com.archeo.server.modules.auth.enums.AuthProvider;
-import com.archeo.server.modules.common.enums.AGENT_ROLE;
+import com.archeo.server.modules.auth.responses.AuthResponse;
 
+import com.archeo.server.modules.common.enums.AgentRole;
 import com.archeo.server.modules.common.models.Agent;
-import com.archeo.server.modules.common.repositories.AgentRepository;
+import com.archeo.server.modules.user.repositories.AgentRepository;
+import com.archeo.server.modules.user.repositories.IndividualRepo;
 import com.archeo.server.modules.user.repositories.OrganizationRepo;
-import com.archeo.server.modules.user.repositories.OwnerRepo;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,7 +31,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     private final JwtProvider jwtProvider;
     private final SessionService sessionService;
     private final AuthLogsService authLogsService;
-    private final OwnerRepo ownerRepo;
+    private final IndividualRepo individualRepo;
     private final OrganizationRepo organizationRepo;
 
     public AuthResponse processOAuthLogin(OAuth2AuthenticationToken token,
@@ -55,12 +55,12 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                     return agentRepository.save(newAgent);
                 });
 
-        List<AGENT_ROLE> userRoles = new ArrayList<>();
-        ownerRepo.findByUser(agent).ifPresent(owner -> userRoles.addAll(owner.getAgentRole()));
-        organizationRepo.findByUser(agent).ifPresent(org -> userRoles.addAll(org.getAgentRole()));
+        List<AgentRole> userRoles = new ArrayList<>();
+        individualRepo.findByAgent(agent).ifPresent(owner -> userRoles.addAll(owner.getAgentRole()));
+        organizationRepo.findByAgent(agent).ifPresent(org -> userRoles.addAll(org.getAgentRole()));
 
         List<String> roleNames = userRoles.isEmpty()
-                ? List.of(AGENT_ROLE.PENDING.name())
+                ? List.of(null)
                 : userRoles.stream().map(Enum::name).toList();
 
         // ✅ Only one claims map, and it's used directly
@@ -82,7 +82,6 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         AuthResponse authResponse = AuthResponse.builder()
                 .accessToken(accessToken)
-                .agentRole(roleNames)
                 .build();
 
         System.out.println("Access Token: " + accessToken);

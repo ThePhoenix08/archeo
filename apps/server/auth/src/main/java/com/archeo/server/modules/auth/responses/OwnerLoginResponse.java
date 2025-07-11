@@ -1,4 +1,4 @@
-package com.archeo.server.modules.auth.dtos;
+package com.archeo.server.modules.auth.responses;
 
 import lombok.Builder;
 import lombok.Data;

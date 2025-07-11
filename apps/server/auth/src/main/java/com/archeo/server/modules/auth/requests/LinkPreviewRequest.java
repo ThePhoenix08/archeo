@@ -1,4 +1,4 @@
-package com.archeo.server.modules.auth.dtos;
+package com.archeo.server.modules.auth.requests;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

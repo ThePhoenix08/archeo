@@ -30,7 +30,7 @@ public class AuthLogs {
     private Agent agent;
 
     @Column(name = "refresh_token", nullable = false, length = 255)
-    private String refreshTokenHash;
+    private String refreshToken;
 
     @Column(name = "ip_address", length = 45)
     private String ipAddress;

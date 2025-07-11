@@ -2,9 +2,9 @@ package com.archeo.server.modules.auth.services;
 
 import com.archeo.server.modules.auth.config.CustomUserDetails;
 import com.archeo.server.modules.common.models.Agent;
-import com.archeo.server.modules.common.repositories.AgentRepository;
+import com.archeo.server.modules.user.repositories.AgentRepository;
+import com.archeo.server.modules.user.repositories.IndividualRepo;
 import com.archeo.server.modules.user.repositories.OrganizationRepo;
-import com.archeo.server.modules.user.repositories.OwnerRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +20,7 @@ import java.util.List;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final AgentRepository agentRepository;
-    private final OwnerRepo ownerRepo;
+    private final IndividualRepo individualRepo;
     private final OrganizationRepo organizationRepo;
 
 
@@ -37,14 +37,14 @@ public class CustomUserDetailsService implements UserDetailsService {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
         // Check Owner roles
-        ownerRepo.findByUser(agent).ifPresent(owner ->
+        individualRepo.findByAgent(agent).ifPresent(owner ->
                 owner.getAgentRole().forEach(role ->
                         authorities.add(new SimpleGrantedAuthority(role.name()))
                 )
         );
 
         // Check Organization roles
-        organizationRepo.findByUser(agent).ifPresent(org ->
+        organizationRepo.findByAgent(agent).ifPresent(org ->
                 org.getAgentRole().forEach(role ->
                         authorities.add(new SimpleGrantedAuthority(role.name()))
                 )

@@ -1,7 +1,7 @@
 package com.archeo.server.modules.user.services;
 
 import com.archeo.server.modules.common.models.Agent;
-import com.archeo.server.modules.common.repositories.AgentRepository;
+import com.archeo.server.modules.user.repositories.AgentRepository;
 import com.archeo.server.modules.user.dtos.SettingsDTO;
 import com.archeo.server.modules.user.models.Settings;
 import com.archeo.server.modules.user.repositories.SettingsRepo;
@@ -26,14 +26,14 @@ public class SettingsService {
     public Settings getUserSettings() {
         Agent agent=getCurrentAgent();
 
-        return settingsRepository.findByUser(agent)
+        return settingsRepository.findByAgent(agent)
                 .orElseThrow(() -> new RuntimeException("Settings not found for user"));
     }
 
     public Settings updateUserSettings(SettingsDTO dto) {
         Agent agent = getCurrentAgent();
 
-        Settings settings = settingsRepository.findByUser(agent)
+        Settings settings = settingsRepository.findByAgent(agent)
                 .orElseGet(() -> {
                     Settings s = new Settings();
                     s.setAgent(agent);

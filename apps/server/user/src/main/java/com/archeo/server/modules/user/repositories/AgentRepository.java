@@ -1,4 +1,4 @@
-package com.archeo.server.modules.common.repositories;
+package com.archeo.server.modules.user.repositories;
 
 import com.archeo.server.modules.common.models.Agent;
 import org.springframework.data.jpa.repository.JpaRepository;

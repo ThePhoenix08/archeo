@@ -1,7 +1,9 @@
 package com.archeo.server.modules.auth.controllers;
 
-import com.archeo.server.modules.common.dto.ApiResponse;
-import com.archeo.server.modules.user.dtos.EmailRequest;
+import com.archeo.server.modules.auth.requests.OtpSendRequest;
+import com.archeo.server.modules.auth.requests.OtpVerifyRequest;
+import com.archeo.server.modules.auth.responses.OtpResponse;
+import com.archeo.server.modules.common.dto.ApiSuccessResponse;
 import com.archeo.server.modules.user.services.OtpService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,39 +19,32 @@ public class OtpController {
     private final OtpService otpService;
 
     @PostMapping("/otp/send")
-    public ResponseEntity<ApiResponse<String>> sendOtp(@RequestBody @Valid EmailRequest emailRequest) {
-        otpService.sendOtp(emailRequest.getEmail());
+    public ResponseEntity<ApiSuccessResponse<OtpResponse>> sendOtp(@RequestBody @Valid OtpSendRequest otpSendRequest) {
+        System.out.println("Sending otp");
+        String verifyToken = otpService.sendOtp(otpSendRequest.getIdentifier(), otpSendRequest.getPurpose());
 
-        ApiResponse<String> response = ApiResponse.<String>builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("OTP sent successfully")
-                .data("OTP sent to: " + emailRequest.getEmail())
-                .build();
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                ApiSuccessResponse.<OtpResponse>builder()
+                        .success(true)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("OTP sent successfully")
+                        .data(OtpResponse.builder().verifyToken(verifyToken).build())
+                        .build()
+        );
     }
 
     @PostMapping("/otp/verify")
-    public ResponseEntity<ApiResponse<String>> verifyOtp(@RequestParam("otp") String otp,
-                                                         @RequestParam("email") String email) {
+    public ResponseEntity<ApiSuccessResponse<OtpResponse>> verifyOtp(@RequestBody @Valid OtpVerifyRequest otpVerifyRequest) {
 
-        String message = otpService.verifyOtp(otp, email);
+        String verifyToken = otpService.verifyOtp(otpVerifyRequest.getVerifyToken(), otpVerifyRequest.getCode());
 
-        if ("Otp verified successfully".equals(message)) {
-            ApiResponse<String> response = ApiResponse.<String>builder()
-                    .statusCode(HttpStatus.OK.value())
-                    .message(message)
-                    .data("Verified email: " + email)
-                    .build();
-            return ResponseEntity.ok(response);
-        } else {
-            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
-                    .statusCode(HttpStatus.BAD_REQUEST.value())
-                    .message("OTP verification failed")
-                    .errorType("INVALID_OTP")
-                    .data(message)
-                    .build();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-        }
+        return ResponseEntity.ok(
+                ApiSuccessResponse.<OtpResponse>builder()
+                        .success(true)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("OTP verified successfully")
+                        .data(OtpResponse.builder().verifyToken(verifyToken).build())
+                        .build()
+        );
     }
 }

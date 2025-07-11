@@ -156,7 +156,7 @@ AUTH: `../apps/client/src/features/auth/validators/authApi.validator.js`
   "contactPhone": "+912233445566", // optional, min 10, max 15 chars
   "contactDesignation": "Lab Director", // optional, min 1 char
   "proofDocType": "Operational License", // required, enum (see below)
-  "proofDocFile": file // required
+  "prooffile": fileObject, 
   "roles": ["issuer", "agent"] // required, non-empty array of role enums
 }
 ```

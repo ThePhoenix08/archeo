@@ -3,17 +3,19 @@ package com.archeo.server.modules.user.services.serviceImpl;
 import com.archeo.server.modules.common.exceptions.InvalidCredentialsException;
 import com.archeo.server.modules.common.exceptions.UserNotFoundException;
 import com.archeo.server.modules.common.models.Agent;
-import com.archeo.server.modules.common.repositories.AgentRepository;
+import com.archeo.server.modules.user.dtos.IndividualProfileDTO;
+import com.archeo.server.modules.user.dtos.UpdateIndividualProfileRequest;
+import com.archeo.server.modules.user.mapper.IndividualProfileMapper;
+import com.archeo.server.modules.user.models.Individual;
+import com.archeo.server.modules.user.repositories.AgentRepository;
 import com.archeo.server.modules.user.dtos.OrganizationProfileDTO;
-import com.archeo.server.modules.user.dtos.OwnerProfileDTO;
 import com.archeo.server.modules.user.dtos.UpdateOrganizationProfileRequest;
-import com.archeo.server.modules.user.dtos.UpdateOwnerProfileRequest;
 import com.archeo.server.modules.user.mapper.OrgProfileMapper;
-import com.archeo.server.modules.user.mapper.OwnerProfileMapper;
 import com.archeo.server.modules.user.models.Organization;
-import com.archeo.server.modules.user.models.Owner;
+
+import com.archeo.server.modules.user.repositories.IndividualRepo;
 import com.archeo.server.modules.user.repositories.OrganizationRepo;
-import com.archeo.server.modules.user.repositories.OwnerRepo;
+
 import com.archeo.server.modules.user.services.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,8 +27,8 @@ public class ProfileServiceImpl implements ProfileService {
 
 
     private final AgentRepository agentRepository;
-    private final OwnerRepo ownerRepo;
-    private final OwnerProfileMapper ownerMapper;
+    private final IndividualRepo individualRepo;
+    private final IndividualProfileMapper individualProfileMapper;
     private final OrgProfileMapper organizationMapper;
     private final OrganizationRepo organizationRepo;
 
@@ -34,34 +36,34 @@ public class ProfileServiceImpl implements ProfileService {
 
 
     @Override
-    public OwnerProfileDTO getOwnerProfile(Agent agent) {
+    public IndividualProfileDTO getIndividualProfile(Agent agent) {
 
-        Owner existingOwner= (Owner) ownerRepo.findByUser(agent)
+        Individual existingIndividual= (Individual)individualRepo.findByAgent(agent)
                 .orElseThrow(() -> new InvalidCredentialsException("User not found"));
 
 
-        OwnerProfileDTO ownerProfile=new OwnerProfileDTO();
+        IndividualProfileDTO individualProfile=new IndividualProfileDTO();
 
 //        ownerProfile.setUsername(user.getUsername());
 //        ownerProfile.setEmail(user.getEmail());
 
-        ownerMapper.getOwnerDTOFromOwner(existingOwner, ownerProfile);
+        individualProfileMapper.getIndividualDTOFromIndividual(existingIndividual, individualProfile);
 
-        return ownerProfile;
+        return individualProfile;
     }
 
     @Override
-    public void updateOwnerProfile(String userEmail, UpdateOwnerProfileRequest updateOwnerProfile) {
+    public void updateIndividualProfile(String userEmail, UpdateIndividualProfileRequest updateIndividualProfileRequestProfile) {
 
 //        Optional<UsersCommon> userToUpdate= Optional.ofNullable(usersCommonRepository.findByEmail(userEmail)
 //                .orElseThrow(() -> new UserNotFoundException("User not found")));
 
-        Owner ownerToUpdate= (Owner) ownerRepo.findByUserEmail(userEmail)
+        Individual individualToUpdate= (Individual) individualRepo.findByAgentEmail(userEmail)
                 .orElseThrow(()-> new UserNotFoundException("User not found"));
 
-        ownerMapper.updateOwnerFromDto(updateOwnerProfile, ownerToUpdate);
+        individualProfileMapper.updateIndividualFromDto(updateIndividualProfileRequestProfile, individualToUpdate);
 
-        ownerRepo.save(ownerToUpdate);
+        individualRepo.save(individualToUpdate);
 
 
     }
@@ -69,7 +71,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public OrganizationProfileDTO getOrganizationProfile(String email) {
 
-        Organization existingOrg = organizationRepo.findByUserEmail(email)
+        Organization existingOrg = organizationRepo.findByAgentEmail(email)
                 .orElseThrow(()-> new UserNotFoundException("User not found"));
 
         OrganizationProfileDTO organizationProfileDTO=new OrganizationProfileDTO();
@@ -81,7 +83,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public void updateOrganizationProfile(UpdateOrganizationProfileRequest updateOrganizationProfileRequest, String orgEmail) {
 
-        Organization orgToUpdate = organizationRepo.findByUserEmail(orgEmail)
+        Organization orgToUpdate = organizationRepo.findByAgentEmail(orgEmail)
                 .orElseThrow(()-> new UserNotFoundException("User not found"));
 
         organizationMapper.updateOrgFromUpdateOrgRequest(updateOrganizationProfileRequest, orgToUpdate);

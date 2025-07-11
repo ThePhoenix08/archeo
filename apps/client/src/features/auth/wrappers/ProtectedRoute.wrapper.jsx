@@ -1,7 +1,6 @@
 import { Navigate, useLocation } from "react-router";
 import { ROUTES } from "@/shared/constants/routes.constant";
 import AccessDeniedPage from "@/shared/pages/AccessDenied.page";
-import ErrorPage from "@/shared/pages/Error.page.jsx";
 import { ROLES } from "@/shared/constants/roles.constant.js";
 
 /**
@@ -23,14 +22,14 @@ const ProtectedRoute = ({
 }) => {
 	const location = useLocation();
 	// const user = useSelector(selectCurrentUser);
-	const user = { role: ROLES.USER };
-	if (!user || !user.role)
-		return <ErrorPage message="User or user role is undefined." />;
-	const { role: userRole } = user;
+	const user = { roles: [ROLES.USER] };
+	if (!user || !user.roles || !user.roles.length > 0)
+		throw new Error("User or user role is undefined.");
+	const { roles: userRoles } = user;
 
-	if (!allowedRoles.includes(userRole)) {
+	if (allowedRoles.filter(value => userRoles.includes(value))) {
 		return showMessageFlag ? (
-			<AccessDeniedPage allowedRoles={allowedRoles} userRole={userRole} />
+			<AccessDeniedPage allowedRoles={allowedRoles} userRoles={userRoles} requestedRoute={location.pathname} />
 		) : (
 			<Navigate
 				to={fallbackRoute}
@@ -45,4 +44,5 @@ const ProtectedRoute = ({
 
 	return children;
 };
+
 export default ProtectedRoute;

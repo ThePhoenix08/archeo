@@ -37,7 +37,10 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 
     private static final List<String> EXCLUDED_PATHS = List.of(
             "/api/auth/login",
-            "/api/auth/register-userCommon"
+            "/api/auth/register-userCommon",
+            "/health",
+            "/actuator/health",
+            "/actuator/health/**"
     );
 
     @Override

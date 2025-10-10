@@ -42,6 +42,7 @@
 │   │   │   │   │   └── logoText.sc.jsx
 │   │   │   │   └── ui/
 │   │   │   │       ├── alert.jsx
+│   │   │   │       ├── avatar.jsx
 │   │   │   │       ├── badge.jsx
 │   │   │   │       ├── button.jsx
 │   │   │   │       ├── calendar.jsx
@@ -168,6 +169,7 @@
 │   │   │   ├── main.jsx
 │   │   │   └── shared/
 │   │   │       ├── constants/
+│   │   │       │   ├── api.constant.js
 │   │   │       │   ├── env.constant.js
 │   │   │       │   ├── roles.constant.js
 │   │   │       │   ├── routePermissions.constant.js
@@ -213,6 +215,7 @@
 │       │       │   │                   └── application/
 │       │       │   │                       ├── Application.java
 │       │       │   │                       ├── EnvPrinter.java
+│       │       │   │                       ├── HealthController.java
 │       │       │   │                       └── HelloController.java
 │       │       │   └── resources/
 │       │       │       └── application.properties
@@ -616,4 +619,4 @@
 └── tests/
     └── .gitkeep
 
-293 directories, 324 files
+293 directories, 327 files

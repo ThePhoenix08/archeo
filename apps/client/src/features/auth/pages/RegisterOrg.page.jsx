@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
 import OrganizationStepForm from "@/features/auth/components/sub-components/register/organization-step-form.sc.jsx";
 import { ROUTES } from "@/shared/constants/routes.constant.js";
 import LogoText from "@/components/brand/LogoText.sc.jsx";
@@ -10,6 +11,7 @@ import {
 } from "@/features/auth/validators/form.validator.js";
 import { toast, Bounce } from "react-toastify";
 import CustomButton from "@/components/Button/CustomButton.jsx";
+import { setUserData } from "@/features/auth/state/slices/PreRegistration.slice.js";
 
 import {
 	Building,
@@ -25,7 +27,6 @@ import {
 	UserRound,
 	SquareArrowOutUpRight,
 } from "lucide-react";
-
 
 // Organization form categories with their respective fields and validation rules
 const organizationCategories = [
@@ -390,6 +391,8 @@ const organizationCategories = [
 
 function RegisterOrgPage() {
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
+
 	// State management
 	const [currentCategory, setCurrentCategory] = useState(0);
 	const [direction, setDirection] = useState("forward");
@@ -774,35 +777,30 @@ function RegisterOrgPage() {
 			return;
 		}
 
-		console.log("Organization Registration Data:", formData);
-		console.log("Completion Checklist:", checklist);
+		// Format address as an array
+		const addressArray = [
+			formData.address.address1,
+			formData.address.address2,
+			formData.address.address3,
+		];
 
-		// Prepare form data for backend submission
-		const formDataToSubmit = new FormData();
+		const userPayload = {
+			agentType: "organization",
+			organizationName: formData.orgname,
+			organizationType: formData.orgtype,
+			website: formData.website,
+			officeAddress: addressArray,
+			contactPersonName: formData.contactname,
+			contactPhone: formData.phonenumber,
+			contactDesignation: formData.designation,
+			proofDocType: formData.prooftype,
+			prooffile: formData.prooffilename?.file || null,
+			roles: [], // initially empty, will be updated on next page
+		};
 
-		// Add all text fields to FormData
-		formDataToSubmit.append("organizationName", formData.orgname);
-		formDataToSubmit.append("organizationType", formData.orgtype);
-		formDataToSubmit.append("website", formData.website);
-		formDataToSubmit.append("contactPersonName", formData.contactname);
-		formDataToSubmit.append("contactDesignation", formData.designation);
-		formDataToSubmit.append("contactPhone", formData.phonenumber);
-		formDataToSubmit.append("proofDocType", formData.prooftype);
-
-		// Handle address object
-		if (formData.address && typeof formData.address === "object") {
-			formDataToSubmit.append("officeAddress", JSON.stringify(formData.address));
-		} else {
-			formDataToSubmit.append("officeAddress", formData.address || "");
-		}
-
-		// Handle file upload
-		if (formData.prooffilename && formData.prooffilename.file) {
-			formDataToSubmit.append("prooffile", formData.prooffilename.file);
-		}
-
-		// Add completion checklist
-		formDataToSubmit.append("checklist", JSON.stringify(checklist));
+		// Dispatch the data in to the redux store
+		dispatch(setUserData({ user: userPayload }));
+		navigate(ROUTES.REGISTER_SELECT_ROLES);
 	};
 
 	return (

@@ -1,6 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { apiSlice } from "@/shared/state/redux-apis/slice.barrel.js";
 import authReducer from "@/features/auth/state/slices/auth.slice";
+import preRegistration from "@/features/auth/state/slices/PreRegistration.slice.js";
+
 import {
 	persistStore,
 	persistReducer,
@@ -26,6 +28,7 @@ const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 export const store = configureStore({
 	reducer: {
 		auth: persistedAuthReducer,
+		preRegistration,
 		[apiSlice.reducerPath]: apiSlice.reducer,
 		[refreshApi.reducerPath]: refreshApi.reducer,
 	},

@@ -27,7 +27,6 @@ const OrganizationStepForm = ({
 	onKeyPress,
 	isAllFieldsValid,
 	resetForm,
-	isCategoryCompleted,
 	isLastCategory,
 	showBackButton = false,
 	helperText,
@@ -62,9 +61,6 @@ const OrganizationStepForm = ({
 			...props,
 			hasError,
 			errorMessage: fieldErrors[fieldData.field],
-			hasError: hasError,
-			onBlur: () => handleFieldBlur(fieldData.field),
-			onFocus: () => handleFieldFocus(fieldData.field),
 		};
 
 		switch (fieldData.field) {
@@ -76,7 +72,7 @@ const OrganizationStepForm = ({
 			case "phonenumber":
 				return <PhoneNumberInput {...enhancedProps} />;
 
-			case "address":
+			case "address": {
 				// Special handling for address field
 				const addressValue = formData[fieldData.field] || {};
 				return (
@@ -96,10 +92,9 @@ const OrganizationStepForm = ({
 						onKeyPress={onKeyPress}
 						hasError={hasError}
 						errorMessage={fieldErrors[fieldData.field]}
-						onBlur={() => handleFieldBlur(fieldData.field)}
-						onFocus={() => handleFieldFocus(fieldData.field)}
 					/>
 				);
+			}
 
 			case "website":
 				return <URLInputWithLinkPreview {...enhancedProps} />;

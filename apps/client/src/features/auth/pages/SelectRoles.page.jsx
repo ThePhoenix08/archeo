@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import {
 	User,
 	Building2,
@@ -18,6 +19,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserData } from "@/features/auth/state/slices/PreRegistration.slice.js";
+import { selectCurrentUser } from "@/features/auth/state/slices/auth.slice.js";
+import { setCredentials } from "@/features/auth/state/slices/auth.slice.js";
+import { selectCurrentUserData } from "@/features/auth/state/slices/PreRegistration.slice.js";
+import { ROUTES } from "@/shared/constants/routes.constant";
 
 const ROLES = {
 	USER: "USER",
@@ -133,6 +140,11 @@ const quickPresets = [
 ];
 
 export default function RolesSelectPage() {
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const currentUserData = useSelector(selectCurrentUserData);
+	const currentUser = useSelector(selectCurrentUser);
+
 	const [selectedRoles, setSelectedRoles] = useState(new Set([ROLES.USER]));
 	const [hoveredRole, setHoveredRole] = useState(null);
 	const [step, setStep] = useState(1);
@@ -191,8 +203,19 @@ export default function RolesSelectPage() {
 			if (!hasRequiredRoles()) {
 				return; // Don't continue if no functional roles selected
 			}
-			console.log("Selected roles:", Array.from(selectedRoles));
-			// Handle navigation or form submission here
+
+			const selectedRolesArray = Array.from(selectedRoles);
+			// Dispatch user roles to the redux store
+			dispatch(updateUserData({ roles: selectedRolesArray }));
+
+			// Dispatch the final user data to the auth slice
+			if (currentUserData) {
+				dispatch(setCredentials({ user: currentUserData }));
+				console.log("Current User: ", currentUser);
+
+				// Handle navigation or form submission here
+				navigate(ROUTES.DASHBOARD);
+			}
 		}
 	};
 
